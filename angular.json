@@ -41,6 +41,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "baseHref": "/playground/",
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
