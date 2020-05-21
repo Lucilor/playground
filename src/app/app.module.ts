@@ -14,9 +14,10 @@ import {MatExpansionModule} from "@angular/material/expansion";
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {BezierComponent} from "./components/bezier/bezier.component";
 import {IndexComponent} from "./components/index/index.component";
+import {RubiksCubeComponent} from "./components/rubiks-cube/rubiks-cube.component";
 
 @NgModule({
-	declarations: [AppComponent, BezierComponent, IndexComponent],
+	declarations: [AppComponent, BezierComponent, IndexComponent, RubiksCubeComponent],
 	imports: [
 		BrowserModule,
 		AppRoutingModule,

@@ -1,5 +1,5 @@
 import {Component, AfterViewInit, ViewChild, ElementRef} from "@angular/core";
-import {BezierDrawer} from "@src/app/bezier-drawer/bezier-drawer";
+import {BezierDrawer} from "./bezier-drawer/bezier-drawer";
 import {Vector2} from "three";
 import {MatSlideToggleChange} from "@angular/material/slide-toggle";
 
@@ -47,7 +47,7 @@ export class BezierComponent implements AfterViewInit {
 		this.drawer.loop = event.checked;
 	}
 
-	reset(){
+	reset() {
 		this.drawer.curve.ctrlPoints = [];
 		this.drawer.start();
 	}
