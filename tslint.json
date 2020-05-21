@@ -26,12 +26,7 @@
 		"member-ordering": [
 			true,
 			{
-				"order": [
-					"static-field",
-					"instance-field",
-					"static-method",
-					"instance-method"
-				]
+				"order": ["static-field", "instance-field", "static-method", "instance-method"]
 			}
 		],
 		"no-console": [true, "debug", "info", "time", "timeEnd", "trace"],
@@ -75,22 +70,10 @@
 			]
 		},
 		"variable-name": {
-			"options": [
-				"ban-keywords",
-				"check-format",
-				"allow-pascal-case",
-				"allow-leading-underscore"
-			]
+			"options": ["ban-keywords", "check-format", "allow-pascal-case", "allow-leading-underscore"]
 		},
 		"whitespace": {
-			"options": [
-				"check-branch",
-				"check-decl",
-				"check-operator",
-				"check-separator",
-				"check-type",
-				"check-typecast"
-			]
+			"options": ["check-branch", "check-decl", "check-operator", "check-separator", "check-type", "check-typecast"]
 		},
 		"no-conflicting-lifecycle": true,
 		"no-host-metadata-property": true,
@@ -105,7 +88,8 @@
 		"use-lifecycle-interface": true,
 		"use-pipe-transform-interface": true,
 		"trailing-comma": false,
-		"space-within-parens": false
+		"space-within-parens": false,
+		"forin": false
 	},
 	"rulesDirectory": ["codelyzer"]
 }

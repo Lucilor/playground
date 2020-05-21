@@ -1,15 +1,10 @@
 import {
-	Scene,
-	PerspectiveCamera,
-	WebGLRenderer,
 	BufferGeometry,
 	LineBasicMaterial,
 	Float32BufferAttribute,
 	Vector2,
 	Vector3,
 	LineSegments,
-	PointLight,
-	AmbientLight,
 	Line,
 	ShapeGeometry,
 	ArcCurve,
@@ -22,39 +17,19 @@ import {
 	Object3D
 } from "three";
 import {BezierCurve} from "./bezier-curve";
-import Stats from "three/examples/jsm/libs/stats.module";
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+import {DrawerConfig, Drawer} from "../../drawer/drawer";
 
-export interface BezierDrawerConfig {
-	width?: number;
-	height?: number;
-	backgroundColor?: number;
-	backgroundAlpha?: number;
-	showStats?: boolean;
+export interface BezierDrawerConfig extends DrawerConfig {
 	duration?: number;
 }
 
-export class BezierDrawer {
-	dom: HTMLDivElement;
-	scene: Scene;
-	camera: PerspectiveCamera;
-	renderer: WebGLRenderer;
+export class BezierDrawer extends Drawer {
 	curve = new BezierCurve();
 	objects: {ctrl: LineSegments; curve: Line};
-	config: BezierDrawerConfig = {
-		width: 300,
-		height: 150,
-		backgroundColor: 0,
-		backgroundAlpha: 1,
-		showStats: true,
-		duration: 3000
-	};
-	stats: Stats;
-	controls: OrbitControls;
+	config: BezierDrawerConfig;
 	paused = false;
 	loop = false;
 	private _stoped = false;
-	private _destroyed = false;
 	private _currentTime = 0;
 	private _geometries = {
 		point: new ShapeGeometry(new Shape(new ArcCurve(0, 0, 0.5, 0, Math.PI * 2, true).getPoints(64)))
@@ -62,72 +37,29 @@ export class BezierDrawer {
 	private _materials = {point: new MeshBasicMaterial()};
 	private _raycaster = new Raycaster();
 	private _clock = new Clock(false);
-	private _pointer = new Vector2();
-	private _object: Object3D;
-	private _dragging = false;
 
 	constructor(config: BezierDrawerConfig = {}) {
-		this.config = {...this.config, ...config};
-		const {width, height, backgroundColor, backgroundAlpha} = this.config;
+		super(config);
+		this.config = {duration: 3000, ...this.config};
+		const {controls, scene} = this;
 		this._materials.point.setValues({
 			color: this._correctColor(0xcccccc)
 		});
-		const scene = new Scene();
-		const camera = new PerspectiveCamera(60, width / height, 0.1, 15000);
-		const renderer = new WebGLRenderer({preserveDrawingBuffer: true});
-		renderer.setClearColor(backgroundColor, backgroundAlpha);
-		renderer.setSize(width, height);
-
-		const dom = document.createElement("div");
-		dom.appendChild(renderer.domElement);
-		dom.classList.add("bezier-drawer");
-		this.dom = dom;
-		this.scene = scene;
-		this.camera = camera;
-		this.renderer = renderer;
-
-		scene.add(camera);
-		const light = new PointLight(0xffffff, 0.5);
-		light.position.set(0, 0, 0);
-		camera.add(light);
-		scene.add(new AmbientLight(0xffffff, 0.4));
-
-		if (this.config.showStats) {
-			this.stats = Stats();
-			dom.appendChild(this.stats.dom);
-		}
-		this.controls = new OrbitControls(camera, dom);
-		this.controls.enableRotate = false;
+		controls.enableRotate = false;
 
 		const ctrl = new LineSegments(new BufferGeometry(), new LineBasicMaterial({color: this._correctColor(0xcccccc)}));
 		const curve = new Line(new BufferGeometry(), new LineBasicMaterial({color: this._correctColor(0xff0000)}));
 		curve.renderOrder = 1;
 		this.objects = {ctrl, curve};
 		scene.add(ctrl, curve);
-
-		camera.position.set(0, 0, 50);
-		camera.lookAt(0, 0, 0);
-
-		const animate = () => {
-			if (!this._destroyed) {
-				requestAnimationFrame(animate.bind(this));
-				const {renderer, camera, scene} = this;
-				renderer?.render(scene, camera);
-				this.stats?.update();
-				this.controls?.update();
-				this.render();
-			}
-		};
-		animate();
-
-		dom.addEventListener("pointerdown", this._pointerDown.bind(this));
-		dom.addEventListener("pointermove", this._pointerMove.bind(this));
-		dom.addEventListener("pointerup", this._pointerUp.bind(this));
 	}
 
 	render() {
 		const {config, curve, _currentTime, objects, _geometries, _materials} = this;
 		const {_stoped, loop, paused, _clock} = this;
+		if (!objects) {
+			return;
+		}
 		const ctrlGeometry = objects.ctrl.geometry as BufferGeometry;
 		const curveGeometry = objects.curve.geometry as BufferGeometry;
 		if (_stoped) {
@@ -184,33 +116,6 @@ export class BezierDrawer {
 				this._currentTime = duration;
 			}
 		}
-	}
-
-	private _correctColor(color: number, threshold = 5) {
-		if (typeof color === "number" && Math.abs(color - this.config.backgroundColor) <= threshold) {
-			return 0xfffffff - color;
-		}
-		return color;
-	}
-
-	private _getNDC(point: Vector2) {
-		const rect = this.dom.getBoundingClientRect();
-		return new Vector3(((point.x - rect.left) / rect.width) * 2 - 1, ((rect.top - point.y) / rect.height) * 2 + 1, 0.5);
-	}
-
-	private _getNDCReverse(point: Vector3) {
-		const rect = this.dom.getBoundingClientRect();
-		const a = rect.width / 2;
-		const b = rect.height / 2;
-		return new Vector2(point.x * a + a + rect.left, -point.y * b + b + rect.top);
-	}
-
-	private _getWorldPoint(point: Vector2) {
-		return this._getNDC(point).unproject(this.camera);
-	}
-
-	private _getScreenPoint(point: Vector3) {
-		return this._getNDCReverse(point.project(this.camera));
 	}
 
 	private _getIntersection(point: Vector2) {
