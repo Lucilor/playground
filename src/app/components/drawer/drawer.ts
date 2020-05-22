@@ -1,4 +1,4 @@
-import {Scene, PerspectiveCamera, WebGLRenderer, PointLight, AmbientLight, Vector2, Vector3, Object3D} from "three";
+import {Scene, PerspectiveCamera, WebGLRenderer, PointLight, AmbientLight, Vector2, Vector3, Object3D, Raycaster} from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
@@ -24,6 +24,7 @@ export class Drawer {
 	};
 	stats: Stats;
 	controls: OrbitControls;
+	protected _raycaster = new Raycaster();
 	protected _pointer = new Vector2();
 	protected _object: Object3D;
 	protected _dragging = false;
@@ -33,7 +34,7 @@ export class Drawer {
 		const {width, height, backgroundColor, backgroundAlpha} = this.config;
 		const scene = new Scene();
 		const camera = new PerspectiveCamera(60, width / height, 0.1, 15000);
-		const renderer = new WebGLRenderer({preserveDrawingBuffer: true});
+		const renderer = new WebGLRenderer({preserveDrawingBuffer: true, antialias: true});
 		renderer.setClearColor(backgroundColor, backgroundAlpha);
 		renderer.setSize(width, height);
 
@@ -65,7 +66,7 @@ export class Drawer {
 			renderer?.render(scene, camera);
 			this.stats?.update();
 			this.controls?.update();
-			this.render();
+			this.update();
 		};
 		animate();
 
@@ -74,7 +75,7 @@ export class Drawer {
 		dom.addEventListener("pointerup", this._pointerUp.bind(this));
 	}
 
-	render() {}
+	update() {}
 
 	protected _correctColor(color: number, threshold = 5) {
 		if (typeof color === "number" && Math.abs(color - this.config.backgroundColor) <= threshold) {
@@ -103,11 +104,11 @@ export class Drawer {
 		return this._getNDCReverse(point.project(this.camera));
 	}
 
-	private _getIntersection(_point: Vector2) {
+	protected _getIntersection(_point: Vector2) {
 		return this._object;
 	}
 
-	private _hover(point: Vector2) {
+	protected _hover(point: Vector2) {
 		const object = this._getIntersection(point);
 		if (object) {
 			this.dom.style.cursor = "pointer";
@@ -116,21 +117,21 @@ export class Drawer {
 		}
 	}
 
-	private _click(_point: Vector2) {}
+	protected _click(_point: Vector2) {}
 
-	private _pointerDown({clientX, clientY, button}: PointerEvent) {
+	protected _pointerDown({clientX, clientY, button}: PointerEvent) {
 		this._pointer.set(clientX, clientY);
 		if (button === 0 && this._object) {
 			this._dragging = true;
 		}
 	}
 
-	private _pointerMove({clientX, clientY}: PointerEvent) {
+	protected _pointerMove({clientX, clientY}: PointerEvent) {
 		const point = new Vector2(clientX, clientY);
 		this._hover(point);
 	}
 
-	private _pointerUp({clientX, clientY, button}: PointerEvent) {
+	protected _pointerUp({clientX, clientY, button}: PointerEvent) {
 		const point = new Vector2(clientX, clientY);
 		if (point.distanceTo(this._pointer) <= 5 && button === 0) {
 			this._click(point);

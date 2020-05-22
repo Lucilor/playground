@@ -11,10 +11,8 @@ import {
 	Shape,
 	Mesh,
 	MeshBasicMaterial,
-	Raycaster,
 	Plane,
-	Clock,
-	Object3D
+	Clock
 } from "three";
 import {BezierCurve} from "./bezier-curve";
 import {DrawerConfig, Drawer} from "../../drawer/drawer";
@@ -35,17 +33,18 @@ export class BezierDrawer extends Drawer {
 		point: new ShapeGeometry(new Shape(new ArcCurve(0, 0, 0.5, 0, Math.PI * 2, true).getPoints(64)))
 	};
 	private _materials = {point: new MeshBasicMaterial()};
-	private _raycaster = new Raycaster();
 	private _clock = new Clock(false);
 
 	constructor(config: BezierDrawerConfig = {}) {
 		super(config);
 		this.config = {duration: 3000, ...this.config};
-		const {controls, scene} = this;
+		const {controls, scene, camera} = this;
 		this._materials.point.setValues({
 			color: this._correctColor(0xcccccc)
 		});
 		controls.enableRotate = false;
+		camera.position.set(0, 0, 50);
+		camera.lookAt(0, 0, 0);
 
 		const ctrl = new LineSegments(new BufferGeometry(), new LineBasicMaterial({color: this._correctColor(0xcccccc)}));
 		const curve = new Line(new BufferGeometry(), new LineBasicMaterial({color: this._correctColor(0xff0000)}));
@@ -54,7 +53,7 @@ export class BezierDrawer extends Drawer {
 		scene.add(ctrl, curve);
 	}
 
-	render() {
+	update() {
 		const {config, curve, _currentTime, objects, _geometries, _materials} = this;
 		const {_stoped, loop, paused, _clock} = this;
 		if (!objects) {
@@ -118,7 +117,7 @@ export class BezierDrawer extends Drawer {
 		}
 	}
 
-	private _getIntersection(point: Vector2) {
+	protected _getIntersection(point: Vector2) {
 		const {_raycaster, camera, objects} = this;
 		_raycaster.setFromCamera(this._getNDC(point), camera);
 		const intersects = _raycaster.intersectObjects([objects.ctrl], true);
@@ -130,42 +129,19 @@ export class BezierDrawer extends Drawer {
 		return this._object;
 	}
 
-	private _hover(point: Vector2) {
-		const object = this._getIntersection(point);
-		if (object) {
-			this.dom.style.cursor = "pointer";
-		} else {
-			this.dom.style.cursor = "default";
-		}
-	}
-
-	private _click(point: Vector2) {
+	protected _click(point: Vector2) {
+		super._click(point);
 		if (!this._dragging) {
 			this.addCtrlPoint(point);
 		}
 	}
 
-	private _pointerDown({clientX, clientY, button}: PointerEvent) {
-		this._pointer.set(clientX, clientY);
-		if (button === 0 && this._object) {
-			this._dragging = true;
-		}
-	}
-
-	private _pointerMove({clientX, clientY}: PointerEvent) {
-		const point = new Vector2(clientX, clientY);
-		this._hover(point);
+	protected _pointerMove(event: PointerEvent) {
+		super._pointerMove(event);
+		const point = new Vector2(event.clientX, event.clientY);
 		if (this._dragging) {
 			this.addCtrlPoint(point, this._object.userData.index);
 		}
-	}
-
-	private _pointerUp({clientX, clientY, button}: PointerEvent) {
-		const point = new Vector2(clientX, clientY);
-		if (point.distanceTo(this._pointer) <= 5 && button === 0) {
-			this._click(point);
-		}
-		this._dragging = false;
 	}
 
 	start() {
