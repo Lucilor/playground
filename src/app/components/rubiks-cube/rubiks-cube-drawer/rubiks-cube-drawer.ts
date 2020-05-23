@@ -17,7 +17,7 @@ export class RubiksCubeDrawer extends Drawer {
 		this.config = {size: 5, dimension: 3, ...this.config};
 
 		const {camera, scene} = this;
-		camera.position.set(30, 30, 30);
+		camera.position.set(50, 50, 50);
 		camera.lookAt(0, 0, 0);
 		scene.add(camera);
 		const pointLight = new PointLight(0xffffff);
