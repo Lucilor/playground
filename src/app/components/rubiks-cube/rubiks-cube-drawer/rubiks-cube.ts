@@ -11,8 +11,8 @@ export interface RubiksCubeColors {
 }
 
 export interface RubiksCubeStep {
-	cubes: Mesh[];
 	axis: "x" | "y" | "z";
+	indices: number[];
 	count: number;
 	clockwise: boolean;
 }
@@ -29,7 +29,8 @@ export class RubiksCube extends Object3D {
 		L: new Color(0, 0, 1),
 		R: new Color(0, 1, 0)
 	};
-	steps: {forward: RubiksCubeStep[]; backward: RubiksCubeStep[]};
+	stepDuration = 500;
+	steps: {queue: RubiksCubeStep[]; histroy: RubiksCubeStep[]};
 	takingStep = false;
 	private _tween: TWEEN.Tween;
 	private _clock = new Clock(false);
@@ -39,7 +40,7 @@ export class RubiksCube extends Object3D {
 		this.size = size;
 		this.dimension = dimension;
 		this.gap = gap;
-		this.steps = {forward: [], backward: []};
+		this.steps = {queue: [], histroy: []};
 
 		const offset = (dimension - 1) / 2;
 		const inc = size + gap;
@@ -70,33 +71,33 @@ export class RubiksCube extends Object3D {
 		return new Mesh(geometry, materials);
 	}
 
-	a = 0;
-	forward(axis: "x" | "y" | "z", indexs: number[], count: number, clockwise: boolean) {
+	forward(axis: "x" | "y" | "z", indices: number | number[], count: number, clockwise: boolean) {
 		count = ((count % 4) + 4) % 4;
-		const cubes = this.children.filter((o) => indexs.includes(o.userData[axis])) as Mesh[];
-		if (cubes.length % this.dimension ** 2 !== 0) {
-			console.warn(cubes.length);
+		clockwise = !!clockwise;
+		if (typeof indices === "number") {
+			indices = [indices];
 		}
-		// if (++this.a >= 3) {
-		// 	if (this.a === 3) {
-		// 		cubes.forEach((o) => (o.position.x += 20));
-		// 	}
-		// 	return;
-		// }
-		this.steps.forward.push({cubes, axis, count, clockwise});
+		this.steps.queue.push({axis, indices, count, clockwise});
+	}
+
+	back() {
+		const step = this.steps.histroy.pop();
+		step.clockwise = !step.clockwise;
+		this.steps.queue.push(step);
 	}
 
 	update() {
-		const {steps, _tween, _clock, size, dimension, gap} = this;
-		if (this.takingStep) {
-			_tween?.update(_clock.getElapsedTime() * 1000);
-		}
-		if (steps.forward.length && !this.takingStep) {
+		const {steps, _tween, _clock, size, dimension, gap, stepDuration} = this;
+		_tween?.update(_clock.getElapsedTime() * 1000);
+		if (steps.queue.length && !this.takingStep) {
 			this.takingStep = true;
-			const {cubes, axis, count, clockwise} = steps.forward.shift();
+			const step = steps.queue.shift();
+			steps.histroy.push(step);
+			const {indices, axis, count, clockwise} = step;
+			const cubes = this.children.filter((o) => indices.includes(o.userData[axis]));
 			const obj = {angle: 0};
 			const totalAngle = (clockwise ? 1 : -1) * (Math.PI / 2) * count;
-			const tween = new TWEEN.Tween(obj).to({angle: totalAngle}, 500);
+			const tween = new TWEEN.Tween(obj).to({angle: totalAngle}, stepDuration);
 			const axisVector = new Vector3();
 			axisVector[axis] = 1;
 			let lastAngle = 0;
@@ -107,14 +108,18 @@ export class RubiksCube extends Object3D {
 				this.remove(cube);
 			});
 			const axes: ("x" | "y" | "z")[] = [];
+			const matrix = new Matrix4();
 			if (axis === "x") {
-				axes.push("z", "y");
+				axes.push("y", "z");
+				matrix.makeRotationX(totalAngle);
 			}
 			if (axis === "y") {
 				axes.push("x", "z");
+				matrix.makeRotationY(totalAngle);
 			}
 			if (axis === "z") {
 				axes.push("x", "y");
+				matrix.makeRotationZ(totalAngle);
 			}
 			tween
 				.onUpdate(({angle}) => {
@@ -125,74 +130,40 @@ export class RubiksCube extends Object3D {
 				.onComplete(() => {
 					_clock.stop();
 					this.takingStep = false;
+					this._tween = null;
 					const array: any[][] = [];
 					const offset = (dimension - 1) / 2;
 					const inc = size + gap;
-					console.group();
-					cubes.forEach((cube, i) => {
+					cubes.forEach((cube) => {
 						const x = cube.position[axes[0]];
 						const y = cube.position[axes[1]];
-						const j2 = i % dimension;
-						const k2 = Math.floor(i / dimension);
-						let j = Math.round(y / inc) + offset;
-						let k = Math.round(x / inc) + offset;
-						// if (axis === "z") {
-						// 	j = dimension - 1 - j;
-						// }
+						const j = Math.round(y / inc) + offset;
+						const k = Math.round(x / inc) + offset;
 						if (!array[j]) {
 							array[j] = [];
 						}
-						// console.log({j, k}, cube.uuid);
 						array[j][k] = cube.userData;
 					});
-					const newArray = this.rotateArray2D(array, axis === "y" ? clockwise : !clockwise);
-					cubes.forEach((cube, i) => {
-						const x = cube.position[axes[0]];
-						const y = cube.position[axes[1]];
-						const j2 = i % dimension;
-						const k2 = Math.floor(i / dimension);
-						let j = Math.round(y / inc) + offset;
-						let k = Math.round(x / inc) + offset;
-						// if (axis === "z") {
-						// 	j = dimension - 1 - j;
-						// }
-						if (!array[j]) {
-							array[j] = [];
-						}
-						cube.userData = newArray[j][k];
-					});
-					// for (let j = 0; j < newArray.length; j++) {
-					// 	for (let k = 0; k < newArray[j].length; k++) {
-					// 		const i = dimension * k + j;
-					// 		cubes[i].userData = newArray[j][k];
-					// 	}
-					// }
-					console.log(array, newArray);
-					console.groupEnd();
 					for (const v of array) {
 						if (v.length !== dimension) {
-							console.log(1);
-							this.steps.forward.length = 0;
-							return;
+							throw new Error("Something goes wrong when taking a step.");
 						}
 					}
-					const matrix = new Matrix4();
-					if (axis === "x") {
-						matrix.makeRotationX(totalAngle);
-					}
-					if (axis === "y") {
-						matrix.makeRotationY(totalAngle);
-					}
-					if (axis === "z") {
-						matrix.makeRotationZ(totalAngle);
-					}
+					// TODO: axis y has different clockwise
+					const newArray = this.rotateArray2D(array, axis === "y" ? clockwise : !clockwise);
+					cubes.forEach((cube) => {
+						const x = cube.position[axes[0]];
+						const y = cube.position[axes[1]];
+						const j = Math.round(y / inc) + offset;
+						const k = Math.round(x / inc) + offset;
+						cube.userData = newArray[j][k];
+					});
 					cubes.forEach((cube) => {
 						cube.applyMatrix4(matrix);
 						cube.matrixWorldNeedsUpdate = true;
 						this.add(cube);
 					});
 					this.remove(group);
-					this._tween = null;
 				})
 				.start(0);
 			_clock.start();
@@ -220,13 +191,10 @@ export class RubiksCube extends Object3D {
 
 	shuffle(count = 20) {
 		for (let i = 0; i < count; i++) {
-			const axis = ["y", "z"][MathUtils.randInt(0, 1)] as "x" | "y" | "z";
-			const indexs = [2]; //[MathUtils.randInt(0, this.dimension - 1)];
+			const axis = ["x", "y", "z"][MathUtils.randInt(0, 2)] as "x" | "y" | "z";
+			const indices = [MathUtils.randInt(0, this.dimension - 1)];
 			const clockwise = [true, false][MathUtils.randInt(0, 1)];
-			setTimeout(() => {
-				this.forward(i % 2 ? "y" : "z", [2], 1, true);
-			}, 1000 * i);
-			console.log({axis, indexs, clockwise});
+			this.forward(axis, indices, 1, clockwise);
 		}
 	}
 }

@@ -89,7 +89,8 @@
 		"use-pipe-transform-interface": true,
 		"trailing-comma": false,
 		"space-within-parens": false,
-		"forin": false
+		"forin": false,
+		"no-bitwise": false
 	},
 	"rulesDirectory": ["codelyzer"]
 }
