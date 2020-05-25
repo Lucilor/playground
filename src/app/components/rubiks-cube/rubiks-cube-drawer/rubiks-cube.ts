@@ -1,4 +1,4 @@
-import {Object3D, BoxGeometry, Color, MeshLambertMaterial, Mesh, Vector3, Clock, Matrix4, ArcCurve, Vector2, MathUtils} from "three";
+import {Object3D, BoxGeometry, Color, MeshLambertMaterial, Mesh, Vector3, Clock, Matrix4, MathUtils} from "three";
 import TWEEN from "@tweenjs/tween.js";
 
 export interface RubiksCubeColors {
@@ -18,6 +18,7 @@ export interface RubiksCubeStep {
 	count: number; // times to rotate
 	clockwise: boolean; // rotate direction
 	duration: number; // rotate speed
+	forsaken: boolean; // if true, this step won't push to history
 }
 
 export class RubiksCube extends Object3D {
@@ -33,9 +34,8 @@ export class RubiksCube extends Object3D {
 		R: new Color(0, 1, 0)
 	};
 	stepDuration = 500;
-	steps: {queue: RubiksCubeStep[]; histroy: RubiksCubeStep[]};
 	takingStep = false;
-	turnback = false;
+	steps: {queue: RubiksCubeStep[]; histroy: RubiksCubeStep[]};
 	private _tween: TWEEN.Tween;
 	private _clock = new Clock(false);
 
@@ -81,14 +81,14 @@ export class RubiksCube extends Object3D {
 		if (typeof indices === "number") {
 			indices = [indices];
 		}
-		this.steps.queue.push({axis, indices, count, clockwise, duration});
+		this.steps.queue.push({axis, indices, count, clockwise, duration, forsaken: false});
 	}
 
 	back(duration = this.stepDuration) {
 		const step = this.steps.histroy.pop();
 		step.clockwise = !step.clockwise;
 		step.duration = duration;
-		this.turnback = true;
+		step.forsaken = true;
 		this.steps.queue.push(step);
 	}
 
@@ -98,12 +98,10 @@ export class RubiksCube extends Object3D {
 		if (steps.queue.length && !this.takingStep) {
 			this.takingStep = true;
 			const step = steps.queue.shift();
-			if (this.turnback) {
-				this.turnback = false;
-			} else {
+			const {indices, axis, count, clockwise, duration, forsaken} = step;
+			if (!forsaken) {
 				steps.histroy.push(step);
 			}
-			const {indices, axis, count, clockwise, duration} = step;
 			const cubes = this.children.filter((o) => indices.includes(o.userData[axis]));
 			const obj = {angle: 0};
 			const totalAngle = (clockwise ? 1 : -1) * (Math.PI / 2) * count;
@@ -199,7 +197,7 @@ export class RubiksCube extends Object3D {
 		return result;
 	}
 
-	shuffle(count = 20, duration = 200) {
+	shuffle(count = this.dimension ** 3, duration = 100) {
 		for (let i = 0; i < count; i++) {
 			const axis = ["x", "y", "z"][MathUtils.randInt(0, 2)] as "x" | "y" | "z";
 			const indices = [MathUtils.randInt(0, this.dimension - 1)];
@@ -208,7 +206,7 @@ export class RubiksCube extends Object3D {
 		}
 	}
 
-	backToOrigin(duration = 200) {
+	backToOrigin(duration = 100) {
 		while (this.steps.histroy.length) {
 			this.back(duration);
 		}

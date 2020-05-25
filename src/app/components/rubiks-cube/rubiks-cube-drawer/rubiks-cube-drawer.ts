@@ -76,9 +76,9 @@ export class RubiksCubeDrawer extends Drawer {
 
 	protected _pointerUp(event: PointerEvent) {
 		super._pointerUp(event);
-		const {_cubePositions, _cubeFaces} = this;
+		const {_cubePositions, _cubeFaces, cube} = this;
 		const dPosition = _cubePositions[1].clone().sub(_cubePositions[0]);
-		let valid = true;
+		let valid = !cube.takingStep;
 		if (!_cubeFaces[0].equals(_cubeFaces[1])) {
 			valid = false;
 		}
