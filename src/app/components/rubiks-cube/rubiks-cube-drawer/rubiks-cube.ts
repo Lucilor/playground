@@ -10,11 +10,14 @@ export interface RubiksCubeColors {
 	R: Color;
 }
 
+export type Axis = "x" | "y" | "z";
+
 export interface RubiksCubeStep {
-	axis: "x" | "y" | "z";
-	indices: number[];
-	count: number;
-	clockwise: boolean;
+	axis: Axis; // axis to rotate on
+	indices: number[]; // layers to rotate
+	count: number; // times to rotate
+	clockwise: boolean; // rotate direction
+	duration: number; // rotate speed
 }
 
 export class RubiksCube extends Object3D {
@@ -32,6 +35,7 @@ export class RubiksCube extends Object3D {
 	stepDuration = 500;
 	steps: {queue: RubiksCubeStep[]; histroy: RubiksCubeStep[]};
 	takingStep = false;
+	turnback = false;
 	private _tween: TWEEN.Tween;
 	private _clock = new Clock(false);
 
@@ -41,13 +45,25 @@ export class RubiksCube extends Object3D {
 		this.dimension = dimension;
 		this.gap = gap;
 		this.steps = {queue: [], histroy: []};
+		this.reset();
+	}
 
+	reset() {
+		const {dimension, size, gap} = this;
 		const offset = (dimension - 1) / 2;
 		const inc = size + gap;
+		this.remove(...this.children);
 		for (let i = 0; i < dimension; i++) {
 			for (let j = 0; j < dimension; j++) {
 				for (let k = 0; k < dimension; k++) {
-					const cube = this.newCube();
+					const geometry = new BoxGeometry(size, size, size);
+					const materials: MeshLambertMaterial[] = [];
+					const order: (keyof RubiksCubeColors)[] = ["F", "U", "B", "D", "L", "R"];
+					for (const face of order) {
+						const color = this.colors[face];
+						materials.push(new MeshLambertMaterial({color}));
+					}
+					const cube = new Mesh(geometry, materials);
 					const x = (i - offset) * inc;
 					const y = (j - offset) * inc;
 					const z = (k - offset) * inc;
@@ -59,45 +75,39 @@ export class RubiksCube extends Object3D {
 		}
 	}
 
-	newCube() {
-		const {size} = this;
-		const geometry = new BoxGeometry(size, size, size);
-		const materials: MeshLambertMaterial[] = [];
-		const order: (keyof RubiksCubeColors)[] = ["F", "U", "B", "D", "L", "R"];
-		for (const face of order) {
-			const color = this.colors[face];
-			materials.push(new MeshLambertMaterial({color}));
-		}
-		return new Mesh(geometry, materials);
-	}
-
-	forward(axis: "x" | "y" | "z", indices: number | number[], count: number, clockwise: boolean) {
+	forward(axis: Axis, indices: number | number[], count: number, clockwise: boolean, duration = this.stepDuration) {
 		count = ((count % 4) + 4) % 4;
 		clockwise = !!clockwise;
 		if (typeof indices === "number") {
 			indices = [indices];
 		}
-		this.steps.queue.push({axis, indices, count, clockwise});
+		this.steps.queue.push({axis, indices, count, clockwise, duration});
 	}
 
-	back() {
+	back(duration = this.stepDuration) {
 		const step = this.steps.histroy.pop();
 		step.clockwise = !step.clockwise;
+		step.duration = duration;
+		this.turnback = true;
 		this.steps.queue.push(step);
 	}
 
 	update() {
-		const {steps, _tween, _clock, size, dimension, gap, stepDuration} = this;
+		const {steps, _tween, _clock, size, dimension, gap} = this;
 		_tween?.update(_clock.getElapsedTime() * 1000);
 		if (steps.queue.length && !this.takingStep) {
 			this.takingStep = true;
 			const step = steps.queue.shift();
-			steps.histroy.push(step);
-			const {indices, axis, count, clockwise} = step;
+			if (this.turnback) {
+				this.turnback = false;
+			} else {
+				steps.histroy.push(step);
+			}
+			const {indices, axis, count, clockwise, duration} = step;
 			const cubes = this.children.filter((o) => indices.includes(o.userData[axis]));
 			const obj = {angle: 0};
 			const totalAngle = (clockwise ? 1 : -1) * (Math.PI / 2) * count;
-			const tween = new TWEEN.Tween(obj).to({angle: totalAngle}, stepDuration);
+			const tween = new TWEEN.Tween(obj).to({angle: totalAngle}, duration);
 			const axisVector = new Vector3();
 			axisVector[axis] = 1;
 			let lastAngle = 0;
@@ -189,12 +199,18 @@ export class RubiksCube extends Object3D {
 		return result;
 	}
 
-	shuffle(count = 20) {
+	shuffle(count = 20, duration = 200) {
 		for (let i = 0; i < count; i++) {
 			const axis = ["x", "y", "z"][MathUtils.randInt(0, 2)] as "x" | "y" | "z";
 			const indices = [MathUtils.randInt(0, this.dimension - 1)];
 			const clockwise = [true, false][MathUtils.randInt(0, 1)];
-			this.forward(axis, indices, 1, clockwise);
+			this.forward(axis, indices, 1, clockwise, duration);
+		}
+	}
+
+	backToOrigin(duration = 200) {
+		while (this.steps.histroy.length) {
+			this.back(duration);
 		}
 	}
 }

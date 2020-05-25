@@ -1,5 +1,6 @@
 import {Component, AfterViewInit, ViewChild, ElementRef} from "@angular/core";
 import {RubiksCubeDrawer} from "./rubiks-cube-drawer/rubiks-cube-drawer";
+import {RubiksCube} from "./rubiks-cube-drawer/rubiks-cube";
 
 @Component({
 	selector: "app-rubiks-cube",
@@ -8,12 +9,20 @@ import {RubiksCubeDrawer} from "./rubiks-cube-drawer/rubiks-cube-drawer";
 })
 export class RubiksCubeComponent implements AfterViewInit {
 	@ViewChild("container", {read: ElementRef}) container: ElementRef<HTMLElement>;
-	constructor() {}
-
-	ngAfterViewInit() {
-		const drawer = new RubiksCubeDrawer({width: innerWidth, height: innerHeight, size: 5, dimension: 3});
+	drawer: RubiksCubeDrawer;
+	cube: RubiksCube;
+	constructor() {
+		const cube = new RubiksCube(5, 3);
+		const drawer = new RubiksCubeDrawer(cube, {width: innerWidth, height: innerHeight});
 		// tslint:disable-next-line: no-string-literal
 		window["drawer"] = drawer;
-		this.container.nativeElement.appendChild(drawer.dom);
+		// tslint:disable-next-line: no-string-literal
+		window["cube"] = cube;
+		this.drawer = drawer;
+		this.cube = cube;
+	}
+
+	ngAfterViewInit() {
+		this.container.nativeElement.appendChild(this.drawer.dom);
 	}
 }

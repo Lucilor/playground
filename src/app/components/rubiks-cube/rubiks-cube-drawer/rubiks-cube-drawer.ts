@@ -1,22 +1,16 @@
 import {PointLight, AmbientLight, Vector2, AxesHelper, Vector3, Intersection} from "three";
-import {RubiksCube} from "./rubiks-cube";
+import {RubiksCube, Axis} from "./rubiks-cube";
 import {DrawerConfig, Drawer} from "../../drawer/drawer";
 
-export interface RubiksCubeDrawerConfig extends DrawerConfig {
-	size?: number;
-	dimension?: number;
-}
-
 export class RubiksCubeDrawer extends Drawer {
-	config: RubiksCubeDrawerConfig;
+	config: DrawerConfig;
 	cube: RubiksCube;
 	private _cubePositions = [new Vector3(), new Vector3()];
 	private _cubeFaces = [new Vector3(), new Vector3()];
 	private _intersection: Intersection;
 
-	constructor(config: RubiksCubeDrawerConfig) {
+	constructor(cube: RubiksCube, config: DrawerConfig) {
 		super(config);
-		this.config = {size: 5, dimension: 3, ...this.config};
 
 		const {camera, scene} = this;
 		camera.position.set(50, 50, 50);
@@ -25,7 +19,7 @@ export class RubiksCubeDrawer extends Drawer {
 		const pointLight = new PointLight(0xffffff);
 		camera.add(pointLight);
 		scene.add(new AmbientLight(0xffffff, 0.2));
-		this.cube = new RubiksCube(config.size, config.dimension);
+		this.cube = cube;
 		this.cube.position.set(10, 10, 10);
 		scene.add(this.cube);
 
@@ -65,7 +59,8 @@ export class RubiksCubeDrawer extends Drawer {
 		if (object) {
 			const {x, y, z} = object.userData;
 			this._cubePositions[0].set(x, y, z);
-			this._cubeFaces[0].copy(this._intersection.face.normal);
+			const normal = this._intersection.face.normal.clone();
+			this._cubeFaces[0].copy(normal.transformDirection(object.matrixWorld).round());
 		}
 	}
 
@@ -74,7 +69,8 @@ export class RubiksCubeDrawer extends Drawer {
 		if (this._dragging && this._object) {
 			const {x, y, z} = this._object.userData;
 			this._cubePositions[1].set(x, y, z);
-			this._cubeFaces[1].copy(this._intersection.face.normal);
+			const normal = this._intersection.face.normal.clone();
+			this._cubeFaces[1].copy(normal.transformDirection(this._object.matrixWorld).round());
 		}
 	}
 
@@ -82,39 +78,56 @@ export class RubiksCubeDrawer extends Drawer {
 		super._pointerUp(event);
 		const {_cubePositions, _cubeFaces} = this;
 		const dPosition = _cubePositions[1].clone().sub(_cubePositions[0]);
+		let valid = true;
 		if (!_cubeFaces[0].equals(_cubeFaces[1])) {
-			console.log(1);
-			return;
+			valid = false;
 		}
-		const x = dPosition.x | _cubeFaces[0].x;
-		const y = dPosition.y | _cubeFaces[0].y;
-		const z = dPosition.z | _cubeFaces[0].z;
-		let axis: "x" | "y" | "z";
-		if (!x && y && z) {
-			axis = "x";
-		}
-		if (x && !y && z) {
-			axis = "y";
-		}
-		if (x && y && !z) {
-			axis = "z";
-		}
-		if (!axis) {
-			console.log(x, y, z);
-			return;
+		let axis: Axis;
+		let dragAxis: Axis;
+		let clickAxis: Axis;
+		["x", "y", "z"].forEach((v) => {
+			if (dPosition[v] === 0 && _cubeFaces[0][v] === 0) {
+				axis = v as Axis;
+			} else {
+				if (dPosition[v] !== 0) {
+					dragAxis = v as Axis;
+				}
+				if (_cubeFaces[0][v] !== 0) {
+					clickAxis = v as Axis;
+				}
+			}
+		});
+		if (!axis || !dragAxis || !clickAxis) {
+			valid = false;
 		}
 		let clockwise: boolean;
-		if (dPosition.x) {
-			clockwise = dPosition.x > 0;
+		if (axis === "x") {
+			if (clickAxis === "y") {
+				clockwise = dPosition[dragAxis] * _cubeFaces[0][clickAxis] > 0;
+			}
+			if (clickAxis === "z") {
+				clockwise = dPosition[dragAxis] * _cubeFaces[0][clickAxis] < 0;
+			}
 		}
-		if (dPosition.y) {
-			clockwise = dPosition.y > 0;
+		if (axis === "y") {
+			if (clickAxis === "x") {
+				clockwise = dPosition[dragAxis] * _cubeFaces[0][clickAxis] < 0;
+			}
+			if (clickAxis === "z") {
+				clockwise = dPosition[dragAxis] * _cubeFaces[0][clickAxis] > 0;
+			}
 		}
-		if (dPosition.z) {
-			clockwise = dPosition.z > 0;
+		if (axis === "z") {
+			if (clickAxis === "x") {
+				clockwise = dPosition[dragAxis] * _cubeFaces[0][clickAxis] > 0;
+			}
+			if (clickAxis === "y") {
+				clockwise = dPosition[dragAxis] * _cubeFaces[0][clickAxis] < 0;
+			}
 		}
-		console.log(axis, _cubePositions[0][axis], 1, clockwise);
-		this.cube.forward(axis, _cubePositions[0][axis], 1, clockwise);
+		if (valid) {
+			this.cube.forward(axis, _cubePositions[0][axis], 1, clockwise);
+		}
 		_cubePositions[0].set(0, 0, 0);
 		_cubePositions[1].set(0, 0, 0);
 		_cubeFaces[0].set(0, 0, 0);
