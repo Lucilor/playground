@@ -1,29 +1,35 @@
-import {PointLight, AmbientLight, Vector2, AxesHelper, Vector3, Intersection} from "three";
+import {PointLight, AmbientLight, Vector2, AxesHelper, Vector3, Intersection, DirectionalLight} from "three";
 import {RubiksCube, Axis} from "./rubiks-cube";
 import {DrawerConfig, Drawer} from "../../drawer/drawer";
 
+export interface RubiksCubeDrawerConfig extends DrawerConfig {
+	axesHelper?: boolean;
+}
+
 export class RubiksCubeDrawer extends Drawer {
-	config: DrawerConfig;
+	config: RubiksCubeDrawerConfig;
 	cube: RubiksCube;
 	private _cubePositions = [new Vector3(), new Vector3()];
 	private _cubeFaces = [new Vector3(), new Vector3()];
 	private _intersection: Intersection;
 
-	constructor(cube: RubiksCube, config: DrawerConfig) {
+	constructor(cube: RubiksCube, config: RubiksCubeDrawerConfig) {
 		super(config);
+		this.config = {axesHelper: true, ...this.config};
 
 		const {camera, scene} = this;
 		camera.position.set(50, 50, 50);
 		camera.lookAt(0, 0, 0);
 		scene.add(camera);
-		const pointLight = new PointLight(0xffffff);
-		camera.add(pointLight);
+		const directionalLight = new DirectionalLight(0xffffff, 0.5);
+		// directionalLight.position.set();
+		scene.add(directionalLight);
 		scene.add(new AmbientLight(0xffffff, 0.2));
 		this.cube = cube;
-		this.cube.position.set(10, 10, 10);
 		scene.add(this.cube);
 
-		scene.add(new AxesHelper(100));
+		// const axisHelper = new AxesHelper(100);
+		// scene.add(new AxesHelper(100));
 	}
 
 	update() {

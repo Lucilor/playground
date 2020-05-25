@@ -6,6 +6,8 @@ export class BezierCurve {
 		this.ctrlPoints = ctrlPoints;
 	}
 
+	// De Casteljau's algorithm
+	// the core of bezier curve
 	deCasteljau(t: number) {
 		let currPoints = this.ctrlPoints;
 		let nextPoints: Vector2[];

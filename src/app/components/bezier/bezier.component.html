@@ -1,57 +1,34 @@
-<div class="boundary">
-	<div #container></div>
-	<div class="bezier-menu" cdkDrag cdkDragBoundary=".boundary">
-		<div class="handle" cdkDragHandle>
-			<mat-icon (click)="miniMenu = !miniMenu">{{ miniMenu ? "add" : "remove" }}</mat-icon>
-			<svg width="24px" fill="currentColor" viewBox="0 0 24 24">
-				<path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
-				<path d="M0 0h24v24H0z" fill="none"></path>
-			</svg>
-		</div>
-		<ng-container *ngIf="!miniMenu">
-			<mat-expansion-panel expanded class="point-info-container">
-				<mat-expansion-panel-header>
-					<mat-panel-title>Control Points</mat-panel-title>
-				</mat-expansion-panel-header>
-				<div class="point-info" *ngFor="let p of points; let i = index">
-					<div class="point-title">
-						P{{ i }} <mat-icon class="delete-btn" (click)="drawer.removeCtrlPoint(i)">clear</mat-icon>
-					</div>
-					<mat-form-field>
-						<mat-label>x</mat-label>
-						<input
-							matInput
-							type="number"
-							[value]="getPointNum(p, 'x')"
-							(change)="setPointNum($event, p, 'x')"
-							autocomplete="off"
-						/>
-					</mat-form-field>
-					<mat-form-field>
-						<mat-label>y</mat-label>
-						<input
-							matInput
-							type="number"
-							[value]="getPointNum(p, 'y')"
-							(change)="setPointNum($event, p, 'y')"
-							autocomplete="off"
-						/>
-					</mat-form-field>
-				</div>
-			</mat-expansion-panel>
-			<div class="controls" *ngIf="drawer">
+<div #container></div>
+<app-menu>
+	<div class="content" content>
+		<mat-expansion-panel expanded class="point-info-container">
+			<mat-expansion-panel-header>
+				<mat-panel-title>Control Points</mat-panel-title>
+			</mat-expansion-panel-header>
+			<div class="point-info" *ngFor="let p of points; let i = index">
+				<div class="point-title">P{{ i }} <mat-icon class="delete-btn" (click)="drawer.removeCtrlPoint(i)">clear</mat-icon></div>
 				<mat-form-field>
-					<mat-label>duration(ms)</mat-label>
-					<input matInput type="number" [(ngModel)]="drawer.config.duration" autocomplete="off" />
+					<mat-label>x</mat-label>
+					<input matInput type="number" [value]="getPointNum(p, 'x')" (change)="setPointNum($event, p, 'x')" autocomplete="off" />
 				</mat-form-field>
-				<mat-slide-toggle (change)="toggleLoop($event)">loop</mat-slide-toggle>
-				<button mat-mini-fab (click)="drawer.paused = !drawer.paused">
-					<mat-icon>{{ drawer.paused ? "play_arrow" : "pause" }}</mat-icon>
-				</button>
-				<button mat-raised-button color="accent" (click)="reset()">
-					reset
-				</button>
+				<mat-form-field>
+					<mat-label>y</mat-label>
+					<input matInput type="number" [value]="getPointNum(p, 'y')" (change)="setPointNum($event, p, 'y')" autocomplete="off" />
+				</mat-form-field>
 			</div>
-		</ng-container>
+		</mat-expansion-panel>
+		<div class="controls" *ngIf="drawer">
+			<mat-form-field>
+				<mat-label>duration(ms)</mat-label>
+				<input matInput type="number" [(ngModel)]="drawer.config.duration" autocomplete="off" />
+			</mat-form-field>
+			<mat-slide-toggle (change)="toggleLoop($event)">loop</mat-slide-toggle>
+			<button mat-mini-fab (click)="drawer.paused = !drawer.paused">
+				<mat-icon>{{ drawer.paused ? "play_arrow" : "pause" }}</mat-icon>
+			</button>
+			<button mat-raised-button color="accent" (click)="reset()">
+				reset
+			</button>
+		</div>
 	</div>
-</div>
+</app-menu>

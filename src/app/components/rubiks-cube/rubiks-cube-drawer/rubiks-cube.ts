@@ -2,12 +2,12 @@ import {Object3D, BoxGeometry, Color, MeshLambertMaterial, Mesh, Vector3, Clock,
 import TWEEN from "@tweenjs/tween.js";
 
 export interface RubiksCubeColors {
-	F: Color;
-	B: Color;
-	U: Color;
-	D: Color;
-	L: Color;
-	R: Color;
+	F: Color; // front
+	B: Color; // back
+	U: Color; // up
+	D: Color; // down
+	L: Color; // left
+	R: Color; // right
 }
 
 export type Axis = "x" | "y" | "z";
@@ -44,7 +44,6 @@ export class RubiksCube extends Object3D {
 		this.size = size;
 		this.dimension = dimension;
 		this.gap = gap;
-		this.steps = {queue: [], histroy: []};
 		this.reset();
 	}
 
@@ -53,12 +52,14 @@ export class RubiksCube extends Object3D {
 		const offset = (dimension - 1) / 2;
 		const inc = size + gap;
 		this.remove(...this.children);
+		this.steps = {queue: [], histroy: []};
 		for (let i = 0; i < dimension; i++) {
 			for (let j = 0; j < dimension; j++) {
 				for (let k = 0; k < dimension; k++) {
 					const geometry = new BoxGeometry(size, size, size);
 					const materials: MeshLambertMaterial[] = [];
-					const order: (keyof RubiksCubeColors)[] = ["F", "U", "B", "D", "L", "R"];
+					// TODO: kind of mess
+					const order: (keyof RubiksCubeColors)[] = ["R", "L", "U", "D", "F", "B"];
 					for (const face of order) {
 						const color = this.colors[face];
 						materials.push(new MeshLambertMaterial({color}));
@@ -145,8 +146,8 @@ export class RubiksCube extends Object3D {
 					cubes.forEach((cube) => {
 						const x = cube.position[axes[0]];
 						const y = cube.position[axes[1]];
-						const j = Math.round(y / inc) + offset;
-						const k = Math.round(x / inc) + offset;
+						const j = Math.round(y / inc + offset);
+						const k = Math.round(x / inc + offset);
 						if (!array[j]) {
 							array[j] = [];
 						}
@@ -162,8 +163,8 @@ export class RubiksCube extends Object3D {
 					cubes.forEach((cube) => {
 						const x = cube.position[axes[0]];
 						const y = cube.position[axes[1]];
-						const j = Math.round(y / inc) + offset;
-						const k = Math.round(x / inc) + offset;
+						const j = Math.round(y / inc + offset);
+						const k = Math.round(x / inc + offset);
 						cube.userData = newArray[j][k];
 					});
 					cubes.forEach((cube) => {
@@ -197,7 +198,7 @@ export class RubiksCube extends Object3D {
 		return result;
 	}
 
-	shuffle(count = this.dimension ** 3, duration = 100) {
+	shuffle(count = 8 * this.dimension, duration = 100) {
 		for (let i = 0; i < count; i++) {
 			const axis = ["x", "y", "z"][MathUtils.randInt(0, 2)] as "x" | "y" | "z";
 			const indices = [MathUtils.randInt(0, this.dimension - 1)];

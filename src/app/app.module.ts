@@ -15,9 +15,11 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
 import {BezierComponent} from "./components/bezier/bezier.component";
 import {IndexComponent} from "./components/index/index.component";
 import {RubiksCubeComponent} from "./components/rubiks-cube/rubiks-cube.component";
+import {MenuComponent} from "./components/menu/menu.component";
+import {ColorPickerModule} from "@syncfusion/ej2-angular-inputs";
 
 @NgModule({
-	declarations: [AppComponent, BezierComponent, IndexComponent, RubiksCubeComponent],
+	declarations: [AppComponent, BezierComponent, IndexComponent, RubiksCubeComponent, MenuComponent],
 	imports: [
 		BrowserModule,
 		AppRoutingModule,
@@ -30,7 +32,8 @@ import {RubiksCubeComponent} from "./components/rubiks-cube/rubiks-cube.componen
 		MatSlideToggleModule,
 		MatExpansionModule,
 		MatIconModule,
-		DragDropModule
+		DragDropModule,
+		ColorPickerModule
 	],
 	providers: [],
 	bootstrap: [AppComponent]

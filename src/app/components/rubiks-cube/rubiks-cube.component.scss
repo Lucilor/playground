@@ -1,5 +1,14 @@
-.menu {
-    position: absolute;
-    top: 20px;
-    left: 200px;
+.content {
+	> *:not(:last-child) {
+		margin-bottom: 5px;
+	}
+}
+
+.color-input {
+	font-size: 1rem;
+
+	label {
+		width: 2.5rem;
+		display: inline-block;
+	}
 }
