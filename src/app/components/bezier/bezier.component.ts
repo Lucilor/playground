@@ -16,9 +16,7 @@ export class BezierComponent implements AfterViewInit {
 	get points() {
 		return this.drawer?.curve.ctrlPoints || [];
 	}
-	constructor() {}
-
-	ngAfterViewInit() {
+	constructor() {
 		const drawer = new BezierDrawer({
 			width: innerWidth,
 			height: innerHeight,
@@ -27,10 +25,14 @@ export class BezierComponent implements AfterViewInit {
 		});
 		// tslint:disable-next-line: no-string-literal
 		window["drawer"] = drawer;
-		setTimeout(() => {
-			this.drawer = drawer;
-			this.container.nativeElement.append(drawer.dom);
-		}, 0);
+		this.drawer = drawer;
+	}
+
+	ngAfterViewInit() {
+		this.container.nativeElement.append(this.drawer.dom);
+		window.addEventListener("resize", () => {
+			this.drawer.resize(innerWidth, innerHeight);
+		});
 	}
 
 	getPointNum(point: Vector2, axis: "x" | "y") {

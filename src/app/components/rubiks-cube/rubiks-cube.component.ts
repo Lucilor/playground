@@ -35,6 +35,9 @@ export class RubiksCubeComponent implements AfterViewInit {
 
 	ngAfterViewInit() {
 		this.container.nativeElement.appendChild(this.drawer.dom);
+		window.addEventListener("resize", () => {
+			this.drawer.resize(innerWidth, innerHeight);
+		});
 	}
 
 	changeSize(event: InputEvent) {

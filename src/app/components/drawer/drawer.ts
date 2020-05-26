@@ -77,6 +77,26 @@ export class Drawer {
 
 	update() {}
 
+	resize(width?: number, height?: number) {
+		if (width > 0) {
+			this.config.width = width;
+		} else {
+			width = this.config.width;
+		}
+		if (height > 0) {
+			this.config.height = height;
+		} else {
+			height = this.config.height;
+		}
+		const {dom, renderer, camera} = this;
+		dom.style.width = width + "px";
+		dom.style.height = height + "px";
+		renderer.setSize(width, height);
+		camera.aspect = width / height;
+		camera.updateProjectionMatrix();
+		return this;
+	}
+
 	protected _correctColor(color: number, threshold = 5) {
 		if (typeof color === "number" && Math.abs(color - this.config.backgroundColor) <= threshold) {
 			return 0xfffffff - color;
