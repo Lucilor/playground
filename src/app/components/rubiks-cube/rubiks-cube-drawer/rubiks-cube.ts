@@ -17,8 +17,8 @@ export interface RubiksCubeStep {
 	indices: number[]; // layers to rotate
 	count: number; // times to rotate
 	clockwise: boolean; // rotate direction
-	duration: number; // rotate speed
-	forsaken: boolean; // if true, this step won't push to history
+	duration?: number; // rotate speed
+	forsaken?: boolean; // if true, this step won't push to history
 }
 
 export class RubiksCube extends Object3D {
@@ -76,13 +76,17 @@ export class RubiksCube extends Object3D {
 		}
 	}
 
-	forward(axis: Axis, indices: number | number[], count: number, clockwise: boolean, duration = this.stepDuration) {
-		count = ((count % 4) + 4) % 4;
-		clockwise = !!clockwise;
-		if (typeof indices === "number") {
-			indices = [indices];
+	forward(axis: Axis | RubiksCubeStep, indices?: number | number[], count?: number, clockwise?: boolean, duration = this.stepDuration) {
+		if (typeof axis === "string") {
+			count = ((count % 4) + 4) % 4;
+			clockwise = !!clockwise;
+			if (typeof indices === "number") {
+				indices = [indices];
+			}
+			this.steps.queue.push({axis, indices, count, clockwise, duration, forsaken: false});
+		} else {
+			this.steps.queue.push(axis);
 		}
-		this.steps.queue.push({axis, indices, count, clockwise, duration, forsaken: false});
 	}
 
 	back(duration = this.stepDuration) {
@@ -99,7 +103,9 @@ export class RubiksCube extends Object3D {
 		if (steps.queue.length && !this.takingStep) {
 			this.takingStep = true;
 			const step = steps.queue.shift();
-			const {indices, axis, count, clockwise, duration, forsaken} = step;
+			const {indices, axis, count, clockwise} = step;
+			const duration = step.duration > 0 ? step.duration : this.stepDuration;
+			const forsaken = step.forsaken === true ? true : false;
 			if (!forsaken) {
 				steps.histroy.push(step);
 			}
@@ -211,5 +217,46 @@ export class RubiksCube extends Object3D {
 		while (this.steps.histroy.length) {
 			this.back(duration);
 		}
+	}
+
+	execute(cmd: string) {
+		const steps = this._parseCommand(cmd);
+		steps.forEach((step) => this.forward(step));
+	}
+
+	private _parseCommand(cmd: string) {
+		const {dimension} = this;
+		// cmd = cmd.toUpperCase();
+		const steps: RubiksCubeStep[] = [];
+		let step: RubiksCubeStep;
+		for (const char of cmd) {
+			if (["F", "B", "U", "D", "L", "R"].includes(char)) {
+				switch (char) {
+					case "F":
+						step = {axis: "z", indices: [dimension - 1], clockwise: false, count: 1};
+						break;
+					case "B":
+						step = {axis: "z", indices: [0], clockwise: true, count: 1};
+						break;
+					case "U":
+						step = {axis: "y", indices: [dimension - 1], clockwise: false, count: 1};
+						break;
+					case "D":
+						step = {axis: "y", indices: [0], clockwise: true, count: 1};
+						break;
+					case "L":
+						step = {axis: "x", indices: [0], clockwise: true, count: 1};
+						break;
+					case "R":
+						step = {axis: "x", indices: [dimension - 1], clockwise: false, count: 1};
+						break;
+				}
+				steps.push(step);
+			}
+			if (char === "'") {
+				step.clockwise = !step.clockwise;
+			}
+		}
+		return steps;
 	}
 }
