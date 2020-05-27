@@ -132,7 +132,7 @@ export class RubiksCubeDrawer extends Drawer {
 			}
 		}
 		if (valid) {
-			this.cube.forward(axis, _cubePositions[0][axis], 1, clockwise);
+			this.cube.forward(axis, _cubePositions[0][axis], clockwise);
 		}
 		_cubePositions[0].set(0, 0, 0);
 		_cubePositions[1].set(0, 0, 0);

@@ -15,7 +15,6 @@ export type Axis = "x" | "y" | "z";
 export interface RubiksCubeStep {
 	axis: Axis; // axis to rotate on
 	indices: number[]; // layers to rotate
-	count: number; // times to rotate
 	clockwise: boolean; // rotate direction
 	duration?: number; // rotate speed
 	forsaken?: boolean; // if true, this step won't push to history
@@ -76,14 +75,13 @@ export class RubiksCube extends Object3D {
 		}
 	}
 
-	forward(axis: Axis | RubiksCubeStep, indices?: number | number[], count?: number, clockwise?: boolean, duration = this.stepDuration) {
+	forward(axis: Axis | RubiksCubeStep, indices?: number | number[], clockwise?: boolean, duration = this.stepDuration) {
 		if (typeof axis === "string") {
-			count = ((count % 4) + 4) % 4;
 			clockwise = !!clockwise;
 			if (typeof indices === "number") {
 				indices = [indices];
 			}
-			this.steps.queue.push({axis, indices, count, clockwise, duration, forsaken: false});
+			this.steps.queue.push({axis, indices, clockwise, duration, forsaken: false});
 		} else {
 			this.steps.queue.push(axis);
 		}
@@ -103,25 +101,36 @@ export class RubiksCube extends Object3D {
 		if (steps.queue.length && !this.takingStep) {
 			this.takingStep = true;
 			const step = steps.queue.shift();
-			const {indices, axis, count, clockwise} = step;
+			const {indices, axis, clockwise} = step;
 			const duration = step.duration > 0 ? step.duration : this.stepDuration;
 			const forsaken = step.forsaken === true ? true : false;
+			const layers: Object3D[][] = [];
 			if (!forsaken) {
 				steps.histroy.push(step);
 			}
-			const cubes = this.children.filter((o) => indices.includes(o.userData[axis]));
+			indices.forEach((i, j) => {
+				layers[j] = [];
+				this.children.forEach((o) => {
+					if (o.userData[axis] === i) {
+						layers[j].push(o);
+					}
+				});
+			});
 			const obj = {angle: 0};
-			const totalAngle = (clockwise ? 1 : -1) * (Math.PI / 2) * count;
+			const totalAngle = (clockwise ? 1 : -1) * (Math.PI / 2);
 			const tween = new TWEEN.Tween(obj).to({angle: totalAngle}, duration);
 			const axisVector = new Vector3();
 			axisVector[axis] = 1;
 			let lastAngle = 0;
 			const group = new Object3D();
 			this.add(group);
-			cubes.forEach((cube) => {
-				group.add(cube);
-				this.remove(cube);
+			layers.forEach((cubes) => {
+				cubes.forEach((cube) => {
+					group.add(cube);
+					this.remove(cube);
+				});
 			});
+
 			const axes: ("x" | "y" | "z")[] = [];
 			const matrix = new Matrix4();
 			if (axis === "x") {
@@ -146,38 +155,45 @@ export class RubiksCube extends Object3D {
 					_clock.stop();
 					this.takingStep = false;
 					this._tween = null;
-					const array: any[][] = [];
+					const array: any[][][] = [];
 					const offset = (dimension - 1) / 2;
 					const inc = size + gap;
-					cubes.forEach((cube) => {
-						const x = cube.position[axes[0]];
-						const y = cube.position[axes[1]];
-						const j = Math.round(y / inc + offset);
-						const k = Math.round(x / inc + offset);
-						if (!array[j]) {
-							array[j] = [];
-						}
-						array[j][k] = cube.userData;
+					layers.forEach((cubes, i) => {
+						array[i] = [];
+						cubes.forEach((cube) => {
+							const x = cube.position[axes[0]];
+							const y = cube.position[axes[1]];
+							const j = Math.round(y / inc + offset);
+							const k = Math.round(x / inc + offset);
+							if (!array[i][j]) {
+								array[i][j] = [];
+							}
+							array[i][j][k] = cube.userData;
+						});
 					});
+
 					for (const v of array) {
 						if (v.length !== dimension) {
 							throw new Error("Something goes wrong when taking a step.");
 						}
 					}
 					// TODO: axis y has different clockwise
-					const newArray = this.rotateArray2D(array, axis === "y" ? clockwise : !clockwise);
-					cubes.forEach((cube) => {
-						const x = cube.position[axes[0]];
-						const y = cube.position[axes[1]];
-						const j = Math.round(y / inc + offset);
-						const k = Math.round(x / inc + offset);
-						cube.userData = newArray[j][k];
+					const newArray: any[][][] = [];
+					array.forEach((v, i) => (newArray[i] = this.rotateArray2D(v, axis === "y" ? clockwise : !clockwise)));
+					layers.forEach((cubes, i) => {
+						cubes.forEach((cube) => {
+							const x = cube.position[axes[0]];
+							const y = cube.position[axes[1]];
+							const j = Math.round(y / inc + offset);
+							const k = Math.round(x / inc + offset);
+							cube.userData = newArray[i][j][k];
+
+							cube.applyMatrix4(matrix);
+							cube.matrixWorldNeedsUpdate = true;
+							this.add(cube);
+						});
 					});
-					cubes.forEach((cube) => {
-						cube.applyMatrix4(matrix);
-						cube.matrixWorldNeedsUpdate = true;
-						this.add(cube);
-					});
+
 					this.remove(group);
 				})
 				.start(0);
@@ -209,7 +225,7 @@ export class RubiksCube extends Object3D {
 			const axis = ["x", "y", "z"][MathUtils.randInt(0, 2)] as "x" | "y" | "z";
 			const indices = [MathUtils.randInt(0, this.dimension - 1)];
 			const clockwise = [true, false][MathUtils.randInt(0, 1)];
-			this.forward(axis, indices, 1, clockwise, duration);
+			this.forward(axis, indices, clockwise, duration);
 		}
 	}
 
@@ -226,36 +242,128 @@ export class RubiksCube extends Object3D {
 
 	private _parseCommand(cmd: string) {
 		const {dimension} = this;
-		// cmd = cmd.toUpperCase();
-		const steps: RubiksCubeStep[] = [];
+		let steps: RubiksCubeStep[] = [];
+		let stepsGroup: RubiksCubeStep[] = [];
 		let step: RubiksCubeStep;
+		let subCmd = "";
+		let stack = 0;
+		const allIndices = [];
+		const mid = (dimension - 1) / 2;
+		const midIndices = mid % 1 === 0 ? [mid] : [mid - 0.5, mid + 0.5];
+		for (let i = 0; i < dimension; i++) {
+			allIndices.push(i);
+		}
 		for (const char of cmd) {
-			if (["F", "B", "U", "D", "L", "R"].includes(char)) {
+			if (char === "(") {
+				stack++;
+				continue;
+			} else if (char === ")") {
+				if (stack === 1) {
+					const numCmd = Number(subCmd);
+					if (isNaN(numCmd)) {
+						stepsGroup = this._parseCommand(subCmd);
+						steps = steps.concat(stepsGroup);
+					} else {
+						const indices = step?.indices;
+						if (indices?.length === 1 && numCmd > 0 && numCmd <= dimension) {
+							if (indices[0] === 0) {
+								indices[0] += numCmd - 1;
+							} else if (indices[0] === dimension - 1) {
+								indices[0] -= numCmd - 1;
+							} else {
+								throw new Error(`Illegal command: (${subCmd})`);
+							}
+						} else {
+							throw new Error(`Illegal command: (${subCmd})`);
+						}
+					}
+					subCmd = "";
+				}
+				stack--;
+				continue;
+			}
+			if (stack > 0) {
+				subCmd += char;
+				continue;
+			}
+			const numChar = Number(char);
+			if (char === "'") {
+				if (!step) {
+					throw new Error(`Illegal character: ${char}.`);
+				}
+				step.clockwise = !step.clockwise;
+			} else if (!isNaN(numChar)) {
+				for (let i = 0; i < numChar - 1; i++) {
+					if (stepsGroup.length < 1) {
+						steps.push(step);
+					} else {
+						steps = steps.concat(stepsGroup);
+					}
+				}
+			} else {
 				switch (char) {
 					case "F":
-						step = {axis: "z", indices: [dimension - 1], clockwise: false, count: 1};
+						step = {axis: "z", indices: [dimension - 1], clockwise: false};
+						break;
+					case "f":
+						step = {axis: "z", indices: [dimension - 1, dimension - 2], clockwise: false};
 						break;
 					case "B":
-						step = {axis: "z", indices: [0], clockwise: true, count: 1};
+						step = {axis: "z", indices: [0], clockwise: true};
+						break;
+					case "b":
+						step = {axis: "z", indices: [0, 1], clockwise: true};
 						break;
 					case "U":
-						step = {axis: "y", indices: [dimension - 1], clockwise: false, count: 1};
+						step = {axis: "y", indices: [dimension - 1], clockwise: false};
+						break;
+					case "u":
+						step = {axis: "y", indices: [dimension - 1, dimension - 2], clockwise: false};
 						break;
 					case "D":
-						step = {axis: "y", indices: [0], clockwise: true, count: 1};
+						step = {axis: "y", indices: [0], clockwise: true};
+						break;
+					case "d":
+						step = {axis: "y", indices: [0, 1], clockwise: true};
 						break;
 					case "L":
-						step = {axis: "x", indices: [0], clockwise: true, count: 1};
+						step = {axis: "x", indices: [0], clockwise: true};
+						break;
+					case "l":
+						step = {axis: "x", indices: [0, 1], clockwise: true};
 						break;
 					case "R":
-						step = {axis: "x", indices: [dimension - 1], clockwise: false, count: 1};
+						step = {axis: "x", indices: [dimension - 1], clockwise: false};
 						break;
+					case "r":
+						step = {axis: "x", indices: [dimension - 1, dimension - 2], clockwise: false};
+						break;
+					case "x":
+						step = {axis: "x", indices: allIndices, clockwise: false};
+						break;
+					case "y":
+						step = {axis: "y", indices: allIndices, clockwise: false};
+						break;
+					case "z":
+						step = {axis: "z", indices: allIndices, clockwise: false};
+						break;
+					case "M":
+						step = {axis: "x", indices: midIndices, clockwise: false};
+						break;
+					case "E":
+						step = {axis: "y", indices: midIndices, clockwise: false};
+						break;
+					case "S":
+						step = {axis: "z", indices: midIndices, clockwise: false};
+						break;
+					default:
+						throw new Error(`Illegal character: ${char}.`);
 				}
 				steps.push(step);
 			}
-			if (char === "'") {
-				step.clockwise = !step.clockwise;
-			}
+		}
+		if (stack) {
+			throw new Error(`Illegal command: brackets not match.`);
 		}
 		return steps;
 	}

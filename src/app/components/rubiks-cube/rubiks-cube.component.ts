@@ -3,6 +3,15 @@ import {RubiksCubeDrawer} from "./rubiks-cube-drawer/rubiks-cube-drawer";
 import {RubiksCube} from "./rubiks-cube-drawer/rubiks-cube";
 import {ColorPickerEventArgs} from "@syncfusion/ej2-angular-inputs";
 import {Color} from "three";
+import {FormControl, Validators} from "@angular/forms";
+import {ErrorStateMatcher} from "@angular/material/core";
+
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+	errorMsg = "";
+	isErrorState(): boolean {
+		return this.errorMsg.length > 0;
+	}
+}
 
 @Component({
 	selector: "app-rubiks-cube",
@@ -21,6 +30,8 @@ export class RubiksCubeComponent implements AfterViewInit {
 		{key: "L", name: "left"},
 		{key: "R", name: "right"}
 	];
+	commandFormControl = new FormControl("");
+	matcher = new MyErrorStateMatcher();
 
 	constructor() {
 		const cube = new RubiksCube(5, 3);
@@ -55,5 +66,16 @@ export class RubiksCubeComponent implements AfterViewInit {
 	changeColor(event: ColorPickerEventArgs, key: string) {
 		this.cube.colors[key] = new Color(event.currentValue.hex);
 		this.cube.reset();
+	}
+
+	execute(event?: KeyboardEvent) {
+		if (!event || (event && event.key === "Enter")) {
+			try {
+				this.cube.execute(this.commandFormControl.value);
+				this.matcher.errorMsg = "";
+			} catch (error) {
+				this.matcher.errorMsg = (error as Error).message;
+			}
+		}
 	}
 }

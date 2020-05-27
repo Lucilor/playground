@@ -10,10 +10,10 @@
 			<input matInput type="number" min="1" [value]="cube.dimension" (change)="changeDimension($event)" autocomplete="off" />
 		</mat-form-field>
 		<div class="btn-group">
-			<button mat-raised-button color="primary" (click)="cube.shuffle()">
+			<button mat-raised-button color="primary" (click)="cube.shuffle()" [disabled]="cube.takingStep">
 				shuffle
 			</button>
-			<button mat-raised-button color="primary" (click)="cube.backToOrigin()">
+			<button mat-raised-button color="primary" (click)="cube.backToOrigin()" [disabled]="cube.takingStep">
 				reset
 			</button>
 		</div>
@@ -36,5 +36,18 @@
 				/>
 			</div>
 		</mat-expansion-panel>
+		<mat-form-field>
+			<mat-label>execute</mat-label>
+			<input
+				matInput
+				type="text"
+				[formControl]="commandFormControl"
+				[errorStateMatcher]="matcher"
+				autocomplete="off"
+				(keydown)="execute($event)"
+			/>
+			<mat-icon matSuffix (click)="execute()">done</mat-icon>
+			<mat-error>{{ matcher.errorMsg }}</mat-error>
+		</mat-form-field>
 	</div>
 </app-menu>
