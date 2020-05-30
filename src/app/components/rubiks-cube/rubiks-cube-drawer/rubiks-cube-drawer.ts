@@ -50,15 +50,6 @@ export class RubiksCubeDrawer extends Drawer {
 		return this._object;
 	}
 
-	protected _hover(point: Vector2) {
-		super._hover(point);
-		if (this._object) {
-			this.controls.enableRotate = false;
-		} else {
-			this.controls.enableRotate = true;
-		}
-	}
-
 	protected _pointerDown(event: PointerEvent) {
 		super._pointerDown(event);
 		const object = this._getIntersection(new Vector2(event.clientX, event.clientY));
@@ -67,6 +58,7 @@ export class RubiksCubeDrawer extends Drawer {
 			this._cubePositions[0].set(x, y, z);
 			const normal = this._intersection.face.normal.clone();
 			this._cubeFaces[0].copy(normal.transformDirection(object.matrixWorld).round());
+			this.controls.enableRotate = false;
 		}
 	}
 
@@ -81,6 +73,7 @@ export class RubiksCubeDrawer extends Drawer {
 	}
 
 	protected _pointerUp(event: PointerEvent) {
+		// TODO: make the move more accurate
 		super._pointerUp(event);
 		const {_cubePositions, _cubeFaces, cube} = this;
 		const dPosition = _cubePositions[1].clone().sub(_cubePositions[0]);
@@ -138,5 +131,6 @@ export class RubiksCubeDrawer extends Drawer {
 		_cubePositions[1].set(0, 0, 0);
 		_cubeFaces[0].set(0, 0, 0);
 		_cubeFaces[1].set(0, 0, 0);
+		this.controls.enableRotate = true;
 	}
 }
