@@ -7926,6 +7926,11 @@ terser@^4.1.2, terser@^4.4.3:
     source-map "~0.6.1"
     source-map-support "~0.5.12"
 
+three-rounded-box@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/three-rounded-box/-/three-rounded-box-0.1.1.tgz#9db98145032b188e7b6b7e497ffefb580ecd639d"
+  integrity sha1-nbmBRQMrGI57a35Jf/77WA7NY50=
+
 three@^0.117.1:
   version "0.117.1"
   resolved "https://registry.yarnpkg.com/three/-/three-0.117.1.tgz#a49bcb1a6ddea2f250003e42585dc3e78e92b9d3"

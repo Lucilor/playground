@@ -1,4 +1,15 @@
-import {Object3D, BoxGeometry, Color, MeshLambertMaterial, Mesh, Vector3, Clock, Matrix4, MathUtils} from "three";
+import {
+	Object3D,
+	BoxGeometry,
+	Color,
+	MeshLambertMaterial,
+	Mesh,
+	Vector3,
+	Clock,
+	Matrix4,
+	MathUtils,
+	TextureLoader,
+	Texture} from "three";
 import TWEEN from "@tweenjs/tween.js";
 
 export interface RubiksCubeColors {
@@ -37,13 +48,48 @@ export class RubiksCube extends Object3D {
 	steps: {queue: RubiksCubeStep[]; histroy: RubiksCubeStep[]};
 	private _tween: TWEEN.Tween;
 	private _clock = new Clock(false);
+	private _texture: Texture;
 
 	constructor(size = 5, dimension = 3, gap = 0.25) {
 		super();
 		this.size = size;
 		this.dimension = dimension;
 		this.gap = gap;
+		this._texture = new TextureLoader().load("assets/cube-texture.jpg");
 		this.reset();
+	}
+
+	private _getCube() {
+		const {_texture, size, colors} = this;
+		// TODO: rounded cube
+		// const shape = new Shape();
+		// const eps = 0.00001;
+		// const radius0 = size / 10;
+		// const depth = size;
+		// const smoothness = 16;
+		// const radius = radius0 - eps;
+		// shape.absarc(eps, eps, eps, -Math.PI / 2, -Math.PI, true);
+		// shape.absarc(eps, size - radius * 2, eps, Math.PI, Math.PI / 2, true);
+		// shape.absarc(size - radius * 2, size - radius * 2, eps, Math.PI / 2, 0, true);
+		// shape.absarc(size - radius * 2, eps, eps, 0, -Math.PI / 2, true);
+		// const geometry = new ExtrudeBufferGeometry(shape, {
+		// 	depth: depth - radius0 * 2,
+		// 	bevelEnabled: true,
+		// 	bevelSegments: smoothness * 2,
+		// 	steps: 1,
+		// 	bevelSize: radius,
+		// 	bevelThickness: radius0,
+		// 	curveSegments: smoothness
+		// });
+		const geometry = new BoxGeometry(size, size, size);
+		const materials: MeshLambertMaterial[] = [];
+		const order: (keyof RubiksCubeColors)[] = ["R", "L", "U", "D", "F", "B"];
+		for (const face of order) {
+			const color = colors[face];
+			const material = new MeshLambertMaterial({color, map: _texture});
+			materials.push(material);
+		}
+		return new Mesh(geometry, materials);
 	}
 
 	reset() {
@@ -55,15 +101,7 @@ export class RubiksCube extends Object3D {
 		for (let i = 0; i < dimension; i++) {
 			for (let j = 0; j < dimension; j++) {
 				for (let k = 0; k < dimension; k++) {
-					const geometry = new BoxGeometry(size, size, size);
-					const materials: MeshLambertMaterial[] = [];
-					// TODO: kind of mess
-					const order: (keyof RubiksCubeColors)[] = ["R", "L", "U", "D", "F", "B"];
-					for (const face of order) {
-						const color = this.colors[face];
-						materials.push(new MeshLambertMaterial({color}));
-					}
-					const cube = new Mesh(geometry, materials);
+					const cube = this._getCube();
 					const x = (i - offset) * inc;
 					const y = (j - offset) * inc;
 					const z = (k - offset) * inc;
