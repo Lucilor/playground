@@ -1,15 +1,4 @@
-import {
-	Object3D,
-	BoxGeometry,
-	Color,
-	MeshLambertMaterial,
-	Mesh,
-	Vector3,
-	Clock,
-	Matrix4,
-	MathUtils,
-	TextureLoader,
-	Texture} from "three";
+import {Object3D, BoxGeometry, Color, MeshLambertMaterial, Mesh, Vector3, Clock, Matrix4, MathUtils, TextureLoader, Texture} from "three";
 import TWEEN from "@tweenjs/tween.js";
 
 export interface RubiksCubeColors {
@@ -55,8 +44,16 @@ export class RubiksCube extends Object3D {
 		this.size = size;
 		this.dimension = dimension;
 		this.gap = gap;
-		this._texture = new TextureLoader().load("assets/cube-texture.jpg");
 		this.reset();
+	}
+
+	async loadTexture() {
+		try {
+			this._texture = await new TextureLoader().loadAsync("assets/cube-texture.jpg");
+			return true;
+		} catch (error) {
+			return false;
+		}
 	}
 
 	private _getCube() {
