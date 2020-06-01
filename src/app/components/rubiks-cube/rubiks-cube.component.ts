@@ -32,6 +32,7 @@ export class RubiksCubeComponent implements AfterViewInit {
 	];
 	commandFormControl = new FormControl("");
 	matcher = new MyErrorStateMatcher();
+	loading = false;
 
 	constructor() {
 		const cube = new RubiksCube(5, 3);
@@ -42,6 +43,12 @@ export class RubiksCubeComponent implements AfterViewInit {
 		window["cube"] = cube;
 		this.drawer = drawer;
 		this.cube = cube;
+		this.loading = true;
+		(async () => {
+			await cube.loadTexture();
+			this.loading = false;
+			cube.reset();
+		})();
 	}
 
 	ngAfterViewInit() {

@@ -11,6 +11,7 @@ import {MatInputModule} from "@angular/material/input";
 import {MatIconModule} from "@angular/material/icon";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatExpansionModule} from "@angular/material/expansion";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {BezierComponent} from "./components/bezier/bezier.component";
 import {IndexComponent} from "./components/index/index.component";
@@ -32,6 +33,7 @@ import {ColorPickerModule} from "@syncfusion/ej2-angular-inputs";
 		MatSlideToggleModule,
 		MatExpansionModule,
 		MatIconModule,
+		MatProgressSpinnerModule,
 		DragDropModule,
 		ColorPickerModule
 	],
