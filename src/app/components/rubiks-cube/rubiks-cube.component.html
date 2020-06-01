@@ -2,28 +2,28 @@
 <app-menu>
 	<div class="content" content>
 		<mat-form-field>
-			<mat-label>size</mat-label>
+			<mat-label i18n>size</mat-label>
 			<input matInput type="number" min="1" [value]="cube.size" (change)="changeSize($event)" autocomplete="off" />
 		</mat-form-field>
 		<mat-form-field>
-			<mat-label>dimension</mat-label>
+			<mat-label i18n>dimension</mat-label>
 			<input matInput type="number" min="1" [value]="cube.dimension" (change)="changeDimension($event)" autocomplete="off" />
 		</mat-form-field>
 		<div class="btn-group">
-			<button mat-raised-button color="primary" (click)="cube.shuffle()" [disabled]="cube.takingStep">
+			<button mat-raised-button color="primary" (click)="cube.shuffle()" [disabled]="cube.takingStep" i18n>
 				shuffle
 			</button>
-			<button mat-raised-button color="primary" (click)="cube.backToOrigin()" [disabled]="cube.takingStep">
+			<button mat-raised-button color="primary" (click)="cube.backToOrigin()" [disabled]="cube.takingStep" i18n>
 				reset
 			</button>
 		</div>
 		<mat-form-field>
-			<mat-label>step duration(ms)</mat-label>
+			<mat-label i18n>step duration(ms)</mat-label>
 			<input matInput type="number" [(ngModel)]="cube.stepDuration" autocomplete="off" />
 		</mat-form-field>
 		<mat-expansion-panel expanded class="point-info-container">
 			<mat-expansion-panel-header>
-				<mat-panel-title>Colors</mat-panel-title>
+				<mat-panel-title i18n>Colors</mat-panel-title>
 			</mat-expansion-panel-header>
 			<div class="color-input" *ngFor="let item of cubeColors">
 				<label>{{ item.name }}</label>
@@ -37,7 +37,7 @@
 			</div>
 		</mat-expansion-panel>
 		<mat-form-field>
-			<mat-label>execute</mat-label>
+			<mat-label i18n>execute</mat-label>
 			<input
 				matInput
 				type="text"

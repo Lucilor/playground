@@ -4,10 +4,12 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "build:zh":"ng build --prod --output-path=dist/playground/zh --base-href /zh/ --localize=zh",
     "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "xi18n": "ng xi18n --output-path src/locale --format=xlf2"
   },
   "private": true,
   "dependencies": {
@@ -17,6 +19,7 @@
     "@angular/compiler": "~9.1.9",
     "@angular/core": "~9.1.9",
     "@angular/forms": "~9.1.9",
+    "@angular/localize": "^9.1.9",
     "@angular/material": "^9.2.4",
     "@angular/platform-browser": "~9.1.9",
     "@angular/platform-browser-dynamic": "~9.1.9",

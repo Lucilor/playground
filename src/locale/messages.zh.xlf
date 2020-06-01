@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="2.0" 
+    xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en">
+    <file original="ng.template" id="ngi18n">
+        <unit id="1354772425812140276">
+            <notes>
+                <note category="location">src/app/components/bezier/bezier.component.html:6</note>
+            </notes>
+            <segment>
+                <source>Control Points</source>
+                <target>控制点</target>
+            </segment>
+        </unit>
+        <unit id="2791621248974094667">
+            <notes>
+                <note category="location">src/app/components/bezier/bezier.component.html:22</note>
+            </notes>
+            <segment>
+                <source>duration(ms)</source>
+                <target>动画时长（毫秒）</target>
+            </segment>
+        </unit>
+        <unit id="4956685393212279622">
+            <notes>
+                <note category="location">src/app/components/bezier/bezier.component.html:25</note>
+            </notes>
+            <segment>
+                <source>loop</source>
+                <target>循环</target>
+            </segment>
+        </unit>
+        <unit id="280831059764399561">
+            <notes>
+                <note category="location">src/app/components/bezier/bezier.component.html:29,31</note>
+                <note category="location">src/app/components/rubiks-cube/rubiks-cube.component.html:16,18</note>
+            </notes>
+            <segment>
+                <source>
+				reset
+                </source>
+                <target>还原</target>
+            </segment>
+        </unit>
+        <unit id="3695200822343218389">
+            <notes>
+                <note category="location">src/app/components/index/index.component.html:2,4</note>
+            </notes>
+            <segment>
+                <source>
+	Bezier Curve
+                </source>
+                <target>贝塞尔曲线</target>
+            </segment>
+        </unit>
+        <unit id="2231214004208473338">
+            <notes>
+                <note category="location">src/app/components/index/index.component.html:5,7</note>
+            </notes>
+            <segment>
+                <source>
+	Rubik&apos;s Cube
+                </source>
+                <target>魔方</target>
+            </segment>
+        </unit>
+        <unit id="9130352375983418123">
+            <notes>
+                <note category="location">src/app/components/rubiks-cube/rubiks-cube.component.html:5</note>
+            </notes>
+            <segment>
+                <source>size</source>
+                <target>大小</target>
+            </segment>
+        </unit>
+        <unit id="6787675817089210903">
+            <notes>
+                <note category="location">src/app/components/rubiks-cube/rubiks-cube.component.html:9</note>
+            </notes>
+            <segment>
+                <source>dimension</source>
+                <target>阶数</target>
+            </segment>
+        </unit>
+        <unit id="3496513387373299887">
+            <notes>
+                <note category="location">src/app/components/rubiks-cube/rubiks-cube.component.html:13,15</note>
+            </notes>
+            <segment>
+                <source>
+				shuffle
+                </source>
+                <target>打乱</target>
+            </segment>
+        </unit>
+        <unit id="6078029288958168884">
+            <notes>
+                <note category="location">src/app/components/rubiks-cube/rubiks-cube.component.html:21</note>
+            </notes>
+            <segment>
+                <source>step duration(ms)</source>
+                <target>每步时长（毫秒）</target>
+            </segment>
+        </unit>
+        <unit id="5267754967054916445">
+            <notes>
+                <note category="location">src/app/components/rubiks-cube/rubiks-cube.component.html:26</note>
+            </notes>
+            <segment>
+                <source>Colors</source>
+                <target>颜色</target>
+            </segment>
+        </unit>
+        <unit id="4238828029954346941">
+            <notes>
+                <note category="location">src/app/components/rubiks-cube/rubiks-cube.component.html:40</note>
+            </notes>
+            <segment>
+                <source>execute</source>
+                <target>执行命令</target>
+            </segment>
+        </unit>
+    </file>
+</xliff>
