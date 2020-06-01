@@ -43,12 +43,12 @@ export class RubiksCubeComponent implements AfterViewInit {
 		window["cube"] = cube;
 		this.drawer = drawer;
 		this.cube = cube;
-		this.loading = true;
-		(async () => {
-			await cube.loadTexture();
-			this.loading = false;
-			cube.reset();
-		})();
+		// this.loading = true;
+		// (async () => {
+		// 	await cube.loadTexture();
+		// 	this.loading = false;
+		// 	cube.reset();
+		// })();
 	}
 
 	ngAfterViewInit() {
