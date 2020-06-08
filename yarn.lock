@@ -1179,14 +1179,14 @@
     rxjs-compat "^6.5.4"
     zone.js "^0.10.2"
 
-"@syncfusion/ej2-angular-inputs@^18.1.54":
-  version "18.1.54"
-  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-angular-inputs/-/ej2-angular-inputs-18.1.54.tgz#07c516327c2bdd1a5f2789c4fee4dd2b185c665e"
-  integrity sha512-avWdbR/Alp8D+xSxarWGFKsv9eVBA82Zuus2PU0eCjg3+RdyFkBxTjm4ov86rwfhtY7MWnH+VQicrnawIQrb0g==
+"@syncfusion/ej2-angular-inputs@^18.1.55":
+  version "18.1.55"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-angular-inputs/-/ej2-angular-inputs-18.1.55.tgz#ce6e90e3b240242ee61e56ae80f02c04d3b008ad"
+  integrity sha512-by2QfZ504iYBB1kMo3ihta73w5tSTxVSNB/Zk8OY0pnLU8whtWTdLrydFuVja6ORXkx7L0abkM1gL+VS15PDlQ==
   dependencies:
     "@syncfusion/ej2-angular-base" "~18.1.52"
     "@syncfusion/ej2-base" "~18.1.53"
-    "@syncfusion/ej2-inputs" "18.1.54"
+    "@syncfusion/ej2-inputs" "18.1.55"
 
 "@syncfusion/ej2-base@~18.1.52", "@syncfusion/ej2-base@~18.1.53":
   version "18.1.53"
@@ -1207,20 +1207,28 @@
   resolved "https://registry.yarnpkg.com/@syncfusion/ej2-icons/-/ej2-icons-18.1.52.tgz#3aac373083d60338aa65a0cb44d0db3472c409ba"
   integrity sha512-G7TQ+1Y7BVUGR8qlo/NOx7IxQ/WkR9qoAyWVSs3sNNxnpM8HXP16N0BiexPwxkNEgoRmdByngtWPddHax9cdbA==
 
-"@syncfusion/ej2-inputs@18.1.54":
-  version "18.1.54"
-  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-inputs/-/ej2-inputs-18.1.54.tgz#1c8a755fbd80601dcaa9da40e1902567ba7d11fa"
-  integrity sha512-tbJp0NV5uW33A2GOsuY46mKuJipd9Y0xYo4TJH5Hn7gzpWrZrkx4afGNw/wDL4lRc/p3o1fOaxTMQYw2J7XheQ==
+"@syncfusion/ej2-inputs@18.1.55":
+  version "18.1.55"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-inputs/-/ej2-inputs-18.1.55.tgz#594d09bc5bb7c83fddbf74267030d1b683338cef"
+  integrity sha512-Zj8xTdOEEBxvom7DI5syRMzeQzabOTuZwW9I/8nmxixURjdlAUIckK07KKqrXkTCAUxcQ+I9dUpbV6ZLTivMvA==
   dependencies:
     "@syncfusion/ej2-base" "~18.1.53"
     "@syncfusion/ej2-buttons" "~18.1.52"
-    "@syncfusion/ej2-popups" "~18.1.53"
+    "@syncfusion/ej2-popups" "~18.1.55"
     "@syncfusion/ej2-splitbuttons" "~18.1.52"
 
-"@syncfusion/ej2-popups@~18.1.52", "@syncfusion/ej2-popups@~18.1.53":
+"@syncfusion/ej2-popups@~18.1.52":
   version "18.1.53"
   resolved "https://registry.yarnpkg.com/@syncfusion/ej2-popups/-/ej2-popups-18.1.53.tgz#6f37d22a20ea72e5399276ec59de2718e5d3e89b"
   integrity sha512-BdqEIDlJDdQan3M30JXXZf005dwQ71cAnptLiJ1T4P1WDi8EHgrCfhbXB+LsbUFSo63V0Wns8C0Z/wiDVRQgUg==
+  dependencies:
+    "@syncfusion/ej2-base" "~18.1.53"
+    "@syncfusion/ej2-buttons" "~18.1.52"
+
+"@syncfusion/ej2-popups@~18.1.55":
+  version "18.1.55"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-popups/-/ej2-popups-18.1.55.tgz#8bed2fa2137777a49d9154277b81db4e242b453a"
+  integrity sha512-QKtegfQbc1NenPqGWUIiS7sQ+Z0csjsDmhkFKTyQspF3OCpDDmvl62D3Xe7y+srrwNb3yTz/a2BB60UiyJxLgA==
   dependencies:
     "@syncfusion/ej2-base" "~18.1.53"
     "@syncfusion/ej2-buttons" "~18.1.52"
@@ -1279,10 +1287,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.0.1.tgz#5d93e0a099cd0acd5ef3d5bde3c086e1f49ff68c"
   integrity sha512-FAYBGwC+W6F9+huFIDtn43cpy7+SzG+atzRiTfdp3inUKL2hXnd4rG8hylJLIh4+hqrQy1P17kvJByE/z825hA==
 
-"@types/node@^14.0.6":
-  version "14.0.6"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.0.6.tgz#f9e178b2da31a4b0ec60b64649e244c31ce18daf"
-  integrity sha512-FbNmu4F67d3oZMWBV6Y4MaPER+0EpE9eIYf2yaHhCWovc1dlXCZkqGX4NLHfVVr6umt20TNBdRzrNJIzIKfdbw==
+"@types/node@^14.0.11":
+  version "14.0.11"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.0.11.tgz#61d4886e2424da73b7b25547f59fdcb534c165a3"
+  integrity sha512-lCvvI24L21ZVeIiyIUHZ5Oflv1hhHQ5E1S25IRlKIXaRkVgmXpJMI3wUJkmym2bTbCe+WoIibQnMVAU3FguaOg==
 
 "@types/q@^0.0.32":
   version "0.0.32"
@@ -8696,10 +8704,10 @@ websocket-driver@>=0.5.1:
     safe-buffer ">=5.1.0"
     websocket-extensions ">=0.1.1"
 
-websocket-extensions@>=0.1.1:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.3.tgz#5d2ff22977003ec687a4b87073dfbbac146ccf29"
-  integrity sha512-nqHUnMXmBzT0w570r2JpJxfiSD1IzoI+HGVdd3aZ0yNi3ngvQ4jv1dtHt5VGxfI2yj5yqImPhOK4vmIh2xMbGg==
+websocket-extensions@>=0.1.1, websocket-extensions@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz#7f8473bc839dfd87608adb95d7eb075211578a42"
+  integrity sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==
 
 when@~3.6.x:
   version "3.6.4"
