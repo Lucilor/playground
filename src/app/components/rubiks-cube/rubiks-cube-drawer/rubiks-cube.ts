@@ -35,7 +35,8 @@ export class RubiksCube extends Object3D {
 	stepDuration = 500;
 	takingStep = false;
 	steps: {queue: RubiksCubeStep[]; histroy: RubiksCubeStep[]};
-	private _tween: TWEEN.Tween;
+	// TODO: error in private _tween: TWEEN.Tween;
+	private _tween: any;
 	private _clock = new Clock(false);
 	private _texture: Texture;
 
