@@ -30,7 +30,7 @@
     "rxjs": "~6.6.2",
     "three": "^0.119.1",
     "three-rounded-box": "^0.1.1",
-    "tslib": "^2.0.0",
+    "tslib": "^2.0.1",
     "zone.js": "~0.10.3"
   },
   "devDependencies": {
