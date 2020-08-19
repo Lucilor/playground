@@ -25,7 +25,7 @@
     "@angular/platform-browser": "~10.0.10",
     "@angular/platform-browser-dynamic": "~10.0.10",
     "@angular/router": "~10.0.10",
-    "@syncfusion/ej2-angular-inputs": "^18.2.48",
+    "@syncfusion/ej2-angular-inputs": "^18.2.54",
     "@tweenjs/tween.js": "^18.6.0",
     "rxjs": "~6.6.2",
     "three": "^0.119.1",
