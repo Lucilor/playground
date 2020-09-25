@@ -58,6 +58,9 @@
 								}
 							]
 						},
+						"en": {
+							"localize": ["en"]
+						},
 						"zh": {
 							"localize": ["zh"]
 						},
