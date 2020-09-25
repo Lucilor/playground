@@ -1,0 +1,9 @@
+<div class="poet" *ngIf="poet">
+	<div class="title">{{ poet.title || poet.rhythmic }}</div>
+	<div class="dynasty-author">{{ poet.dynasty }} · {{ poet.author }}</div>
+	<div class="paragraphs">
+		<div class="paragraphs" *ngFor="let p of parsedParagraphs">{{ p }}</div>
+	</div>
+</div>
+<button mat-raised-button color="primary" (click)="random()">随机</button>
+<!-- <button mat-raised-button color="primary" (click)="search()">搜索</button> -->

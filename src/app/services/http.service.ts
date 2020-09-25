@@ -21,7 +21,8 @@ export class HttpService {
 		}
 	}
 
-	async request(url: string, name: string, method: "GET" | "POST", data?: {[key: string]: any}) {
+	async request(url: string, method: "GET" | "POST", data?: {[key: string]: any}) {
+		const name = url;
 		this.store.dispatch<LoadingAction>({type: "add loading", name});
 		url = `${host}/${url}`;
 		try {

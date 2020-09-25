@@ -9,5 +9,8 @@ export interface Response {
 }
 
 export const paths = {
-	index: "index"
+	index: "index",
+	bezier: "bezier",
+	"rubiks-cube": "rubiks-cube",
+	"chinese-poetry": "chinese-poetry"
 };
