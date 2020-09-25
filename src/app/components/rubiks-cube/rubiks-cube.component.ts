@@ -3,7 +3,7 @@ import {RubiksCubeDrawer} from "./rubiks-cube-drawer/rubiks-cube-drawer";
 import {RubiksCube} from "./rubiks-cube-drawer/rubiks-cube";
 import {ColorPickerEventArgs} from "@syncfusion/ej2-angular-inputs";
 import {Color} from "three";
-import {FormControl, Validators} from "@angular/forms";
+import {FormControl} from "@angular/forms";
 import {ErrorStateMatcher} from "@angular/material/core";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -32,7 +32,6 @@ export class RubiksCubeComponent implements AfterViewInit {
 	];
 	commandFormControl = new FormControl("");
 	matcher = new MyErrorStateMatcher();
-	loading = false;
 
 	constructor() {
 		const cube = new RubiksCube(5, 3);
@@ -43,12 +42,6 @@ export class RubiksCubeComponent implements AfterViewInit {
 		window["cube"] = cube;
 		this.drawer = drawer;
 		this.cube = cube;
-		// this.loading = true;
-		// (async () => {
-		// 	await cube.loadTexture();
-		// 	this.loading = false;
-		// 	cube.reset();
-		// })();
 	}
 
 	ngAfterViewInit() {

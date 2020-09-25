@@ -10,12 +10,8 @@
 			<input matInput type="number" min="1" [value]="cube.dimension" (change)="changeDimension($event)" autocomplete="off" />
 		</mat-form-field>
 		<div class="btn-group">
-			<button mat-raised-button color="primary" (click)="cube.shuffle()" [disabled]="cube.takingStep" i18n>
-				shuffle
-			</button>
-			<button mat-raised-button color="primary" (click)="cube.backToOrigin()" [disabled]="cube.takingStep" i18n>
-				reset
-			</button>
+			<button mat-raised-button color="primary" (click)="cube.shuffle()" [disabled]="cube.takingStep" i18n>shuffle</button>
+			<button mat-raised-button color="primary" (click)="cube.backToOrigin()" [disabled]="cube.takingStep" i18n>reset</button>
 		</div>
 		<mat-form-field>
 			<mat-label i18n>step duration(ms)</mat-label>
@@ -51,6 +47,3 @@
 		</mat-form-field>
 	</div>
 </app-menu>
-<div class="loading" *ngIf="loading">
-	<mat-spinner></mat-spinner>
-</div>
