@@ -8,7 +8,7 @@ import {ChinesePoetryService, Poem} from "@src/app/services/chinese-poetry.servi
 	styleUrls: ["./chinese-poetry-search.component.scss"]
 })
 export class ChinesePoetrySearchComponent implements OnInit {
-	poet: Poem = {
+	poem: Poem = {
 		id: 0,
 		author: "",
 		dynasty: "",
@@ -23,17 +23,13 @@ export class ChinesePoetrySearchComponent implements OnInit {
 		comment: "",
 		tags: ""
 	};
-	poetFields = Object.keys(this.poet).slice(1);
+	poetFields = Object.keys(this.poem).slice(1);
 
-	constructor(
-		public dialogRef: MatDialogRef<ChinesePoetrySearchComponent, Poem[]>,
-		@Inject(MAT_DIALOG_DATA) public data: Partial<Poem>,
-		private service: ChinesePoetryService
-	) {
+	constructor(public dialogRef: MatDialogRef<ChinesePoetrySearchComponent, Poem>, @Inject(MAT_DIALOG_DATA) public data: Partial<Poem>) {
 		if (data) {
 			for (const key in data) {
 				if (typeof data[key] === "string") {
-					this.poet[key] = data[key];
+					this.poem[key] = data[key];
 				}
 			}
 		}
@@ -41,9 +37,8 @@ export class ChinesePoetrySearchComponent implements OnInit {
 
 	ngOnInit() {}
 
-	async submit() {
-		const poetry = await this.service.search(this.poet, 1, 10);
-		console.log(poetry);
+	submit() {
+		this.dialogRef.close(this.poem);
 	}
 
 	cancle() {
@@ -52,5 +47,5 @@ export class ChinesePoetrySearchComponent implements OnInit {
 }
 
 export function openChinesePoetrySearchDialog(dialog: MatDialog, config: MatDialogConfig<Partial<Poem>>) {
-	return dialog.open<ChinesePoetrySearchComponent, Partial<Poem>, Poem[]>(ChinesePoetrySearchComponent, config);
+	return dialog.open<ChinesePoetrySearchComponent, Partial<Poem>, Poem>(ChinesePoetrySearchComponent, config);
 }

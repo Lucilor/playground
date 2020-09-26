@@ -1,4 +1,4 @@
-export const host = "api";
+export const host = "chinese-poetry";
 
 export interface Response {
 	code: number;

@@ -10,12 +10,14 @@ import {openChinesePoetrySearchDialog} from "../chinese-poetry-search/chinese-po
 	styleUrls: ["./chinese-poetry.component.scss"]
 })
 export class ChinesePoetryComponent implements OnInit {
-	poems: Poem[] = [];
+	randomPoems: Poem[] = [];
+	searchPoem: Partial<Poem> = {};
 	page: {poems: Poem[]; paragraphs: string[][]; tags: string[][]};
 	pageInfo = {
 		length: 0,
 		pageSize: 10,
-		pageSizeOptions: [1, 5, 10, 15, 20, 50, 100]
+		pageSizeOptions: [1, 5, 10, 15, 20, 50, 100],
+		pageIndex: 0
 	};
 	isRandom = true;
 
@@ -30,12 +32,21 @@ export class ChinesePoetryComponent implements OnInit {
 
 	async random() {
 		const poems = await this.service.random(10);
-		this.poems = poems;
+		this.randomPoems = poems;
 		this.setPage(poems, poems.length);
 	}
 
 	async search() {
-		openChinesePoetrySearchDialog(this.dialog, {});
+		const ref = openChinesePoetrySearchDialog(this.dialog, {data: this.searchPoem});
+		const poem = await ref.afterClosed().toPromise();
+		if (poem) {
+			this.isRandom = false;
+			this.searchPoem = poem;
+			const event = new PageEvent();
+			event.pageIndex = 0;
+			event.pageSize = this.pageInfo.pageSize;
+			this.changePage(event);
+		}
 	}
 
 	setPage(poems: Poem[], length: number) {
@@ -47,13 +58,15 @@ export class ChinesePoetryComponent implements OnInit {
 		this.pageInfo.length = length;
 	}
 
-	changePage(event: PageEvent) {
-		console.log(event);
+	async changePage(event: PageEvent) {
 		const {pageIndex, pageSize} = event;
 		if (this.isRandom) {
-			this.setPage(this.poems.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize), this.poems.length);
+			this.setPage(this.randomPoems.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize), this.randomPoems.length);
 		} else {
+			const [poems, count] = await this.service.search(this.searchPoem, pageIndex + 1, pageSize);
+			this.setPage(poems, count);
 		}
+		this.pageInfo.pageIndex = pageIndex;
 	}
 }
 

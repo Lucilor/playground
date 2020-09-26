@@ -1,7 +1,7 @@
 {
-	"/api": {
+	"/chinese-poetry": {
 		"target": "https://localhost:8000",
-		"pathRewrite": {"^/api" : ""},
+		"pathRewrite": {"^/chinese-poetry" : ""},
 		"secure": false,
 		"changeOrigin": true,
 		"logLevel": "debug"

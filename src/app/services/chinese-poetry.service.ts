@@ -38,8 +38,8 @@ export class ChinesePoetryService extends HttpService {
 		}
 	}
 
-	async search(poet: Partial<Poem>, page?: number, limit?: number) {
-		const response = await this.request("search", "POST", {poet, page, limit});
+	async search(poem: Partial<Poem>, page?: number, limit?: number) {
+		const response = await this.request("search", "POST", {poem, page, limit});
 		if (response) {
 			return [response.data, response.count] as [Poem[], number];
 		} else {
