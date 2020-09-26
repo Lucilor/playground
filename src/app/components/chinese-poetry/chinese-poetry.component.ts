@@ -81,11 +81,13 @@ function parsePoem(poems: Poem[], field: keyof Poem) {
 			console.warn(str);
 			return [];
 		}
-		if (Array.isArray(arr)) {
-			result.push(arr);
-		} else {
-			result.push([]);
+		if (!Array.isArray(arr)) {
+			arr = [];
 		}
+		if (field === "tags" && poem.collection) {
+			arr.unshift(poem.collection);
+		}
+		result.push(arr);
 	});
 	return result;
 }

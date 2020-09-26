@@ -1,7 +1,7 @@
 {
-	"/chinese-poetry": {
-		"target": "https://localhost:8000",
-		"pathRewrite": {"^/chinese-poetry" : ""},
+	"/chinese-poetry-api": {
+		"target": "https://candypurity.com/chinese-poetry-api",
+		"pathRewrite": {"^/chinese-poetry-api" : ""},
 		"secure": false,
 		"changeOrigin": true,
 		"logLevel": "debug"

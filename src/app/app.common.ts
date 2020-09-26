@@ -1,4 +1,6 @@
-export const host = "chinese-poetry";
+import {environment} from "@src/environments/environment";
+
+export const host = environment.production ? "https://candypurity.com/chinese-poetry" : "chinese-poetry-api";
 
 export interface Response {
 	code: number;
