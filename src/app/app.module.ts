@@ -82,6 +82,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 		MatIconModule,
 		MatDialogModule,
 		MatSnackBarModule,
+		MatPaginatorModule,
 		DragDropModule,
 		ColorPickerModule,
 		PerfectScrollbarModule,

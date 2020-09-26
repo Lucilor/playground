@@ -5,7 +5,8 @@ import {Store} from "@ngrx/store";
 import {AppState} from "../store/state";
 import {HttpService} from "./http.service";
 
-export interface Poet {
+export interface Poem {
+	id: number;
 	author: string;
 	dynasty: string;
 	title: string;
@@ -31,18 +32,18 @@ export class ChinesePoetryService extends HttpService {
 	async random(num = 1, collections: string[] = null) {
 		const response = await this.request("random", "GET", {num, collections});
 		if (response) {
-			return response.data as Poet[];
+			return response.data as Poem[];
 		} else {
 			return [];
 		}
 	}
 
-	async search(poet: Partial<Poet>, page?: number, limit?: number) {
+	async search(poet: Partial<Poem>, page?: number, limit?: number) {
 		const response = await this.request("search", "POST", {poet, page, limit});
 		if (response) {
-			return [response.data, response.count] as [Poet[], number];
+			return [response.data, response.count] as [Poem[], number];
 		} else {
-			return [[], -1] as [Poet[], number];
+			return [[], -1] as [Poem[], number];
 		}
 	}
 }

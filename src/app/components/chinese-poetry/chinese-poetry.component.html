@@ -1,9 +1,29 @@
-<div class="poet" *ngIf="poet">
-	<div class="title">{{ poet.title || poet.rhythmic }}</div>
-	<div class="dynasty-author">{{ poet.dynasty }} · {{ poet.author }}</div>
-	<div class="paragraphs">
-		<div class="paragraphs" *ngFor="let p of parsedParagraphs">{{ p }}</div>
+<div class="container">
+	<div class="toolbar btn-group">
+		<button mat-raised-button color="primary" (click)="random()">随机</button>
+		<button mat-raised-button color="primary" (click)="search()">搜索</button>
 	</div>
+	<perfect-scrollbar class="poems">
+		<mat-accordion>
+			<mat-expansion-panel class="poem" *ngFor="let poem of page.poems; let i = index">
+				<mat-expansion-panel-header>
+					<mat-panel-title class="title">{{ poem.title || poem.rhythmic }}</mat-panel-title>
+					<mat-panel-description class="dynasty-author">{{ poem.dynasty }} · {{ poem.author }}</mat-panel-description>
+				</mat-expansion-panel-header>
+				<div class="paragraphs">
+					<div class="paragraphs" *ngFor="let p of page.paragraphs[i]">{{ p }}</div>
+				</div>
+				<div class="tags">
+					<div class="tag" *ngFor="let t of page.tags[i]">{{ t }}</div>
+				</div>
+			</mat-expansion-panel>
+		</mat-accordion>
+	</perfect-scrollbar>
+	<mat-paginator
+		[length]="pageInfo.length"
+		[pageSize]="pageInfo.pageSize"
+		[pageSizeOptions]="pageInfo.pageSizeOptions"
+		showFirstLastButtons
+		(page)="changePage($event)"
+	></mat-paginator>
 </div>
-<button mat-raised-button color="primary" (click)="random()">随机</button>
-<button mat-raised-button color="primary" (click)="search()">搜索</button>
