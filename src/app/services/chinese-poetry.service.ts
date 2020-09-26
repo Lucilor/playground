@@ -20,7 +20,6 @@ export interface Poet {
 	tags: string;
 }
 
-
 @Injectable({
 	providedIn: "root"
 })
@@ -35,6 +34,15 @@ export class ChinesePoetryService extends HttpService {
 			return response.data as Poet[];
 		} else {
 			return [];
+		}
+	}
+
+	async search(poet: Partial<Poet>, page?: number, limit?: number) {
+		const response = await this.request("search", "POST", {poet, page, limit});
+		if (response) {
+			return [response.data, response.count] as [Poet[], number];
+		} else {
+			return [[], -1] as [Poet[], number];
 		}
 	}
 }

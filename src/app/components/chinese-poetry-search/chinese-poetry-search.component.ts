@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from "@angular/core";
 import {MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import {Poet} from "@src/app/services/chinese-poetry.service";
+import {ChinesePoetryService, Poet} from "@src/app/services/chinese-poetry.service";
 
 @Component({
 	selector: "app-chinese-poetry-search",
@@ -22,8 +22,13 @@ export class ChinesePoetrySearchComponent implements OnInit {
 		comment: "",
 		tags: ""
 	};
+	poetFields = Object.keys(this.poet);
 
-	constructor(public dialogRef: MatDialogRef<ChinesePoetrySearchComponent, Poet[]>, @Inject(MAT_DIALOG_DATA) public data: Partial<Poet>) {
+	constructor(
+		public dialogRef: MatDialogRef<ChinesePoetrySearchComponent, Poet[]>,
+		@Inject(MAT_DIALOG_DATA) public data: Partial<Poet>,
+		private service: ChinesePoetryService
+	) {
 		if (data) {
 			for (const key in data) {
 				if (typeof data[key] === "string") {
@@ -34,6 +39,15 @@ export class ChinesePoetrySearchComponent implements OnInit {
 	}
 
 	ngOnInit() {}
+
+	async submit() {
+		const poetry = await this.service.search(this.poet, 1, 10);
+		console.log(poetry);
+	}
+
+	cancle() {
+		this.dialogRef.close();
+	}
 }
 
 export function openChinesePoetrySearchDialog(dialog: MatDialog, config: MatDialogConfig<Partial<Poet>>) {

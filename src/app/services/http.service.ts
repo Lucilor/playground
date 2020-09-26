@@ -52,16 +52,7 @@ export class HttpService {
 						delete data[key];
 					}
 				}
-				const formData = new FormData();
-				if (data) {
-					for (const key in data) {
-						formData.append(key, data[key]);
-					}
-				}
-				if (files) {
-					files.forEach((v, i) => formData.append("file" + i, v));
-				}
-				response = await this.http.post<Response>(url, formData).toPromise();
+				response = await this.http.post<Response>(url, data).toPromise();
 			}
 			if (!response) {
 				throw new Error("服务器无响应");

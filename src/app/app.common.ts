@@ -1,4 +1,4 @@
-export const host = "https://localhost:8000";
+export const host = "api";
 
 export interface Response {
 	code: number;
