@@ -1,19 +1,17 @@
 import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {MatDialog} from "@angular/material/dialog";
-import {Store} from "@ngrx/store";
 import {host, Response} from "../app.common";
 import {openMessageDialog} from "../components/message/message.component";
-import {LoadingAction} from "../store/actions";
-import {AppState} from "../store/state";
 
 @Injectable({
 	providedIn: "root"
 })
 export class HttpService {
 	silent = false;
+	loaderId = "master";
 
-	constructor(private dialog: MatDialog, private store: Store<AppState>, private http: HttpClient) {}
+	constructor(private dialog: MatDialog, private http: HttpClient) {}
 
 	private alert(content: any) {
 		if (!this.silent) {
@@ -22,8 +20,6 @@ export class HttpService {
 	}
 
 	async request(url: string, method: "GET" | "POST", data?: {[key: string]: any}) {
-		const name = url;
-		this.store.dispatch<LoadingAction>({type: "add loading", name});
 		url = `${host}/${url}`;
 		try {
 			let response: Response;
@@ -65,8 +61,6 @@ export class HttpService {
 		} catch (error) {
 			this.alert(error);
 			return null;
-		} finally {
-			this.store.dispatch<LoadingAction>({type: "remove loading", name});
 		}
 	}
 }

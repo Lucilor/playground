@@ -24,6 +24,7 @@ import {MatPaginatorModule, MatPaginatorIntl} from "@angular/material/paginator"
 
 import {ColorPickerModule} from "@syncfusion/ej2-angular-inputs";
 import {PerfectScrollbarModule, PerfectScrollbarConfigInterface, PERFECT_SCROLLBAR_CONFIG} from "ngx-perfect-scrollbar";
+import {NgxUiLoaderModule, NgxUiLoaderRouterModule, NgxUiLoaderHttpModule, SPINNER} from "ngx-ui-loader";
 
 import {BezierComponent} from "./components/bezier/bezier.component";
 import {IndexComponent} from "./components/index/index.component";
@@ -87,7 +88,16 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 		ColorPickerModule,
 		PerfectScrollbarModule,
 		StoreModule.forRoot(reducers, {metaReducers}),
-		!environment.production ? StoreDevtoolsModule.instrument() : []
+		!environment.production ? StoreDevtoolsModule.instrument() : [],
+		NgxUiLoaderModule.forRoot({
+			fgsColor: "#2196f3",
+			bgsColor: "#2196f3",
+			pbColor: "#2196f3",
+			fgsType: SPINNER.threeStrings,
+			bgsType: SPINNER.ballScaleMultiple
+		}),
+		NgxUiLoaderHttpModule,
+		NgxUiLoaderRouterModule
 	],
 	providers: [
 		{provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {maxWidth: "unset"}},

@@ -1,8 +1,6 @@
 import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {MatDialog} from "@angular/material/dialog";
-import {Store} from "@ngrx/store";
-import {AppState} from "../store/state";
 import {HttpService} from "./http.service";
 
 export interface Poem {
@@ -25,8 +23,8 @@ export interface Poem {
 	providedIn: "root"
 })
 export class ChinesePoetryService extends HttpService {
-	constructor(dialog: MatDialog, store: Store<AppState>, http: HttpClient) {
-		super(dialog, store, http);
+	constructor(dialog: MatDialog, http: HttpClient) {
+		super(dialog, http);
 	}
 
 	async random(num = 1, collections: string[] = null) {

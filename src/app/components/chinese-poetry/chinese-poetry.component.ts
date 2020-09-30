@@ -2,6 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {MatDialog} from "@angular/material/dialog";
 import {PageEvent} from "@angular/material/paginator";
 import {ChinesePoetryService, Poem} from "@src/app/services/chinese-poetry.service";
+import {NgxUiLoaderService} from "ngx-ui-loader";
 import {openChinesePoetrySearchDialog} from "../chinese-poetry-search/chinese-poetry-search.component";
 
 @Component({
@@ -20,8 +21,9 @@ export class ChinesePoetryComponent implements OnInit {
 		pageIndex: 0
 	};
 	isRandom = true;
+	loaderId = "chinese-poetry";
 
-	constructor(private service: ChinesePoetryService, private dialog: MatDialog) {
+	constructor(private service: ChinesePoetryService, private dialog: MatDialog, private loader: NgxUiLoaderService) {
 		this.setPage([], 0);
 	}
 
@@ -31,7 +33,9 @@ export class ChinesePoetryComponent implements OnInit {
 	}
 
 	async random() {
+		this.loader.startLoader(this.loaderId);
 		const poems = await this.service.random(10);
+		this.loader.stopLoader(this.loaderId);
 		this.randomPoems = poems;
 		this.setPage(poems, poems.length);
 	}
@@ -63,7 +67,9 @@ export class ChinesePoetryComponent implements OnInit {
 		if (this.isRandom) {
 			this.setPage(this.randomPoems.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize), this.randomPoems.length);
 		} else {
+			this.loader.startLoader(this.loaderId);
 			const [poems, count] = await this.service.search(this.searchPoem, pageIndex + 1, pageSize);
+			this.loader.stopLoader(this.loaderId);
 			this.setPage(poems, count);
 		}
 		this.pageInfo.pageIndex = pageIndex;
