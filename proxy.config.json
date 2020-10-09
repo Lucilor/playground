@@ -5,5 +5,12 @@
 		"secure": false,
 		"changeOrigin": true,
 		"logLevel": "debug"
+	},
+	"/netease-music-api": {
+		"target": "https://candypurity.com/netease-music-api",
+		"pathRewrite": {"^/netease-music-api" : ""},
+		"secure": false,
+		"changeOrigin": true,
+		"logLevel": "debug"
 	}
 }

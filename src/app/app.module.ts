@@ -35,6 +35,7 @@ import {LoadingComponent} from "./components/loading/loading.component";
 import {MessageComponent} from "./components/message/message.component";
 import {ChinesePoetryComponent} from "./components/chinese-poetry/chinese-poetry.component";
 import {ChinesePoetrySearchComponent} from "./components/chinese-poetry-search/chinese-poetry-search.component";
+import {MusicPlayerComponent} from "./components/music-player/music-player.component";
 
 @Injectable()
 export class MyMatPaginatorIntl extends MatPaginatorIntl {
@@ -66,7 +67,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 		LoadingComponent,
 		MessageComponent,
 		ChinesePoetryComponent,
-		ChinesePoetrySearchComponent
+		ChinesePoetrySearchComponent,
+		MusicPlayerComponent
 	],
 	imports: [
 		BrowserModule,

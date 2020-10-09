@@ -1,5 +1,5 @@
 import {HttpClient} from "@angular/common/http";
-import {Injectable} from "@angular/core";
+import {Injectable, Injector} from "@angular/core";
 import {MatDialog} from "@angular/material/dialog";
 import {host, Response} from "../app.common";
 import {openMessageDialog} from "../components/message/message.component";
@@ -10,17 +10,25 @@ import {openMessageDialog} from "../components/message/message.component";
 export class HttpService {
 	silent = false;
 	loaderId = "master";
+	dialog: MatDialog;
+	http: HttpClient;
+	apiUrl = "";
+	strict = true;
 
-	constructor(private dialog: MatDialog, private http: HttpClient) {}
+	constructor(injector: Injector) {
+		this.dialog = injector.get(MatDialog);
+		this.http = injector.get(HttpClient);
+	}
 
-	private alert(content: any) {
+	protected alert(content: any) {
 		if (!this.silent) {
 			openMessageDialog(this.dialog, {data: {type: "alert", content}});
+			console.log(content);
 		}
 	}
 
 	async request(url: string, method: "GET" | "POST", data?: {[key: string]: any}) {
-		url = `${host}/${url}`;
+		url = `${host}/${this.apiUrl}/${url}`;
 		try {
 			let response: Response;
 			if (method === "GET") {
@@ -51,12 +59,16 @@ export class HttpService {
 				response = await this.http.post<Response>(url, data).toPromise();
 			}
 			if (!response) {
-				throw new Error("服务器无响应");
+				throw new Error("请求错误");
 			}
-			if (response.code === 0) {
-				return response;
+			if (this.strict) {
+				if (response.code === 0) {
+					return response;
+				} else {
+					throw new Error(response.msg);
+				}
 			} else {
-				throw new Error(response.msg);
+				return response;
 			}
 		} catch (error) {
 			this.alert(error);
