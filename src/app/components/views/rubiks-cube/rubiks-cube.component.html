@@ -1,0 +1,45 @@
+<div #container></div>
+<app-menu [shadowColor]="'white'">
+    <div class="content" content>
+        <mat-form-field>
+            <mat-label>大小</mat-label>
+            <input matInput type="number" min="1" [value]="cube.size" (change)="changeSize($event)" autocomplete="off" />
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>阶数</mat-label>
+            <input matInput type="number" min="1" [value]="cube.dimension" (change)="changeDimension($event)" autocomplete="off" />
+        </mat-form-field>
+        <div class="btn-group">
+            <button mat-raised-button color="primary" (click)="cube.shuffle()" [disabled]="cube.takingStep">打乱</button>
+            <button mat-raised-button color="primary" (click)="cube.backToOrigin()" [disabled]="cube.takingStep">重置</button>
+        </div>
+        <mat-form-field>
+            <mat-label>动画时间(ms)</mat-label>
+            <input matInput type="number" [(ngModel)]="cube.stepDuration" autocomplete="off" />
+        </mat-form-field>
+        <mat-expansion-panel class="point-info-container">
+            <mat-expansion-panel-header>
+                <mat-panel-title>颜色</mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="color-input" *ngFor="let item of cubeColors; let i = index">
+                <button mat-raised-button color="primary" [matMenuTriggerFor]="colorPicker" (click)="colorIdx = i">{{ item.name }}</button>
+            </div>
+        </mat-expansion-panel>
+        <mat-form-field>
+            <mat-label>执行公式</mat-label>
+            <input
+                matInput
+                type="text"
+                [formControl]="commandFormControl"
+                [errorStateMatcher]="matcher"
+                autocomplete="off"
+                (keydown)="execute($event)"
+            />
+            <mat-icon matSuffix (click)="execute()">done</mat-icon>
+            <mat-error>{{ matcher.errorMsg }}</mat-error>
+        </mat-form-field>
+    </div>
+    <mat-menu #colorPicker="matMenu">
+        <color-chrome [color]="getColor()" (onChangeComplete)="setColor($event)"></color-chrome>
+    </mat-menu>
+</app-menu>
