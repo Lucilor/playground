@@ -10,6 +10,7 @@ import {MatMenuModule} from "@angular/material/menu";
 import {MatPaginatorIntl, MatPaginatorModule} from "@angular/material/paginator";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MAT_SNACK_BAR_DEFAULT_OPTIONS} from "@angular/material/snack-bar";
+import {MatTooltipModule} from "@angular/material/tooltip";
 import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ColorChromeModule} from "ngx-color/chrome";
@@ -72,6 +73,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         MatMenuModule,
         MatPaginatorModule,
         MatSlideToggleModule,
+        MatTooltipModule,
         MessageModule,
         NgxUiLoaderModule.forRoot({
             fgsColor: "#2196f3",

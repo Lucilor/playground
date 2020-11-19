@@ -1,0 +1,26 @@
+::ng-deep .player-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 12px;
+
+    c-player {
+        .cp-drop-down-menu-playlist,
+        .cp-playlist {
+            max-height: 300px;
+            overflow: auto;
+        }
+    }
+
+    .player-indicator {
+        position: absolute;
+        width: 4.16667em;
+        height: 4.16667em;
+        background: rgba(0, 0, 0, 0.2);
+        top: 0px;
+        left: 0;
+        z-index: 1;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+}

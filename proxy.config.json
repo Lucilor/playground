@@ -12,5 +12,12 @@
 		"secure": false,
 		"changeOrigin": true,
 		"logLevel": "debug"
+	},
+	"/static": {
+		"target": "https://candypurity.com/static",
+		"pathRewrite": {"^/static" : ""},
+		"secure": false,
+		"changeOrigin": true,
+		"logLevel": "debug"
 	}
 }
