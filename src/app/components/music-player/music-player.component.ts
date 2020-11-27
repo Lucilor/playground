@@ -13,11 +13,15 @@ export class MusicPlayerComponent implements AfterViewInit {
     player?: cplayer;
     @ViewChild("playerEl", {read: ElementRef}) playerEl?: ElementRef<HTMLDivElement>;
 
+    get posterEl() {
+        return this.playerEl?.nativeElement.querySelector(".cp-poster") as HTMLDivElement;
+    }
+
     constructor(private musicService: NeteaseMusicService) {}
 
     async ngAfterViewInit() {
         await timeout();
-        await this.initPlayer("497149159");
+        await this.initPlayer("74222484");
         // await this.initPlayer("74222476");
     }
 
@@ -35,10 +39,27 @@ export class MusicPlayerComponent implements AfterViewInit {
                 this.player.to(random(playlist.content.length));
             }
             (window as any).player = this.player;
+            this.player.on("play", () => this.startPoster());
+            this.player.on("pause", () => this.stopPoster());
+            this.player.on("started", () => this.startPoster());
+            this.player.on("ended", () => this.stopPoster());
+            this.posterEl?.addEventListener("click", () => {
+                this.player?.togglePlayState();
+            });
         }
     }
 
     destroyPlayer() {
         this.player?.destroy();
+    }
+
+    startPoster() {
+        this.posterEl?.classList.remove("paused");
+        this.posterEl?.classList.add("playing");
+    }
+
+    stopPoster() {
+        this.posterEl?.classList.remove("playing");
+        this.posterEl?.classList.add("paused");
     }
 }
