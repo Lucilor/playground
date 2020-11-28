@@ -1,17 +1,22 @@
 import {NgModule} from "@angular/core";
 import {Routes, RouterModule} from "@angular/router";
 import {paths} from "./app.common";
-import {BezierComponent} from "./components/views/bezier/bezier.component";
-import {ChinesePoetryComponent} from "./components/views/chinese-poetry/chinese-poetry.component";
-import {IndexComponent} from "./components/views/index/index.component";
-import {RubiksCubeComponent} from "./components/views/rubiks-cube/rubiks-cube.component";
+import {NeteaseMusicComponent} from "./modules/music-player/views/netease-music/netease-music.component";
+import {PathResolveService} from "./services/path-resolve.service";
+import {BezierComponent} from "./views/bezier/bezier.component";
+import {ChinesePoetryComponent} from "./views/chinese-poetry/chinese-poetry.component";
+import {IndexComponent} from "./views/index/index.component";
+import {PageNotFoundComponent} from "./views/page-not-found/page-not-found.component";
+import {RubiksCubeComponent} from "./views/rubiks-cube/rubiks-cube.component";
 
 const routes: Routes = [
     {path: "", pathMatch: "full", redirectTo: paths.index},
     {path: paths.bezier, component: BezierComponent},
     {path: paths["chinese-poetry"], component: ChinesePoetryComponent},
     {path: paths.index, component: IndexComponent},
-    {path: paths["rubiks-cube"], component: RubiksCubeComponent}
+    {path: paths["rubiks-cube"], component: RubiksCubeComponent},
+    {path: paths["netease-music"], component: NeteaseMusicComponent},
+    {path: "**", component: PageNotFoundComponent, resolve: {redirect: PathResolveService}}
 ];
 
 @NgModule({

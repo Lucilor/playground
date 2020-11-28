@@ -2,14 +2,13 @@ import {TestBed} from "@angular/core/testing";
 import {RouterTestingModule} from "@angular/router/testing";
 import {NgxUiLoaderModule} from "ngx-ui-loader";
 import {AppComponent} from "./app.component";
-import {MusicPlayerComponent} from "./components/music-player/music-player.component";
 import {HttpModule} from "./modules/http/http.module";
 import {MessageModule} from "./modules/message/message.module";
 
 describe("AppComponent", () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [AppComponent, MusicPlayerComponent],
+            declarations: [AppComponent],
             imports: [HttpModule, RouterTestingModule, MessageModule, NgxUiLoaderModule]
         }).compileComponents();
     });

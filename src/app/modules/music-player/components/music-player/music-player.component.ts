@@ -1,8 +1,8 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from "@angular/core";
 import {timeout} from "@lucilor/utils";
-import {NeteaseMusicService} from "@src/app/modules/http/services/netease-music.service";
 import cplayer from "cplayer";
 import {random} from "lodash";
+import {MusicService, Playlist} from "../../services/music.service";
 
 @Component({
     selector: "app-music-player",
@@ -11,28 +11,31 @@ import {random} from "lodash";
 })
 export class MusicPlayerComponent implements AfterViewInit {
     player?: cplayer;
+    isMini = innerWidth < 500;
     @ViewChild("playerEl", {read: ElementRef}) playerEl?: ElementRef<HTMLDivElement>;
 
     get posterEl() {
         return this.playerEl?.nativeElement.querySelector(".cp-poster") as HTMLDivElement;
     }
 
-    constructor(private musicService: NeteaseMusicService) {}
+    constructor(private music: MusicService) {}
 
     async ngAfterViewInit() {
         await timeout();
-        await this.initPlayer("74222484");
         // await this.initPlayer("74222476");
+        this.music.playlistChange.subscribe((playlist) => {
+            if (playlist) {
+                this.initPlayer(playlist);
+            }
+        });
     }
 
-    async initPlayer(playlistId: string) {
-        const playlist = await this.musicService.getPlayList(playlistId);
-        if (playlist && this.playerEl) {
+    initPlayer(playlist: Playlist) {
+        if (this.playerEl) {
             this.player = new cplayer({
                 element: this.playerEl.nativeElement,
                 playlist: playlist.content,
-                zoomOutKana: true,
-                style: "position: absolute;bottom: 0;right:0"
+                zoomOutKana: true
             });
             this.player.mode = playlist.mode;
             if (this.player.mode === "listrandom") {
