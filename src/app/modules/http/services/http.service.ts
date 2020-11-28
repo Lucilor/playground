@@ -1,4 +1,4 @@
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {Injectable, Injector} from "@angular/core";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Response} from "@src/app/app.common";
@@ -15,7 +15,6 @@ export class HttpService {
     http: HttpClient;
     snackBar: MatSnackBar;
     baseURL = "";
-    strict = true;
 
     constructor(injector: Injector) {
         this.message = injector.get(MessageService);
@@ -44,25 +43,37 @@ export class HttpService {
                         url += `?${queryArr.join("&")}`;
                     }
                 }
-                response = await this.http.get<Response<T>>(url).toPromise();
+                try {
+                    response = await this.http.get<Response<T>>(url).toPromise();
+                } catch (error) {
+                    if (error instanceof HttpErrorResponse && typeof error.error === "object") {
+                        response = error.error;
+                    } else {
+                        throw new Error(error);
+                    }
+                }
             }
             if (method === "POST") {
-                response = await this.http.post<Response<T>>(url, data).toPromise();
+                try {
+                    response = await this.http.post<Response<T>>(url, data).toPromise();
+                } catch (error) {
+                    if (error instanceof HttpErrorResponse && typeof error.error === "object") {
+                        response = error.error;
+                    } else {
+                        throw new Error(error);
+                    }
+                }
             }
             if (!response) {
                 throw new Error("请求错误");
             }
-            if (this.strict) {
-                if (response.code === 0) {
-                    if (typeof response.msg === "string" && response.msg) {
-                        this.snackBar.open(response.msg);
-                    }
-                    return response;
-                } else {
-                    throw new Error(response.msg);
+            if (response.code === 0) {
+                if (typeof response.msg === "string" && response.msg && !this.silent) {
+                    this.snackBar.open(response.msg);
                 }
-            } else {
                 return response;
+            } else {
+                throw new Error(response.msg);
             }
         } catch (error) {
             this.alert(error);

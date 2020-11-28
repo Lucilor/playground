@@ -1,1 +1,28 @@
-<p>netease-music works!</p>
+<div class="container">
+    <!-- <mat-card *ngIf="user; else loginForm" @tab>
+        <mat-card-header>
+            <app-image mat-card-avatar [src]="user?.profile.avatarUrl || ''"></app-image>
+            <mat-card-title>{{user?.profile.nickname || ''}}</mat-card-title>
+            <mat-card-subtitle>Dog Breed</mat-card-subtitle>
+        </mat-card-header>
+    </mat-card>
+    <ng-template #loginForm> -->
+    <form class="login-form" [formGroup]="form" @tab>
+        <h2>登录</h2>
+        <mat-form-field>
+            <mat-label>手机号/邮箱</mat-label>
+            <input type="text" matInput [formControlName]="'user'" required />
+            <mat-hint>暂不支持国外手机号</mat-hint>
+            <mat-error *ngIf="form.get('user')?.errors">请输入手机号或邮箱</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>密码</mat-label>
+            <input type="password" matInput [formControlName]="'password'" required />
+            <mat-error *ngIf="form.get('password')?.errors">请输入密码</mat-error>
+        </mat-form-field>
+        <div class="btn-group">
+            <button mat-raised-button color="primary" (click)="login()">登录</button>
+        </div>
+    </form>
+    <!-- </ng-template> -->
+</div>
