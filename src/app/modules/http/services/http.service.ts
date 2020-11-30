@@ -1,6 +1,5 @@
 import {HttpClient} from "@angular/common/http";
 import {Injectable, Injector} from "@angular/core";
-import {MatSnackBar} from "@angular/material/snack-bar";
 import {Response} from "@src/app/app.common";
 import {AnyObject} from "@lucilor/utils";
 import {MessageService} from "../../message/services/message.service";
@@ -13,14 +12,12 @@ export class HttpService {
     loaderId = "master";
     message: MessageService;
     http: HttpClient;
-    snackBar: MatSnackBar;
     baseURL = "";
     strict = true;
 
     constructor(injector: Injector) {
         this.message = injector.get(MessageService);
         this.http = injector.get(HttpClient);
-        this.snackBar = injector.get(MatSnackBar);
     }
 
     protected alert(content: any) {
@@ -52,18 +49,10 @@ export class HttpService {
             if (!response) {
                 throw new Error("请求错误");
             }
-            if (this.strict) {
-                if (response.code === 0) {
-                    if (typeof response.msg === "string" && response.msg) {
-                        this.snackBar.open(response.msg);
-                    }
-                    return response;
-                } else {
-                    throw new Error(response.msg);
-                }
-            } else {
-                return response;
+            if (typeof response.msg === "string" && response.msg && !this.silent) {
+                this.message.snack(response.msg);
             }
+            return response;
         } catch (error) {
             this.alert(error);
             return null;
