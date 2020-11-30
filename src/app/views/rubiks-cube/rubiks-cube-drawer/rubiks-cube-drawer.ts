@@ -65,7 +65,6 @@ export class RubiksCubeDrawer extends Drawer {
             this._cubePositions[0].set(x, y, z);
             const normal = this._intersection?.face?.normal.clone();
             if (normal) {
-                console.log(normal);
                 this._cubeFaces[0].copy(normal.transformDirection(object.matrixWorld).round());
                 this.controls.enableRotate = false;
             }

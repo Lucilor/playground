@@ -1,8 +1,10 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from "@angular/core";
 import {timeout} from "@lucilor/utils";
+import {local} from "@src/app/app.common";
 import cplayer from "cplayer";
 import {random} from "lodash";
-import {MusicService, Playlist} from "../../services/music.service";
+import {NgxUiLoaderService} from "ngx-ui-loader";
+import {MusicService} from "../../services/music.service";
 
 @Component({
     selector: "app-music-player",
@@ -18,20 +20,23 @@ export class MusicPlayerComponent implements AfterViewInit {
         return this.playerEl?.nativeElement.querySelector(".cp-poster") as HTMLDivElement;
     }
 
-    constructor(private music: MusicService) {}
+    constructor(private music: MusicService, private loader: NgxUiLoaderService) {}
 
     async ngAfterViewInit() {
         await timeout();
         // await this.initPlayer("74222476");
-        this.music.playlistChange.subscribe((playlist) => {
-            if (playlist) {
-                this.initPlayer(playlist);
-            }
+        this.music.playlistId.next(local.load("playlistId") || "74222476");
+        this.music.playlistId.subscribe((playlistId) => {
+            local.save("playlistId", playlistId);
+            this.initPlayer(playlistId);
         });
     }
 
-    initPlayer(playlist: Playlist) {
-        if (this.playerEl) {
+    async initPlayer(playlistId: string) {
+        this.loader.startLoader("musicPlayerLoader")
+        const playlist = await this.music.getPlaylist(playlistId);
+        this.loader.stopLoader("musicPlayerLoader")
+        if (playlist && this.playerEl) {
             this.player = new cplayer({
                 element: this.playerEl.nativeElement,
                 playlist: playlist.content,

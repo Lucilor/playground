@@ -27,7 +27,9 @@ export class HttpService {
     }
 
     async request<T>(url: string, method: "GET" | "POST", data?: AnyObject) {
-        url = `${this.baseURL}/${url}`;
+        if (!url.startsWith("http")) {
+            url = `${this.baseURL}/${url}`;
+        }
         try {
             let response: Response<T> | null = null;
             if (method === "GET") {

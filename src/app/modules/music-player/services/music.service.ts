@@ -1,6 +1,5 @@
 import {Injectable, Injector} from "@angular/core";
 import {AnyObject} from "@lucilor/utils";
-import {local} from "@src/app/app.common";
 import {environment} from "@src/environments/environment";
 import * as md5 from "md5";
 import {BehaviorSubject} from "rxjs";
@@ -72,49 +71,32 @@ export interface User {
     providedIn: "root"
 })
 export class MusicService extends HttpService {
+    playlistId = new BehaviorSubject<string>("");
     playlist: Playlist | null = null;
-    playlistChange = new BehaviorSubject<Playlist | null>(null);
     user: User | null = null;
     userChange = new BehaviorSubject<User | null>(null);
 
     constructor(inejctor: Injector) {
         super(inejctor);
-        this.baseURL = `${environment.host}/static/playlist`;
-        this.playlistChange.subscribe((playlist) => (this.playlist = playlist));
+        this.baseURL = `${environment.host}/netease-music-api`;
         this.userChange.subscribe((user) => (this.user = user));
-
-        const id = local.load("playlistId") || "74222476";
-        this.setPlaylist(id);
-
         this.refreshLoginStatus();
     }
 
-    private _setBaseURL(type: 1 | 2) {
-        if (type === 1) {
-            this.baseURL = `${environment.host}/netease-music-api`;
-        } else {
-            this.baseURL = `${environment.host}/static/playlist`;
-        }
-    }
-
-    async setPlaylist(id: string) {
-        this._setBaseURL(2);
-        const response = await this.request<Playlist>("get.php", "GET", {id});
+    async getPlaylist(id: string) {
+        const response = await this.request<Playlist>(`${environment.host}/static/playlist/get.php`, "GET", {id});
         if (response?.data) {
-            this.playlistChange.next(response.data);
-            local.save("playlistId", id);
-            return this.playlist;
+            this.playlist = response.data;
+            return response.data;
         }
         return null;
     }
 
-    async updatePlaylist(id: string) {
-        this._setBaseURL(2);
-        await this.request<Playlist>("set.php", "GET", {id});
+    async setPlaylist(id: string, mode = "listloop") {
+        await this.request<Playlist>(`${environment.host}/static/playlist/set.php`, "GET", {id, mode});
     }
 
     async login(user: string, password: string, isEmail: boolean) {
-        this._setBaseURL(1);
         let url = "";
         const data: AnyObject = {md5_password: md5(password)};
         if (isEmail) {
@@ -131,7 +113,6 @@ export class MusicService extends HttpService {
     }
 
     async refreshLoginStatus() {
-        this._setBaseURL(1);
         const silent = this.silent;
         this.silent = true;
         await this.request<User>("login/refresh", "GET");
@@ -148,9 +129,38 @@ export class MusicService extends HttpService {
     }
 
     async logout() {
-        this._setBaseURL(1);
         await this.request<User>("logout", "GET");
         await this.request<User>("login/refresh", "GET");
         this.userChange.next(null);
+    }
+
+    async getPlaylistCount() {
+        const response = await this.request<any>("user/subcount", "GET");
+        if (response?.data) {
+            const {createdPlaylistCount, subPlaylistCount} = response.data;
+            return (createdPlaylistCount + subPlaylistCount) as number;
+        }
+        return NaN;
+    }
+
+    // 30 items per page
+    async getPlaylists(page: number) {
+        if (!this.user) {
+            return [];
+        }
+        const offset = (page - 1) * 30;
+        const response = await this.request<AnyObject>("user/playlist", "GET", {uid: this.user.profile.userId, offset});
+        if (response?.data) {
+            return response.data.playlist as AnyObject[];
+        }
+        return [];
+    }
+
+    async getPlaylistDetail(id: string) {
+        const response = await this.request<AnyObject>("playlist/detail", "GET", {id});
+        if (response?.data) {
+            return response.data.playlist as AnyObject;
+        }
+        return null;
     }
 }

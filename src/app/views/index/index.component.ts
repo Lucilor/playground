@@ -9,10 +9,6 @@ import {MusicService} from "@src/app/modules/music-player/services/music.service
     styleUrls: ["./index.component.scss"]
 })
 export class IndexComponent extends Subscribed() {
-    get playlist() {
-        return this.music.playlist;
-    }
-
     paths: typeof paths;
 
     constructor(private music: MusicService) {

@@ -1,28 +1,81 @@
-<div class="container">
-    <!-- <mat-card *ngIf="user; else loginForm" @tab>
+<div
+    class="container"
+    [class.default-bg]="!getUserInfo('backgroundUrl')"
+    [style.backgroundImage]="getUserInfo('backgroundUrl') ? 'url(' + getUserInfo('backgroundUrl') + ')' : ''"
+>
+    <mat-card *ngIf="playlistIdx > -1">
         <mat-card-header>
-            <app-image mat-card-avatar [src]="user?.profile.avatarUrl || ''"></app-image>
-            <mat-card-title>{{user?.profile.nickname || ''}}</mat-card-title>
-            <mat-card-subtitle>Dog Breed</mat-card-subtitle>
+            <app-image mat-card-avatar [src]="playlist.coverImgUrl"></app-image>
+            <mat-card-title>{{ playlist.name }}</mat-card-title>
+            <mat-card-subtitle>{{ playlist.creator.nickname }} </mat-card-subtitle>
         </mat-card-header>
+        <mat-card-content>
+            <div class="playlist-desc" (click)="showPlaylistDesc()">{{ playlist.description }}</div>
+            <perfect-scrollbar style="height: 0; flex: 1 1 0">
+                <ngx-ui-loader [loaderId]="'playlistSongsLoader'"></ngx-ui-loader>
+                <mat-selection-list *ngIf="playlist.tracks" [multiple]="false">
+                    <mat-list-option *ngFor="let item of playlist.tracks" [value]="item.id">
+                        <app-image mat-list-avatar [src]="item.al?.picUrl"></app-image>
+                        <div mat-line>{{ item.name }}</div>
+                        <div mat-line>{{ getSongDesc(item) }}</div>
+                    </mat-list-option>
+                </mat-selection-list>
+            </perfect-scrollbar>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-button (click)="playlistIdx = -1">返回</button>
+            <mat-form-field>
+                <mat-label>默认播放模式</mat-label>
+                <mat-select [(ngModel)]="playMode">
+                    <mat-option *ngFor="let mode of playModes" [value]="mode.value">{{ mode.name }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <button mat-button (click)="selectPlaylistToPlay()">播放此歌单</button>
+        </mat-card-actions>
     </mat-card>
-    <ng-template #loginForm> -->
-    <form class="login-form" [formGroup]="form" @tab>
-        <h2>登录</h2>
-        <mat-form-field>
-            <mat-label>手机号/邮箱</mat-label>
-            <input type="text" matInput [formControlName]="'user'" required />
-            <mat-hint>暂不支持国外手机号</mat-hint>
-            <mat-error *ngIf="form.get('user')?.errors">请输入手机号或邮箱</mat-error>
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>密码</mat-label>
-            <input type="password" matInput [formControlName]="'password'" required />
-            <mat-error *ngIf="form.get('password')?.errors">请输入密码</mat-error>
-        </mat-form-field>
-        <div class="btn-group">
-            <button mat-raised-button color="primary" (click)="login()">登录</button>
-        </div>
-    </form>
-    <!-- </ng-template> -->
+    <div *ngIf="user; else loginForm" @tab [hidden]="playlistIdx > -1">
+        <mat-card>
+            <mat-card-header>
+                <app-image mat-card-avatar [src]="getUserInfo('avatarUrl')"></app-image>
+                <mat-card-title>{{ getUserInfo("nickname") }}</mat-card-title>
+                <mat-card-subtitle>{{ getUserInfo("signature") }}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <div>歌单列表</div>
+                <perfect-scrollbar>
+                    <ngx-ui-loader [loaderId]="'playlistLoader'"></ngx-ui-loader>
+                    <mat-selection-list (selectionChange)="selectPlaylist($event)" [multiple]="false">
+                        <mat-list-option *ngFor="let item of playlists" [value]="item.id" [matTooltip]="item.description">
+                            <app-image mat-list-avatar [src]="item.coverImgUrl"></app-image>
+                            <div mat-line>{{ item.name }}</div>
+                            <div mat-line>{{ item.trackCount }}首歌曲</div>
+                        </mat-list-option>
+                    </mat-selection-list>
+                </perfect-scrollbar>
+            </mat-card-content>
+            <mat-card-actions>
+                <button mat-button (click)="logout()">退出登录</button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
+
+    <ng-template #loginForm>
+        <form class="login-form" [formGroup]="form" @tab>
+            <h2>登录网易云音乐</h2>
+            <mat-form-field>
+                <mat-label>手机号/邮箱</mat-label>
+                <input type="text" matInput [formControlName]="'user'" required />
+                <mat-hint>暂不支持国外手机号</mat-hint>
+                <mat-error *ngIf="form.get('user')?.errors">请输入手机号或邮箱</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>密码</mat-label>
+                <input type="password" matInput [formControlName]="'password'" required />
+                <mat-error *ngIf="form.get('password')?.errors">请输入密码</mat-error>
+            </mat-form-field>
+            <div class="btn-group">
+                <button mat-raised-button color="primary" (click)="login()">登录</button>
+            </div>
+        </form>
+    </ng-template>
 </div>
