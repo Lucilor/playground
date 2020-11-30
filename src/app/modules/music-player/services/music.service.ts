@@ -120,6 +120,8 @@ export class MusicService extends HttpService {
         if (response?.data) {
             const response2 = await this.request<User>("user/detail", "GET", {uid: response.data.profile.userId});
             if (response2?.data) {
+                response2.data.profile.avatarUrl = response2.data.profile.avatarUrl.replace(/^http:/, "https:");
+                response2.data.profile.backgroundUrl = response2.data.profile.backgroundUrl.replace(/^http:/, "https:");
                 this.userChange.next(response2.data);
                 return;
             }
