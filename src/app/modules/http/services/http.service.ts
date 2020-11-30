@@ -1,4 +1,4 @@
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {Injectable, Injector} from "@angular/core";
 import {Response} from "@src/app/app.common";
 import {AnyObject} from "@lucilor/utils";
@@ -13,7 +13,6 @@ export class HttpService {
     message: MessageService;
     http: HttpClient;
     baseURL = "";
-    strict = true;
 
     constructor(injector: Injector) {
         this.message = injector.get(MessageService);
@@ -28,7 +27,9 @@ export class HttpService {
     }
 
     async request<T>(url: string, method: "GET" | "POST", data?: AnyObject) {
-        url = `${this.baseURL}/${url}`;
+        if (!url.startsWith("http")) {
+            url = `${this.baseURL}/${url}`;
+        }
         try {
             let response: Response<T> | null = null;
             if (method === "GET") {
@@ -41,10 +42,26 @@ export class HttpService {
                         url += `?${queryArr.join("&")}`;
                     }
                 }
-                response = await this.http.get<Response<T>>(url).toPromise();
+                try {
+                    response = await this.http.get<Response<T>>(url).toPromise();
+                } catch (error) {
+                    if (error instanceof HttpErrorResponse && typeof error.error === "object") {
+                        response = error.error;
+                    } else {
+                        throw new Error(error);
+                    }
+                }
             }
             if (method === "POST") {
-                response = await this.http.post<Response<T>>(url, data).toPromise();
+                try {
+                    response = await this.http.post<Response<T>>(url, data).toPromise();
+                } catch (error) {
+                    if (error instanceof HttpErrorResponse && typeof error.error === "object") {
+                        response = error.error;
+                    } else {
+                        throw new Error(error);
+                    }
+                }
             }
             if (!response) {
                 throw new Error("请求错误");

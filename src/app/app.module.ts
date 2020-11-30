@@ -18,13 +18,13 @@ import {AppRoutingModule} from "./app-routing.module";
 import {AppComponent} from "./app.component";
 import {ChinesePoetrySearchComponent} from "./components/dialogs/chinese-poetry-search/chinese-poetry-search.component";
 import {MenuComponent} from "./components/menu/menu.component";
-import {MusicPlayerComponent} from "./components/music-player/music-player.component";
-import {BezierComponent} from "./components/views/bezier/bezier.component";
-import {ChinesePoetryComponent} from "./components/views/chinese-poetry/chinese-poetry.component";
-import {IndexComponent} from "./components/views/index/index.component";
-import {RubiksCubeComponent} from "./components/views/rubiks-cube/rubiks-cube.component";
 import {HttpModule} from "./modules/http/http.module";
 import {MessageModule} from "./modules/message/message.module";
+import {MusicPlayerModule} from "./modules/music-player/music-player.module";
+import {BezierComponent} from "./views/bezier/bezier.component";
+import {ChinesePoetryComponent} from "./views/chinese-poetry/chinese-poetry.component";
+import {IndexComponent} from "./views/index/index.component";
+import {RubiksCubeComponent} from "./views/rubiks-cube/rubiks-cube.component";
 
 @Injectable()
 export class MyMatPaginatorIntl extends MatPaginatorIntl {
@@ -52,13 +52,12 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         ChinesePoetrySearchComponent,
         IndexComponent,
         MenuComponent,
-        MusicPlayerComponent,
         RubiksCubeComponent
     ],
     imports: [
-        BrowserModule,
         AppRoutingModule,
         BrowserAnimationsModule,
+        BrowserModule,
         ColorChromeModule,
         DragDropModule,
         FormsModule,
@@ -72,6 +71,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         MatPaginatorModule,
         MatSlideToggleModule,
         MessageModule,
+        MusicPlayerModule,
         NgxUiLoaderModule.forRoot({
             fgsColor: "#2196f3",
             bgsColor: "#2196f3",

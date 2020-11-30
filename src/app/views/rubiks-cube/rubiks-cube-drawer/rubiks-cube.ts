@@ -84,7 +84,8 @@ export class RubiksCube extends Object3D {
         const order: (keyof RubiksCubeColors)[] = ["R", "L", "U", "D", "F", "B"];
         for (const face of order) {
             const color = colors[face];
-            const material = new MeshLambertMaterial({color, map: _texture});
+            // const material = new MeshLambertMaterial({color, map: _texture});
+            const material = new MeshLambertMaterial({color});
             materials.push(material);
         }
         return new Mesh(geometry, materials);

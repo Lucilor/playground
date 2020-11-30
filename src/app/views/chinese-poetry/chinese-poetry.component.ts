@@ -1,9 +1,9 @@
 import {Component, OnInit} from "@angular/core";
 import {MatDialog} from "@angular/material/dialog";
 import {PageEvent} from "@angular/material/paginator";
+import {openChinesePoetrySearchDialog} from "@src/app/components/dialogs/chinese-poetry-search/chinese-poetry-search.component";
 import {ChinesePoetryService, Poem} from "@src/app/modules/http/services/chinese-poetry.service";
 import {AppStatusService} from "@src/app/services/app-status.service";
-import {openChinesePoetrySearchDialog} from "../../dialogs/chinese-poetry-search/chinese-poetry-search.component";
 
 @Component({
     selector: "app-chinese-poetry",

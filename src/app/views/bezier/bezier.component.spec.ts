@@ -6,8 +6,8 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatInputModule} from "@angular/material/input";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {MenuComponent} from "@src/app/components/menu/menu.component";
 import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
-import {MenuComponent} from "../../menu/menu.component";
 
 import {BezierComponent} from "./bezier.component";
 

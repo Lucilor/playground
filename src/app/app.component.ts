@@ -1,4 +1,6 @@
 import {Component} from "@angular/core";
+import {NavigationEnd, Router} from "@angular/router";
+import {paths} from "./app.common";
 
 @Component({
     selector: "app-root",
@@ -8,4 +10,13 @@ import {Component} from "@angular/core";
 export class AppComponent {
     title = "playground";
     loaderText = "";
+    showHomeBtn = false;
+
+    constructor(private router: Router) {
+        this.router.events.subscribe((event) => {
+            if (event instanceof NavigationEnd) {
+                this.showHomeBtn = event.url !== "/" + paths.index;
+            }
+        });
+    }
 }

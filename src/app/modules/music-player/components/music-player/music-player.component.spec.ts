@@ -1,6 +1,6 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {HttpModule} from "@src/app/modules/http/http.module";
-import {MessageModule} from "@src/app/modules/message/message.module";
+import {NgxUiLoaderModule} from "ngx-ui-loader";
 import {MusicPlayerComponent} from "./music-player.component";
 
 describe("MusicPlayerComponent", () => {
@@ -10,7 +10,7 @@ describe("MusicPlayerComponent", () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [MusicPlayerComponent],
-            imports: [HttpModule, MessageModule]
+            imports: [HttpModule, NgxUiLoaderModule]
         }).compileComponents();
     });
 
