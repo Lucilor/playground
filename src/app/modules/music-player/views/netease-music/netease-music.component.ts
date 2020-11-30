@@ -34,7 +34,6 @@ export class NeteaseMusicComponent extends Subscribed() {
         });
         this.music.userChange.subscribe((user) => {
             this.user = user;
-            console.log(user);
         });
     }
 
