@@ -12,10 +12,10 @@ import {RubiksCubeComponent} from "./views/rubiks-cube/rubiks-cube.component";
 const routes: Routes = [
     {path: "", pathMatch: "full", redirectTo: paths.index},
     {path: paths.bezier, component: BezierComponent},
-    {path: paths["chinese-poetry"], component: ChinesePoetryComponent},
+    {path: paths.chinesePoetry, component: ChinesePoetryComponent},
     {path: paths.index, component: IndexComponent},
-    {path: paths["rubiks-cube"], component: RubiksCubeComponent},
-    {path: paths["netease-music"], component: NeteaseMusicComponent},
+    {path: paths.rubiksCube, component: RubiksCubeComponent},
+    {path: paths.neteaseMusic, component: NeteaseMusicComponent},
     {path: "**", component: PageNotFoundComponent, resolve: {redirect: PathResolveService}}
 ];
 

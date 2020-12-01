@@ -11,9 +11,9 @@ export interface Response<T> {
 export const paths = {
     index: "index",
     bezier: "bezier",
-    "rubiks-cube": "rubiks-cube",
-    "chinese-poetry": "chinese-poetry",
-    "netease-music": "wyyyy"
+    rubiksCube: "rubiks-cube",
+    chinesePoetry: "chinese-poetry",
+    neteaseMusic: "wyyyy"
 };
 
 export const session = new SessionStorage("playground");
