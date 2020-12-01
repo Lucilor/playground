@@ -120,8 +120,7 @@ export class MusicService extends HttpService {
         if (response?.data) {
             const response2 = await this.request<User>("user/detail", "GET", {uid: response.data.profile.userId});
             if (response2?.data) {
-                response2.data.profile.avatarUrl = response2.data.profile.avatarUrl.replace(/^http:/, "https:");
-                response2.data.profile.backgroundUrl = response2.data.profile.backgroundUrl.replace(/^http:/, "https:");
+                forceSSL(response2.data.profile, ["avatarUrl", "backgroundUrl"]);
                 this.userChange.next(response2.data);
                 return;
             }
@@ -161,8 +160,23 @@ export class MusicService extends HttpService {
     async getPlaylistDetail(id: string) {
         const response = await this.request<AnyObject>("playlist/detail", "GET", {id});
         if (response?.data) {
+            const playlist = response.data.playlist;
+            forceSSL(playlist, "coverImgUrl");
+            (playlist.tracks as AnyObject[]).forEach((v) => forceSSL(v.al, "picUrl"));
             return response.data.playlist as AnyObject;
         }
         return null;
     }
+}
+
+function forceSSL(obj: AnyObject, keys: string[] | string) {
+    if (typeof keys === "string") {
+        keys = [keys];
+    }
+    keys.forEach((key) => {
+        const value = obj[key];
+        if (typeof value === "string") {
+            obj[key] = value.replace(/^http:/, "https:");
+        }
+    });
 }

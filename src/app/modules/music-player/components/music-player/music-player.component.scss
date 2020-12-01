@@ -4,9 +4,11 @@
     right: 20px;
     font-size: 12px;
     display: flex;
+    min-width: 300px;
 
     &.mini {
         right: 0;
+        min-width: unset;
 
         c-player {
             width: 0;
@@ -35,7 +37,6 @@
     }
 
     c-player {
-        overflow: hidden;
         transition: width 0.25s ease 0.1s;
 
         .cp-drop-down-menu-playlist,

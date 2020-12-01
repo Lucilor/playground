@@ -5,7 +5,7 @@ import {MatSelectionListChange} from "@angular/material/list";
 import {AnyObject} from "@lucilor/utils";
 import {Subscribed} from "@src/app/mixins/Subscribed.mixin";
 import {MessageService} from "@src/app/modules/message/services/message.service";
-import {NgxUiLoaderService} from "ngx-ui-loader";
+import {AppStatusService} from "@src/app/services/app-status.service";
 import {MusicService, User} from "../../services/music.service";
 
 @Component({
@@ -44,8 +44,8 @@ export class NeteaseMusicComponent extends Subscribed() {
     constructor(
         private formBuilder: FormBuilder,
         private music: MusicService,
-        private loader: NgxUiLoaderService,
-        private message: MessageService
+        private message: MessageService,
+        private status: AppStatusService
     ) {
         super();
         this.form = this.formBuilder.group({
@@ -55,9 +55,9 @@ export class NeteaseMusicComponent extends Subscribed() {
         this.music.userChange.subscribe(async (user) => {
             this.user = user;
             if (user) {
-                this.loader.startLoader("playlistLoader");
+                this.status.startLoader({id: "playlistLoader"});
                 this.playlists = await this.music.getPlaylists(1);
-                this.loader.stopLoader("playlistLoader");
+                this.status.stopLoader();
             }
         });
     }
@@ -69,16 +69,16 @@ export class NeteaseMusicComponent extends Subscribed() {
         }
         if (form.valid) {
             const {user, password} = form.value;
-            this.loader.start();
+            this.status.startLoader({text: "正在登录..."});
             this.music.login(user, password, !Validators.email(form.get("user") as AbstractControl));
-            this.loader.stop();
+            this.status.stopLoader();
         }
     }
 
     logout() {
-        this.loader.start();
+        this.status.startLoader({text: "正在登出..."});
         this.music.logout();
-        this.loader.stop();
+        this.status.stopLoader();
     }
 
     getUserInfo(key: keyof User["profile"]) {
@@ -95,9 +95,9 @@ export class NeteaseMusicComponent extends Subscribed() {
         this.playlistIdx = this.playlists.findIndex((v) => v.id === option.value);
         const playlist = this.playlists[this.playlistIdx];
         if (playlist && !playlist.tracks) {
-            this.loader.startLoader("playlistSongsLoader")
+            this.status.startLoader({id: "playlistSongsLoader"});
             const detail = await this.music.getPlaylistDetail(playlist.id);
-            this.loader.stopLoader("playlistSongsLoader")
+            this.status.stopLoader();
             if (detail) {
                 this.playlists[this.playlistIdx] = detail;
             }
@@ -113,10 +113,10 @@ export class NeteaseMusicComponent extends Subscribed() {
         if (playlist) {
             const yes = await this.message.confirm("是否播放此歌单？");
             if (yes) {
-                this.loader.startLoader("playlistLoader");
+                this.status.startLoader({text: "正在处理歌单..."});
                 await this.music.setPlaylist(playlist.id, this.playMode);
                 this.music.playlistId.next(playlist.id);
-                this.loader.stopLoader("playlistLoader");
+                this.status.stopLoader();
             }
         }
     }

@@ -1,9 +1,9 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from "@angular/core";
 import {timeout} from "@lucilor/utils";
 import {local} from "@src/app/app.common";
+import {AppStatusService} from "@src/app/services/app-status.service";
 import cplayer from "cplayer";
 import {random} from "lodash";
-import {NgxUiLoaderService} from "ngx-ui-loader";
 import {MusicService} from "../../services/music.service";
 
 @Component({
@@ -20,7 +20,7 @@ export class MusicPlayerComponent implements AfterViewInit {
         return this.playerEl?.nativeElement.querySelector(".cp-poster") as HTMLDivElement;
     }
 
-    constructor(private music: MusicService, private loader: NgxUiLoaderService) {}
+    constructor(private music: MusicService, private status: AppStatusService) {}
 
     async ngAfterViewInit() {
         await timeout();
@@ -33,9 +33,9 @@ export class MusicPlayerComponent implements AfterViewInit {
     }
 
     async initPlayer(playlistId: string) {
-        this.loader.startLoader("musicPlayerLoader")
+        this.status.startLoader({id: "musicPlayerLoader"});
         const playlist = await this.music.getPlaylist(playlistId);
-        this.loader.stopLoader("musicPlayerLoader")
+        this.status.stopLoader();
         if (playlist && this.playerEl) {
             this.player = new cplayer({
                 element: this.playerEl.nativeElement,
