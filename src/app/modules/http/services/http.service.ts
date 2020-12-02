@@ -1,8 +1,25 @@
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Injectable, Injector} from "@angular/core";
 import {Response} from "@src/app/app.common";
 import {AnyObject} from "@lucilor/utils";
 import {MessageService} from "../../message/services/message.service";
+
+export interface HttpOptions {
+    headers?:
+        | HttpHeaders
+        | {
+              [header: string]: string | string[];
+          };
+    observe?: "body";
+    params?:
+        | HttpParams
+        | {
+              [param: string]: string | string[];
+          };
+    reportProgress?: boolean;
+    responseType?: "json";
+    withCredentials?: boolean;
+}
 
 @Injectable({
     providedIn: "root"
@@ -26,7 +43,7 @@ export class HttpService {
         }
     }
 
-    async request<T>(url: string, method: "GET" | "POST", data?: AnyObject) {
+    private async request<T>(url: string, method: "GET" | "POST", data?: AnyObject, options?: HttpOptions) {
         if (!url.startsWith("http")) {
             url = `${this.baseURL}/${url}`;
         }
@@ -43,7 +60,7 @@ export class HttpService {
                     }
                 }
                 try {
-                    response = await this.http.get<Response<T>>(url).toPromise();
+                    response = await this.http.get<Response<T>>(url, options).toPromise();
                 } catch (error) {
                     if (error instanceof HttpErrorResponse && typeof error.error === "object") {
                         response = error.error;
@@ -54,7 +71,7 @@ export class HttpService {
             }
             if (method === "POST") {
                 try {
-                    response = await this.http.post<Response<T>>(url, data).toPromise();
+                    response = await this.http.post<Response<T>>(url, data, options).toPromise();
                 } catch (error) {
                     if (error instanceof HttpErrorResponse && typeof error.error === "object") {
                         response = error.error;
@@ -74,5 +91,13 @@ export class HttpService {
             this.alert(error);
             return null;
         }
+    }
+
+    async get<T>(url: string, data?: AnyObject, options?: HttpOptions) {
+        return await this.request<T>(url, "GET", data, options);
+    }
+
+    async post<T>(url: string, data?: AnyObject, options?: HttpOptions) {
+        return await this.request<T>(url, "POST", data, options);
     }
 }

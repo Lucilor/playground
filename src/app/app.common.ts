@@ -13,7 +13,8 @@ export const paths = {
     bezier: "bezier",
     rubiksCube: "rubiks-cube",
     chinesePoetry: "chinese-poetry",
-    neteaseMusic: "wyyyy"
+    neteaseMusic: "wyyyy",
+    chat: "chat"
 };
 
 export const session = new SessionStorage("playground");

@@ -84,7 +84,7 @@ export class MusicService extends HttpService {
     }
 
     async getPlaylist(id: string) {
-        const response = await this.request<Playlist>(`${environment.host}/static/playlist/get.php`, "GET", {id});
+        const response = await this.get<Playlist>(`${environment.host}/static/playlist/get.php`, {id});
         if (response?.data) {
             this.playlist = response.data;
             return response.data;
@@ -93,7 +93,7 @@ export class MusicService extends HttpService {
     }
 
     async setPlaylist(id: string, mode = "listloop") {
-        await this.request<Playlist>(`${environment.host}/static/playlist/set.php`, "GET", {id, mode});
+        await this.get<Playlist>(`${environment.host}/static/playlist/set.php`, {id, mode});
     }
 
     async login(user: string, password: string, isEmail: boolean) {
@@ -106,7 +106,7 @@ export class MusicService extends HttpService {
             url = "login/cellphone";
             data.phone = user;
         }
-        const response = await this.request<User>(url, "GET", data);
+        const response = await this.get<User>(url, data);
         if (response?.data) {
             this.refreshLoginStatus();
         }
@@ -115,10 +115,10 @@ export class MusicService extends HttpService {
     async refreshLoginStatus() {
         const silent = this.silent;
         this.silent = true;
-        await this.request<User>("login/refresh", "GET");
-        const response = await this.request<User>("login/status", "GET");
+        await this.get<User>("login/refresh");
+        const response = await this.get<User>("login/status");
         if (response?.data) {
-            const response2 = await this.request<User>("user/detail", "GET", {uid: response.data.profile.userId});
+            const response2 = await this.get<User>("user/detail", {uid: response.data.profile.userId});
             if (response2?.data) {
                 forceSSL(response2.data.profile, ["avatarUrl", "backgroundUrl"]);
                 this.userChange.next(response2.data);
@@ -130,13 +130,13 @@ export class MusicService extends HttpService {
     }
 
     async logout() {
-        await this.request<User>("logout", "GET");
-        await this.request<User>("login/refresh", "GET");
+        await this.get<User>("logout");
+        await this.get<User>("login/refresh");
         this.userChange.next(null);
     }
 
     async getPlaylistCount() {
-        const response = await this.request<any>("user/subcount", "GET");
+        const response = await this.get<any>("user/subcount");
         if (response?.data) {
             const {createdPlaylistCount, subPlaylistCount} = response.data;
             return (createdPlaylistCount + subPlaylistCount) as number;
@@ -150,7 +150,7 @@ export class MusicService extends HttpService {
             return [];
         }
         const offset = (page - 1) * 30;
-        const response = await this.request<AnyObject>("user/playlist", "GET", {uid: this.user.profile.userId, offset});
+        const response = await this.get<AnyObject>("user/playlist", {uid: this.user.profile.userId, offset});
         if (response?.data) {
             return response.data.playlist as AnyObject[];
         }
@@ -158,7 +158,7 @@ export class MusicService extends HttpService {
     }
 
     async getPlaylistDetail(id: string) {
-        const response = await this.request<AnyObject>("playlist/detail", "GET", {id});
+        const response = await this.get<AnyObject>("playlist/detail", {id});
         if (response?.data) {
             const playlist = response.data.playlist;
             forceSSL(playlist, "coverImgUrl");

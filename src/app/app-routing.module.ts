@@ -1,6 +1,7 @@
 import {NgModule} from "@angular/core";
 import {Routes, RouterModule} from "@angular/router";
 import {paths} from "./app.common";
+import {ChatComponent} from "./modules/ai/components/chat/chat.component";
 import {NeteaseMusicComponent} from "./modules/music-player/views/netease-music/netease-music.component";
 import {PathResolveService} from "./services/path-resolve.service";
 import {BezierComponent} from "./views/bezier/bezier.component";
@@ -16,6 +17,8 @@ const routes: Routes = [
     {path: paths.index, component: IndexComponent},
     {path: paths.rubiksCube, component: RubiksCubeComponent},
     {path: paths.neteaseMusic, component: NeteaseMusicComponent},
+    {path: paths.neteaseMusic, component: NeteaseMusicComponent},
+    {path: paths.chat, component: ChatComponent},
     {path: "**", component: PageNotFoundComponent, resolve: {redirect: PathResolveService}}
 ];
 

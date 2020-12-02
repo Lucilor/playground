@@ -27,7 +27,7 @@ export class ChinesePoetryService extends HttpService {
     }
 
     async random(num = 1, collections: string[] | null = null) {
-        const response = await this.request("random", "GET", {num, collections});
+        const response = await this.get("random", {num, collections});
         if (response) {
             return response.data as Poem[];
         } else {
@@ -36,7 +36,7 @@ export class ChinesePoetryService extends HttpService {
     }
 
     async search(poem: Partial<Poem>, page?: number, limit?: number) {
-        const response = await this.request("search", "POST", {poem, page, limit});
+        const response = await this.post("search", {poem, page, limit});
         if (response) {
             return [response.data, response.count] as [Poem[], number];
         } else {

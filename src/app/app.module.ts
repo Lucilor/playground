@@ -18,6 +18,7 @@ import {AppRoutingModule} from "./app-routing.module";
 import {AppComponent} from "./app.component";
 import {ChinesePoetrySearchComponent} from "./components/dialogs/chinese-poetry-search/chinese-poetry-search.component";
 import {MenuComponent} from "./components/menu/menu.component";
+import {AIModule} from "./modules/ai/ai.module";
 import {HttpModule} from "./modules/http/http.module";
 import {MessageModule} from "./modules/message/message.module";
 import {MusicPlayerModule} from "./modules/music-player/music-player.module";
@@ -55,6 +56,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         RubiksCubeComponent
     ],
     imports: [
+        AIModule,
         AppRoutingModule,
         BrowserAnimationsModule,
         BrowserModule,
