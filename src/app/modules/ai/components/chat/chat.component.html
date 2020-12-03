@@ -5,7 +5,7 @@
             <h1>{{ moli.name }}</h1>
             <h2>{{ moli.description }}</h2>
             <figure class="avatar">
-                <img [src]="moli.avatar" />
+                <app-image [src]="moli.avatar" [bigPic]="true"></app-image>
             </figure>
         </div>
         <div class="messages">
@@ -15,19 +15,27 @@
                         class="message new"
                         *ngFor="let message of messages"
                         [class]="{'message-personal': !message.user, loading: message.isLoading}"
+                        [ngSwitch]="message.type"
                     >
                         <figure class="avatar" *ngIf="message.user">
-                            <img [src]="moli.avatar" />
+                            <app-image [src]="moli.avatar" [bigPic]="true"></app-image>
                         </figure>
-                        <span *ngIf="message.isLoading"></span>
-                        {{ message.text }}
+                        <span></span>
+                        <span *ngSwitchCase="'text'" [innerHTML]="message.text"></span>
+                        <app-image *ngSwitchCase="'image'" [src]="message.url" [bigPic]="true"></app-image>
                         <div class="timestamp">{{ message.timestamp }}</div>
                     </div>
                 </perfect-scrollbar>
             </div>
         </div>
         <div class="message-box">
-            <textarea type="text" class="message-input" [value]="input" (input)="onType($event)" placeholder="有什么想说的？"></textarea>
+            <textarea
+                type="text"
+                class="message-input"
+                [(ngModel)]="input"
+                (keydown)="onKeyDown($event)"
+                placeholder="有什么想说的？"
+            ></textarea>
             <button mat-raised-button color="primary" type="submit" class="message-submit" (click)="send()">发送</button>
         </div>
     </div>
