@@ -1,0 +1,40 @@
+<div class="bg"></div>
+<div class="board">
+    <div class="title">
+        <h2>猜数字</h2>
+        <div class="hint">
+            不知道规则?
+            <a mat-icon-button href="https://zh.wikipedia.org/zh-hans/猜数字" target="_blank">
+                <mat-icon>open_in_new</mat-icon>
+            </a>
+            <a mat-icon-button href="https://baike.baidu.com/item/猜数字/83200" target="_blank">
+                <mat-icon>open_in_new</mat-icon>
+            </a>
+        </div>
+    </div>
+
+    <div>
+        当前难度：
+        <button mat-raised-button color="primary" (click)="changeDifficulty()">{{ difficulty.name }}</button>
+    </div>
+    <mat-form-field>
+        <mat-label>猜测</mat-label>
+        <input type="text" matInput [(ngModel)]="guessInput" (keydown)="onKeyDown($event)" />
+        <button matSuffix type="submit" color="primary" mat-raised-button (click)="guess()">确定</button>
+    </mat-form-field>
+    <div class="btn-group">
+        <button type="submit" color="primary" mat-raised-button (click)="surrender()" [disabled]="bc.solved">投降</button>
+        <button type="submit" color="primary" mat-raised-button (click)="start()">重来</button>
+    </div>
+    <mat-card class="attempts" #attempts>
+        <div>{{ answerPrompt }}</div>
+        <mat-divider></mat-divider>
+        <div>
+            历史记录<span *ngIf="bc.attempts.length">({{ bc.attempts.length }})</span>
+        </div>
+        <mat-divider></mat-divider>
+        <perfect-scrollbar>
+            <div class="attempt" *ngFor="let attempt of bc.attempts">{{ attempt.answer }} - {{ attempt.result }}</div>
+        </perfect-scrollbar>
+    </mat-card>
+</div>

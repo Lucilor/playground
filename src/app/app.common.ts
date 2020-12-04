@@ -14,7 +14,8 @@ export const paths = {
     rubiksCube: "rubiks-cube",
     chinesePoetry: "chinese-poetry",
     neteaseMusic: "wyyyy",
-    chat: "chat"
+    chat: "chat",
+    bullsAndCows: "bulls-and-cows"
 };
 
 export const session = new SessionStorage("playground");

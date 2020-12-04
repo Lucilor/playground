@@ -2,13 +2,17 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
 import {Injectable, NgModule} from "@angular/core";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
+import {MatCardModule} from "@angular/material/card";
+import {MatDividerModule} from "@angular/material/divider";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatIconModule} from "@angular/material/icon";
 import {MatInputModule} from "@angular/material/input";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatPaginatorIntl, MatPaginatorModule} from "@angular/material/paginator";
+import {MatSelectModule} from "@angular/material/select";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
+import {MatTabsModule} from "@angular/material/tabs";
 import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ColorChromeModule} from "ngx-color/chrome";
@@ -16,6 +20,7 @@ import {PerfectScrollbarConfigInterface, PerfectScrollbarModule, PERFECT_SCROLLB
 import {NgxUiLoaderModule, SPINNER} from "ngx-ui-loader";
 import {AppRoutingModule} from "./app-routing.module";
 import {AppComponent} from "./app.component";
+import {BullsAndCowsDifficultyComponent} from "./components/dialogs/bulls-and-cows-difficulty/bulls-and-cows-difficulty.component";
 import {ChinesePoetrySearchComponent} from "./components/dialogs/chinese-poetry-search/chinese-poetry-search.component";
 import {MenuComponent} from "./components/menu/menu.component";
 import {AIModule} from "./modules/ai/ai.module";
@@ -23,6 +28,7 @@ import {HttpModule} from "./modules/http/http.module";
 import {MessageModule} from "./modules/message/message.module";
 import {MusicPlayerModule} from "./modules/music-player/music-player.module";
 import {BezierComponent} from "./views/bezier/bezier.component";
+import {BullsAndCowsComponent} from "./views/bulls-and-cows/bulls-and-cows.component";
 import {ChinesePoetryComponent} from "./views/chinese-poetry/chinese-poetry.component";
 import {IndexComponent} from "./views/index/index.component";
 import {RubiksCubeComponent} from "./views/rubiks-cube/rubiks-cube.component";
@@ -53,7 +59,9 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         ChinesePoetrySearchComponent,
         IndexComponent,
         MenuComponent,
-        RubiksCubeComponent
+        RubiksCubeComponent,
+        BullsAndCowsComponent,
+        BullsAndCowsDifficultyComponent
     ],
     imports: [
         AIModule,
@@ -65,13 +73,17 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         FormsModule,
         HttpModule,
         MatButtonModule,
+        MatCardModule,
+        MatDividerModule,
         MatExpansionModule,
         MatFormFieldModule,
         MatIconModule,
         MatInputModule,
         MatMenuModule,
         MatPaginatorModule,
+        MatSelectModule,
         MatSlideToggleModule,
+        MatTabsModule,
         MessageModule,
         MusicPlayerModule,
         NgxUiLoaderModule.forRoot({
