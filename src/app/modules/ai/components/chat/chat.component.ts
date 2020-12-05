@@ -38,25 +38,60 @@ export class MessageManager {
         return [hr, m].join(":");
     }
 
-    async pushText(text: string | Promise<string>, user?: string) {
+    private async _pushFakeMessage(user: string) {
         const message: Message = {type: "text", text: "", user};
-        this.messages.push(message);
-        if (text instanceof Promise) {
-            message.isLoading = true;
-            text = await text;
-            message.isLoading = false;
+        this.pushMessage(message);
+        message.isLoading = true;
+        await timeout(500 + Math.random() * 500);
+        return message;
+    }
+
+    async updateMessage(oldVal: Message, newVal: Partial<Message> = {}) {
+        if (!newVal.timestamp) {
+            newVal.timestamp = this._formatTime();
         }
-        message.text = text.replace(/\n/g, "<br />");
-        message.timestamp = this._formatTime();
+        Object.assign(oldVal, newVal);
         if (this.dom) {
             await timeout();
             this.dom.scrollTop = this.dom.scrollHeight;
         }
     }
 
-    async pushImage(url: string, user?: string) {
-        const message: Message = {type: "image", url, user};
+    pushMessage(message: Message) {
         this.messages.push(message);
+        this.updateMessage(message);
+    }
+
+    async pushText(text: string | Promise<string>, user?: string) {
+        let message: Message;
+        if (user) {
+            message = await this._pushFakeMessage(user);
+        } else {
+            message = {type: "text", text: "", user};
+            this.pushMessage(message);
+        }
+        if (text instanceof Promise) {
+            message.isLoading = true;
+            text = await text;
+        }
+        this.updateMessage(message, {text: text.replace(/\n/g, "<br />")});
+        message.isLoading = false;
+    }
+
+    async pushImage(url: string | Promise<string>, user?: string) {
+        let message: Message;
+        if (user) {
+            message = await this._pushFakeMessage(user);
+        } else {
+            message = {type: "image", url: "", user};
+            this.pushMessage(message);
+        }
+        if (url instanceof Promise) {
+            message.isLoading = true;
+            url = await url;
+        }
+        this.updateMessage(message, {type: "image", url});
+        message.isLoading = false;
     }
 }
 
@@ -78,9 +113,10 @@ export class ChatComponent implements AfterViewInit {
 
     constructor(private http: HttpService) {}
 
-    ngAfterViewInit() {
+    async ngAfterViewInit() {
         this.messageManager.dom = document.querySelector(".messages-content perfect-scrollbar > div");
-        this.messageManager.pushText("人类，是世界上最有趣的生物。", this.moli.name);
+        await this.messageManager.pushText("人类，是世界上最有趣的生物。", this.moli.name);
+        this.messageManager.pushText("对我说“帮助”可以查看指令。", this.moli.name);
     }
 
     onKeyDown(event: KeyboardEvent) {
@@ -97,18 +133,21 @@ export class ChatComponent implements AfterViewInit {
         const question = this.input;
         this.messageManager.pushText(question);
         if (question.match(/^help|\?|帮助$/i)) {
-            this.messageManager.pushImage("https://candypurity.com/static/images/itpk.png", this.moli.name);
-            return;
+            (async () => {
+                await this.messageManager.pushImage("https://candypurity.com/static/images/itpk.png", this.moli.name);
+                this.messageManager.pushText("经过漫长的岁月，上面的部分接口可能已经失效。", this.moli.name);
+            })();
+        } else {
+            const textPromise = new Promise<string>(async (resolve) => {
+                const result = await this.http.get<string>("static/itpk/ask.php", {question}, headerNoCache);
+                if (typeof result?.data === "string") {
+                    resolve(result.data);
+                } else {
+                    resolve("放弃思考");
+                }
+            });
+            this.messageManager.pushText(textPromise, this.moli.name);
         }
         this.input = "";
-        const textPromise = new Promise<string>(async (resolve) => {
-            const result = await this.http.get<string>("static/itpk/ask.php", {question}, headerNoCache);
-            if (typeof result?.data === "string") {
-                resolve(result.data);
-            } else {
-                resolve("放弃思考");
-            }
-        });
-        this.messageManager.pushText(textPromise, this.moli.name);
     }
 }
