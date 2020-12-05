@@ -1,5 +1,5 @@
 <div class="player-container" [class.mini]="isMini">
-    <div class="show-toggle" (click)="isMini = !isMini">
+    <div class="show-toggle" (click)="toggleMini()">
         <div class="arrow" [class]="{left: isMini, right: !isMini}"><div class="inner"></div></div>
     </div>
     <div #playerEl class="cplayer"></div>

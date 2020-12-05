@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from "@angular/core";
 import {timeout} from "@lucilor/utils";
 import {local} from "@src/app/app.common";
+import {Storaged} from "@src/app/mixins/Storage.minin";
 import {AppStatusService} from "@src/app/services/app-status.service";
 import cplayer from "cplayer";
 import {random} from "lodash";
@@ -11,23 +12,30 @@ import {MusicService} from "../../services/music.service";
     templateUrl: "./music-player.component.html",
     styleUrls: ["./music-player.component.scss"]
 })
-export class MusicPlayerComponent implements AfterViewInit {
+export class MusicPlayerComponent extends Storaged() implements AfterViewInit {
     player?: cplayer;
-    isMini = innerWidth < 500;
+    isMini: boolean;
     @ViewChild("playerEl", {read: ElementRef}) playerEl?: ElementRef<HTMLDivElement>;
 
     get posterEl() {
         return this.playerEl?.nativeElement.querySelector(".cp-poster") as HTMLDivElement;
     }
 
-    constructor(private music: MusicService, private status: AppStatusService) {}
+    constructor(private music: MusicService, private status: AppStatusService) {
+        super("musicPlayer", local);
+        const isMini = this.load("isMini");
+        if (typeof isMini === "boolean") {
+            this.isMini = isMini;
+        } else {
+            this.isMini = innerWidth < 500;
+        }
+    }
 
     async ngAfterViewInit() {
         await timeout();
-        // await this.initPlayer("74222476");
-        this.music.playlistId.next(local.load("playlistId") || "74222476");
+        this.music.playlistId.next(this.load("playlist") || "74222476");
         this.music.playlistId.subscribe((playlistId) => {
-            local.save("playlistId", playlistId);
+            this.save("playlist", playlistId);
             this.initPlayer(playlistId);
         });
     }
@@ -69,5 +77,10 @@ export class MusicPlayerComponent implements AfterViewInit {
     stopPoster() {
         this.posterEl?.classList.remove("playing");
         this.posterEl?.classList.add("paused");
+    }
+
+    toggleMini() {
+        this.isMini = !this.isMini;
+        this.save("isMini", this.isMini);
     }
 }

@@ -15,12 +15,18 @@ export class BullsAndCows {
         digits: 4,
         uniqueChars: true
     };
-    private _answer: string | null = null;
+    private _answer = "";
     private _solved = false;
     attempts: BullsAndCowsAttempt[] = [];
 
+    get started() {
+        return this._answer.length > 0;
+    }
     get solved() {
         return this._solved;
+    }
+    get canGuess() {
+        return this.started && !this._solved;
     }
 
     constructor(config: Partial<BullsAndCowsConfig> = {}) {
@@ -39,30 +45,22 @@ export class BullsAndCows {
             }
             answer += char;
         }
-        this._answer = answer;
+        return answer;
     }
 
-    start() {
-        this.attempts.length = 0;
-        this._generateAnswer();
-        this._solved = false;
-        return this;
+    private _ensureStarted() {
+        if (!this.started) {
+            throw new Error("尚未开始");
+        }
     }
 
-    surrender() {
-        if (this._answer && !this._solved) {
-            this.guess(this._answer);
+    private _ensureUnsolved() {
+        if (this.solved) {
+            throw new Error("已经结束");
         }
-        return this._answer;
     }
 
-    isAnswerValid(answer: string) {
-        if (!this._answer) {
-            return "尚未开始";
-        }
-        if (this._solved) {
-            return "已经结束";
-        }
+    private _isAnswerValid(answer: string) {
         if (answer.length !== this._answer.length) {
             return `长度应为${this._answer.length}位`;
         }
@@ -72,13 +70,24 @@ export class BullsAndCows {
         return true;
     }
 
+    start() {
+        this.attempts.length = 0;
+        this._answer = this._generateAnswer();
+        this._solved = false;
+        return this;
+    }
+
+    surrender() {
+        const result = this.guess(this._answer);
+        return result.answer;
+    }
+
     guess(answer: string) {
-        const valid = this.isAnswerValid(answer);
+        this._ensureStarted();
+        this._ensureUnsolved();
+        const valid = this._isAnswerValid(answer);
         if (typeof valid === "string") {
             throw new Error(`输入 ${answer} 无效： ${valid}。`);
-        }
-        if (!this._answer) {
-            throw new Error("尚未开始。");
         }
         const a = new Set<number>();
         const b = new Set<number>();
@@ -102,6 +111,7 @@ export class BullsAndCows {
         this.attempts.push(attempt);
         if (a.size === this._answer.length) {
             this._solved = true;
+            this._answer = "";
         }
         return attempt;
     }
