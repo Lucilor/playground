@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, ViewChild} from "@angular/core";
 import {timeout} from "@lucilor/utils";
-import {HttpService} from "@src/app/modules/http/services/http.service";
+import {headerNoCache, HttpService} from "@src/app/modules/http/services/http.service";
 import {PerfectScrollbarComponent} from "ngx-perfect-scrollbar";
 
 export interface User {
@@ -102,7 +102,7 @@ export class ChatComponent implements AfterViewInit {
         }
         this.input = "";
         const textPromise = new Promise<string>(async (resolve) => {
-            const result = await this.http.get<string>("static/itpk/ask.php", {question}, {headers: {"Cache-Control": "no-cache"}});
+            const result = await this.http.get<string>("static/itpk/ask.php", {question}, headerNoCache);
             if (typeof result?.data === "string") {
                 resolve(result.data);
             } else {

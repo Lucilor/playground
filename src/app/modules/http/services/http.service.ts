@@ -4,6 +4,7 @@ import {Response} from "@src/app/app.common";
 import {AnyObject} from "@lucilor/utils";
 import {MessageService} from "../../message/services/message.service";
 
+/* eslint-disable @typescript-eslint/indent */
 export interface HttpOptions {
     headers?:
         | HttpHeaders
@@ -20,6 +21,9 @@ export interface HttpOptions {
     responseType?: "json";
     withCredentials?: boolean;
 }
+/* eslint-enable @typescript-eslint/indent */
+
+export const headerNoCache: HttpOptions = {headers: {"Cache-control": "no-cache"}};
 
 @Injectable({
     providedIn: "root"

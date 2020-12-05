@@ -3,7 +3,7 @@ import {AnyObject} from "@lucilor/utils";
 import {environment} from "@src/environments/environment";
 import * as md5 from "md5";
 import {BehaviorSubject} from "rxjs";
-import {HttpService} from "../../http/services/http.service";
+import {headerNoCache, HttpService} from "../../http/services/http.service";
 
 export interface Song {
     id: string;
@@ -106,7 +106,7 @@ export class MusicService extends HttpService {
             url = "login/cellphone";
             data.phone = user;
         }
-        const response = await this.get<User>(url, data);
+        const response = await this.post<User>(url, data);
         if (response?.data) {
             this.refreshLoginStatus();
         }
@@ -115,10 +115,10 @@ export class MusicService extends HttpService {
     async refreshLoginStatus() {
         const silent = this.silent;
         this.silent = true;
-        await this.get<User>("login/refresh");
-        const response = await this.get<User>("login/status");
-        if (response?.data) {
-            const response2 = await this.get<User>("user/detail", {uid: response.data.profile.userId});
+        const response = await this.get<User>("login/status", {}, headerNoCache);
+        const uid = response?.data?.profile?.userId;
+        if (uid) {
+            const response2 = await this.get<User>("user/detail", {uid}, headerNoCache);
             if (response2?.data) {
                 forceSSL(response2.data.profile, ["avatarUrl", "backgroundUrl"]);
                 this.userChange.next(response2.data);
@@ -130,8 +130,7 @@ export class MusicService extends HttpService {
     }
 
     async logout() {
-        await this.get<User>("logout");
-        await this.get<User>("login/refresh");
+        await this.get<User>("logout", {}, headerNoCache);
         this.userChange.next(null);
     }
 
