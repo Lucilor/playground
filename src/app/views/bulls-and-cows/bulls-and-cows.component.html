@@ -17,11 +17,24 @@
         当前难度：
         <button mat-raised-button color="primary" (click)="changeDifficulty()">{{ difficulty.name }}</button>
     </div>
-    <mat-form-field>
-        <mat-label>猜测</mat-label>
-        <input type="text" matInput [(ngModel)]="guessInput" (keydown)="onKeyDown($event)" />
-        <button matSuffix type="submit" color="primary" mat-raised-button (click)="guess()" [disabled]="!bc.canGuess">确定</button>
-    </mat-form-field>
+    <div [formGroup]="form">
+        <mat-form-field>
+            <mat-label>猜测</mat-label>
+            <input
+                type="text"
+                matInput
+                formControlName="guess"
+                [maxlength]="bc.config.digits"
+                [minlength]="bc.config.digits"
+                (keydown)="onKeyDown($event)"
+            />
+            <button matSuffix type="submit" color="primary" mat-raised-button (click)="guess()" [disabled]="!canGuess">
+                确定
+            </button>
+            <mat-hint [class.error]="guessInput.length !== bc.config.digits"> {{ guessInput.length }}/{{ bc.config.digits }} </mat-hint>
+            <mat-error *ngIf="form.get('guess')?.errors?.pattern">包含非法字符</mat-error>
+        </mat-form-field>
+    </div>
     <div class="btn-group">
         <button type="submit" color="primary" mat-raised-button (click)="surrender()" [disabled]="!bc.canGuess">投降</button>
         <button type="submit" color="primary" mat-raised-button (click)="start()">重来</button>

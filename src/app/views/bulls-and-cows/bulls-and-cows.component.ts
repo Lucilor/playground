@@ -1,4 +1,5 @@
 import {Component, ElementRef} from "@angular/core";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MatDialog} from "@angular/material/dialog";
 import {timeout} from "@lucilor/utils";
 import {local} from "@src/app/app.common";
@@ -21,15 +22,29 @@ export class BullsAndCowsComponent extends Storaged() {
     bc: BullsAndCows;
     difficulty: BullsAndCowsDifficulty;
     answerPrompt = "点击重来按钮生成数字";
-    guessInput = "";
     answer = "";
+    form: FormGroup;
+    get guessInput() {
+        return this.form.value.guess;
+    }
+    get canGuess() {
+        return this.guessInput && this.bc.canGuess && this.form.valid;
+    }
 
-    constructor(private message: MessageService, private dialog: MatDialog, private elRef: ElementRef<HTMLElement>) {
+    constructor(
+        private message: MessageService,
+        private dialog: MatDialog,
+        private elRef: ElementRef<HTMLElement>,
+        private formBuilder: FormBuilder
+    ) {
         super("bullsAndCows", local);
         this.difficulty = this.load("difficulty") || difficulties[1];
         this.bc = new BullsAndCows(this.difficulty.config);
+        this.form = this.formBuilder.group({
+            guess: ["", Validators.pattern(new RegExp(`^[${this.bc.config.chars}]*$`))]
+        });
+        this.form.markAllAsTouched();
         this.start();
-        console.log(this);
     }
 
     onKeyDown(event: KeyboardEvent) {
@@ -39,17 +54,17 @@ export class BullsAndCowsComponent extends Storaged() {
     }
 
     guess() {
-        const bc = this.bc;
-        if (!bc.canGuess) {
+        const {bc, guessInput} = this;
+        if (!this.canGuess) {
             return;
         }
         try {
-            bc.guess(this.guessInput);
+            bc.guess(guessInput);
         } catch (error) {
             this.message.alert((error as Error).message);
         }
         if (bc.solved) {
-            this.answer = this.guessInput;
+            this.answer = guessInput;
             const minAttempts = this.load("minAttempts") || {};
             const key = md5(JSON.stringify(Object.values(bc.config).sort()));
             minAttempts[key] = Math.min(minAttempts[key] || Infinity, bc.attempts.length);
@@ -69,6 +84,7 @@ export class BullsAndCowsComponent extends Storaged() {
         const bc = this.bc;
         if (bc.canGuess) {
             this.answer = bc.surrender();
+            this.form.get("guess")?.setValue(this.answer);
             this.message.alert("答案是： " + this.answer, "就这？");
         }
     }
@@ -77,7 +93,7 @@ export class BullsAndCowsComponent extends Storaged() {
         const bc = this.bc;
         this.bc.start();
         this.answerPrompt = `答案有${bc.config.digits}位（${bc.config.uniqueChars ? "无" : "有"}重复），包含字符：${bc.config.chars}`;
-        this.guessInput = "";
+        this.form.get("guess")?.setValue("");
     }
 
     async changeDifficulty() {

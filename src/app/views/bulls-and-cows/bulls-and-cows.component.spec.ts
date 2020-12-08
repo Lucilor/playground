@@ -1,5 +1,5 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatCardModule} from "@angular/material/card";
 import {MatDividerModule} from "@angular/material/divider";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -27,7 +27,8 @@ describe("BullsAndCowsComponent", () => {
                 MatIconModule,
                 MatInputModule,
                 MessageModule,
-                PerfectScrollbarModule
+                PerfectScrollbarModule,
+                ReactiveFormsModule
             ]
         }).compileComponents();
     });

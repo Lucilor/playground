@@ -15,6 +15,7 @@
     flex-direction: column;
     position: relative;
     background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 20px;
 
     .title {
         text-align: center;
@@ -75,4 +76,8 @@
 
 .mat-card .mat-divider-horizontal {
     position: relative;
+}
+
+.error {
+    color: red;
 }
