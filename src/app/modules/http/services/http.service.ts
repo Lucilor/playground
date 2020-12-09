@@ -1,7 +1,7 @@
 import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Injectable, Injector} from "@angular/core";
+import {ObjectOf} from "@lucilor/utils";
 import {Response} from "@src/app/app.common";
-import {AnyObject} from "@lucilor/utils";
 import {MessageService} from "../../message/services/message.service";
 
 /* eslint-disable @typescript-eslint/indent */
@@ -47,7 +47,7 @@ export class HttpService {
         }
     }
 
-    private async request<T>(url: string, method: "GET" | "POST", data?: AnyObject, options?: HttpOptions) {
+    private async request<T>(url: string, method: "GET" | "POST", data?: ObjectOf<any>, options?: HttpOptions) {
         if (!url.startsWith("http")) {
             url = `${this.baseURL}/${url}`;
         }
@@ -97,11 +97,11 @@ export class HttpService {
         }
     }
 
-    async get<T>(url: string, data?: AnyObject, options?: HttpOptions) {
+    async get<T>(url: string, data?: ObjectOf<any>, options?: HttpOptions) {
         return await this.request<T>(url, "GET", data, options);
     }
 
-    async post<T>(url: string, data?: AnyObject, options?: HttpOptions) {
+    async post<T>(url: string, data?: ObjectOf<any>, options?: HttpOptions) {
         return await this.request<T>(url, "POST", data, options);
     }
 }

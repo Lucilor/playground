@@ -1,5 +1,5 @@
 import {Injectable, Injector} from "@angular/core";
-import {AnyObject} from "@lucilor/utils";
+import {ObjectOf} from "@lucilor/utils";
 import {environment} from "@src/environments/environment";
 import * as md5 from "md5";
 import {BehaviorSubject} from "rxjs";
@@ -98,7 +98,7 @@ export class MusicService extends HttpService {
 
     async login(user: string, password: string, isEmail: boolean) {
         let url = "";
-        const data: AnyObject = {md5_password: md5(password)};
+        const data: ObjectOf<any> = {md5_password: md5(password)};
         if (isEmail) {
             url = "login";
             data.email = user;
@@ -149,26 +149,26 @@ export class MusicService extends HttpService {
             return [];
         }
         const offset = (page - 1) * 30;
-        const response = await this.get<AnyObject>("user/playlist", {uid: this.user.profile.userId, offset});
+        const response = await this.get<ObjectOf<any>>("user/playlist", {uid: this.user.profile.userId, offset});
         if (response?.data) {
-            return response.data.playlist as AnyObject[];
+            return response.data.playlist as ObjectOf<any>[];
         }
         return [];
     }
 
     async getPlaylistDetail(id: string) {
-        const response = await this.get<AnyObject>("playlist/detail", {id});
+        const response = await this.get<ObjectOf<any>>("playlist/detail", {id});
         if (response?.data) {
             const playlist = response.data.playlist;
             forceSSL(playlist, "coverImgUrl");
-            (playlist.tracks as AnyObject[]).forEach((v) => forceSSL(v.al, "picUrl"));
-            return response.data.playlist as AnyObject;
+            (playlist.tracks as ObjectOf<any>[]).forEach((v) => forceSSL(v.al, "picUrl"));
+            return response.data.playlist as ObjectOf<any>;
         }
         return null;
     }
 }
 
-function forceSSL(obj: AnyObject, keys: string[] | string) {
+function forceSSL(obj: ObjectOf<any>, keys: string[] | string) {
     if (typeof keys === "string") {
         keys = [keys];
     }

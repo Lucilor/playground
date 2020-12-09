@@ -2,7 +2,7 @@ import {trigger, transition, style, animate} from "@angular/animations";
 import {Component} from "@angular/core";
 import {AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators} from "@angular/forms";
 import {MatSelectionListChange} from "@angular/material/list";
-import {AnyObject} from "@lucilor/utils";
+import {ObjectOf} from "@lucilor/utils";
 import {Subscribed} from "@src/app/mixins/Subscribed.mixin";
 import {MessageService} from "@src/app/modules/message/services/message.service";
 import {AppStatusService} from "@src/app/services/app-status.service";
@@ -22,7 +22,7 @@ import {MusicService, User} from "../../services/music.service";
 export class NeteaseMusicComponent extends Subscribed() {
     form: FormGroup;
     user: User | null = null;
-    playlists: AnyObject[] = [];
+    playlists: ObjectOf<any>[] = [];
     playlistIdx = -1;
     playModes = [
         {value: "listloop", name: "列表循环"},
@@ -31,7 +31,7 @@ export class NeteaseMusicComponent extends Subscribed() {
     ];
     playMode = this.playModes[0].value;
 
-    get playlist(): AnyObject {
+    get playlist(): ObjectOf<any> {
         return this.playlists[this.playlistIdx];
     }
 
@@ -104,7 +104,7 @@ export class NeteaseMusicComponent extends Subscribed() {
         }
     }
 
-    getSongDesc(song: AnyObject) {
+    getSongDesc(song: ObjectOf<any>) {
         return song.al.name + " - " + (song.ar as any[]).map((v) => v.name).join(" & ");
     }
 
