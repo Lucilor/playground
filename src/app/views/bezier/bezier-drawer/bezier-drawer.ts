@@ -1,3 +1,4 @@
+import {Point} from "@lucilor/utils";
 import {DrawerConfig, Drawer} from "@src/app/components/drawer/drawer";
 import {
     BufferGeometry,
@@ -80,7 +81,7 @@ export class BezierDrawer extends Drawer {
         } else {
             const {duration} = config;
             const groups = curve.deCasteljau(_currentTime / duration);
-            const ctrlPosition:number[] = [];
+            const ctrlPosition: number[] = [];
             const curvePosition = Array.from(curveGeometry.getAttribute("position")?.array || []);
             if (_currentTime <= 0) {
                 curvePosition.length = 0;
@@ -174,7 +175,7 @@ export class BezierDrawer extends Drawer {
         if (index >= 0 && index < curve.ctrlPoints.length) {
             curve.ctrlPoints[index].set(p.x, p.y);
         } else {
-            curve.ctrlPoints.push(new Vector2(p.x, p.y));
+            curve.ctrlPoints.push(new Point(p.x, p.y));
         }
         return this.start();
     }
