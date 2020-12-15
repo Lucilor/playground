@@ -38,6 +38,7 @@ export class RoundedBoxGeometry extends BufferGeometry {
 
         const rs1 = radiusSegments + 1; // radius segments + 1
 
+        // eslint-disable-next-line no-bitwise
         const totalVertexCount = (rs1 * radiusSegments + 1) << 3;
 
         // make buffers ======================================
@@ -48,25 +49,18 @@ export class RoundedBoxGeometry extends BufferGeometry {
 
         // some consts =========================================
 
-        const cornerVerts = [];
-        const cornerNormals = [];
-        const normal = new Vector3();
+        const cornerVerts: Vector3[][] = [];
+        const cornerNormals: Vector3[][] = [];
+        // const normal = new Vector3();
         const vertex = new Vector3();
-        const vertexPool = [];
-        const normalPool = [];
-        const indices = [];
+        const vertexPool: Vector3[] = [];
+        const normalPool: Vector3[] = [];
+        const indices: number[] = [];
         const lastVertex = rs1 * radiusSegments;
         const cornerVertNumber = rs1 * radiusSegments + 1;
 
-        doVertices();
-        doFaces();
-        doCorners();
-        doHeightEdges();
-        doWidthEdges();
-        doDepthEdges();
-
         // calculate vert positions =========================
-        function doVertices() {
+        const doVertices = () => {
             // corner offsets
             const cornerLayout = [
                 new Vector3(1, 1, 1),
@@ -160,11 +154,11 @@ export class RoundedBoxGeometry extends BufferGeometry {
                     normalPool.push(norm);
                 }
             }
-        }
+        };
 
         // weave corners ====================================
-        function doCorners() {
-            const indexInd = 0;
+        const doCorners = () => {
+            // const indexInd = 0;
             const flips = [true, false, true, false, false, true, false, true];
             const lastRowOffset = rs1 * (radiusSegments - 1);
 
@@ -218,11 +212,11 @@ export class RoundedBoxGeometry extends BufferGeometry {
                     }
                 }
             }
-        }
+        };
 
         // plates ============================================
         // fix this loop matrices find pattern something
-        function doFaces() {
+        const doFaces = () => {
             // top
             let a = lastVertex; // + cornerVertNumber * 0;
             let b = lastVertex + cornerVertNumber; // * 1;
@@ -300,14 +294,15 @@ export class RoundedBoxGeometry extends BufferGeometry {
             indices.push(b);
             indices.push(c);
             indices.push(d);
-        }
+        };
 
         // weave edges ======================================
 
-        function doHeightEdges() {
+        const doHeightEdges = () => {
             for (let i = 0; i < 4; i++) {
                 const cOffset = i * cornerVertNumber;
                 const cRowOffset = 4 * cornerVertNumber + cOffset;
+                // eslint-disable-next-line no-bitwise
                 const needsFlip = i & 1;
                 for (let u = 0; u < radiusSegments; u++) {
                     const u1 = u + 1;
@@ -333,9 +328,9 @@ export class RoundedBoxGeometry extends BufferGeometry {
                     }
                 }
             }
-        }
+        };
 
-        function doDepthEdges() {
+        const doDepthEdges = () => {
             const cStarts = [0, 2, 4, 6];
             const cEnds = [1, 3, 5, 7];
 
@@ -371,9 +366,9 @@ export class RoundedBoxGeometry extends BufferGeometry {
                     }
                 }
             }
-        }
+        };
 
-        function doWidthEdges() {
+        const doWidthEdges = () => {
             const end = radiusSegments - 1;
 
             const cStarts = [0, 1, 4, 5];
@@ -410,7 +405,14 @@ export class RoundedBoxGeometry extends BufferGeometry {
                     }
                 }
             }
-        }
+        };
+
+        doVertices();
+        doFaces();
+        doCorners();
+        doHeightEdges();
+        doWidthEdges();
+        doDepthEdges();
 
         // fill buffers ======================================
 

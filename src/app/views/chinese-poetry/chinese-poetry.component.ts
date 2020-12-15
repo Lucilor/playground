@@ -41,8 +41,7 @@ export class ChinesePoetryComponent implements OnInit {
     }
 
     async search() {
-        const ref = openChinesePoetrySearchDialog(this.dialog, {data: this.searchPoem});
-        const poem = await ref.afterClosed().toPromise();
+        const poem = await openChinesePoetrySearchDialog(this.dialog, {data: this.searchPoem});
         if (poem) {
             this.isRandom = false;
             this.searchPoem = poem;
@@ -76,7 +75,7 @@ export class ChinesePoetryComponent implements OnInit {
     }
 }
 
-function parsePoem(poems: Poem[], field: keyof Poem) {
+const parsePoem = (poems: Poem[], field: keyof Poem) => {
     const result: string[][] = [];
     for (const poem of poems) {
         const str = poem[field] as string;
@@ -96,4 +95,4 @@ function parsePoem(poems: Poem[], field: keyof Poem) {
         result.push(arr);
     }
     return result;
-}
+};

@@ -62,8 +62,7 @@ export class Drawer {
 
         const animate = () => {
             requestAnimationFrame(animate.bind(this));
-            const {renderer, camera, scene} = this;
-            renderer?.render(scene, camera);
+            this.renderer?.render(this.scene, this.camera);
             this.stats?.update();
             this.controls?.update();
             this.update();

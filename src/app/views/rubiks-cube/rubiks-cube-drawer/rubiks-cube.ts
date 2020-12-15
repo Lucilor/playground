@@ -58,7 +58,7 @@ export class RubiksCube extends Object3D {
     }
 
     private _getCube() {
-        const {_texture, size, colors} = this;
+        const {size, colors} = this;
         // TODO: rounded cube
         // const shape = new Shape();
         // const eps = 0.00001;

@@ -8,10 +8,7 @@ export class BezierCurve {
     }
 
     calcCtrlPoints(points: Point[]) {
-        const distance = (x1: number, y1: number, x2: number, y2: number) => {
-            return new Point(x1, y1).distanceTo(new Point(x2, y2));
-        };
-
+        const distance = (x1: number, y1: number, x2: number, y2: number) => new Point(x1, y1).distanceTo(new Point(x2, y2));
         const result: Point[] = [];
         const length = points.length;
         for (let i = 0; i < length; i++) {

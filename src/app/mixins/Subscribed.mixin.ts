@@ -11,7 +11,7 @@ export const Subscribed = <T extends Constructor>(base: T = class {} as T) =>
             this.destroyed$.next();
         }
 
-        subscribe<T>(target: Observable<T>, next?: (value: T) => void, error?: (error: any) => void, complete?: () => void) {
-            return target.pipe(takeUntil(this.destroyed$)).subscribe(next, error, complete);
+        subscribe<K>(target: Observable<K>, next?: (value: K) => void, onError?: (error: any) => void, onComplete?: () => void) {
+            return target.pipe(takeUntil(this.destroyed$)).subscribe(next, onError, onComplete);
         }
     };

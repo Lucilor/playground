@@ -76,10 +76,10 @@ export class BullsAndCowsDifficultyComponent {
     }
 }
 
-export async function openBullsAndCowsDifficultyDialog(dialog: MatDialog, config: MatDialogConfig<BullsAndCowsDifficulty>) {
+export const openBullsAndCowsDifficultyDialog = async (dialog: MatDialog, config: MatDialogConfig<BullsAndCowsDifficulty>) => {
     const ref = dialog.open<BullsAndCowsDifficultyComponent, BullsAndCowsDifficulty, BullsAndCowsDifficulty>(
         BullsAndCowsDifficultyComponent,
         config
     );
     return await ref.afterClosed().toPromise();
-}
+};

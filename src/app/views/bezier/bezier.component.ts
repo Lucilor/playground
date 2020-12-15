@@ -23,7 +23,7 @@ export class BezierComponent implements AfterViewInit {
             duration: 1000,
             backgroundColor: 0xffffff
         });
-        (window as any)["drawer"] = drawer;
+        (window as any).drawer = drawer;
         this.drawer = drawer;
     }
 

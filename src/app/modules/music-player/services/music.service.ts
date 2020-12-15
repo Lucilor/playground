@@ -49,7 +49,7 @@ export interface User {
         djStatus: number;
         eventCount: number;
         expertTags: string | null;
-        experts: {};
+        experts: ObjectOf<any>;
         followed: boolean;
         followeds: number;
         follows: number;
@@ -168,7 +168,7 @@ export class MusicService extends HttpService {
     }
 }
 
-function forceSSL(obj: ObjectOf<any>, keys: string[] | string) {
+const forceSSL = (obj: ObjectOf<any>, keys: string[] | string) => {
     if (typeof keys === "string") {
         keys = [keys];
     }
@@ -178,4 +178,4 @@ function forceSSL(obj: ObjectOf<any>, keys: string[] | string) {
             obj[key] = value.replace(/^http:/, "https:");
         }
     });
-}
+};

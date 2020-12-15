@@ -1,6 +1,7 @@
 import {Component, Inject, OnInit} from "@angular/core";
-import {MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {Poem} from "@src/app/modules/http/services/chinese-poetry.service";
+import {getOpenDialogFunc} from "../dialog.common";
 
 @Component({
     selector: "app-chinese-poetry-search",
@@ -48,6 +49,6 @@ export class ChinesePoetrySearchComponent implements OnInit {
     }
 }
 
-export function openChinesePoetrySearchDialog(dialog: MatDialog, config: MatDialogConfig<Partial<Poem>>) {
-    return dialog.open<ChinesePoetrySearchComponent, Partial<Poem>, Poem>(ChinesePoetrySearchComponent, config);
-}
+export const openChinesePoetrySearchDialog = getOpenDialogFunc<ChinesePoetrySearchComponent, Partial<Poem>, Poem>(
+    ChinesePoetrySearchComponent
+);
