@@ -5,6 +5,7 @@ import {ChatComponent} from "./modules/ai/components/chat/chat.component";
 import {NeteaseMusicComponent} from "./modules/music-player/views/netease-music/netease-music.component";
 import {PathResolveService} from "./services/path-resolve.service";
 import {BezierComponent} from "./views/bezier/bezier.component";
+import {BlogComponent} from "./views/blog/blog.component";
 import {BullsAndCowsComponent} from "./views/bulls-and-cows/bulls-and-cows.component";
 import {ChinesePoetryComponent} from "./views/chinese-poetry/chinese-poetry.component";
 import {IndexComponent} from "./views/index/index.component";
@@ -21,6 +22,7 @@ const routes: Routes = [
     {path: paths.neteaseMusic, component: NeteaseMusicComponent},
     {path: paths.chat, component: ChatComponent},
     {path: paths.bullsAndCows, component: BullsAndCowsComponent},
+    {path: paths.blog, component: BlogComponent},
     {path: "**", component: PageNotFoundComponent, resolve: {redirect: PathResolveService}}
 ];
 

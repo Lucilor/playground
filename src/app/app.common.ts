@@ -15,7 +15,8 @@ export const paths = {
     chinesePoetry: "chinese-poetry",
     neteaseMusic: "wyyyy",
     chat: "chat",
-    bullsAndCows: "bulls-and-cows"
+    bullsAndCows: "bulls-and-cows",
+    blog: "blog"
 };
 
 export const session = new SessionStorage("playground");

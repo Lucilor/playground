@@ -32,6 +32,7 @@ import {BullsAndCowsComponent} from "./views/bulls-and-cows/bulls-and-cows.compo
 import {ChinesePoetryComponent} from "./views/chinese-poetry/chinese-poetry.component";
 import {IndexComponent} from "./views/index/index.component";
 import {RubiksCubeComponent} from "./views/rubiks-cube/rubiks-cube.component";
+import {BlogComponent} from "./views/blog/blog.component";
 
 @Injectable()
 export class MyMatPaginatorIntl extends MatPaginatorIntl {
@@ -61,7 +62,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         MenuComponent,
         RubiksCubeComponent,
         BullsAndCowsComponent,
-        BullsAndCowsDifficultyComponent
+        BullsAndCowsDifficultyComponent,
+        BlogComponent
     ],
     imports: [
         AIModule,
