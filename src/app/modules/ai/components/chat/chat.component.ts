@@ -1,4 +1,5 @@
 import {AfterViewInit, Component, ViewChild} from "@angular/core";
+import {ActivatedRoute} from "@angular/router";
 import {timeout} from "@lucilor/utils";
 import {headerNoCache, HttpService} from "@src/app/modules/http/services/http.service";
 import {PerfectScrollbarComponent} from "ngx-perfect-scrollbar";
@@ -46,6 +47,11 @@ export class MessageManager {
         return message;
     }
 
+    clear() {
+        this.messages.length = 0;
+        return this;
+    }
+
     async updateMessage(oldVal: Message, newVal: Partial<Message> = {}) {
         if (!newVal.timestamp) {
             newVal.timestamp = this._formatTime();
@@ -74,7 +80,7 @@ export class MessageManager {
             message.isLoading = true;
             text = await text;
         }
-        this.updateMessage(message, {text: text.replace(/\n/g, "<br />")});
+        await this.updateMessage(message, {text: text.replace(/\n/g, "<br />")});
         message.isLoading = false;
     }
 
@@ -111,12 +117,17 @@ export class ChatComponent implements AfterViewInit {
         return this.messageManager.messages as any[];
     }
 
-    constructor(private http: HttpService) {}
+    constructor(private http: HttpService, private route: ActivatedRoute) {}
 
     async ngAfterViewInit() {
+        const params = this.route.snapshot.queryParams;
         this.messageManager.dom = document.querySelector(".messages-content perfect-scrollbar > div");
-        await this.messageManager.pushText("人类，是世界上最有趣的生物。", this.moli.name);
-        this.messageManager.pushText("对我说“帮助”可以查看指令。", this.moli.name);
+        if (params.sayHello !== undefined) {
+            this.sayHello();
+        } else {
+            await this.messageManager.pushText("人类，是世界上最有趣的生物。", this.moli.name);
+            this.messageManager.pushText("对我说“帮助”可以查看指令。", this.moli.name);
+        }
     }
 
     onKeyDown(event: KeyboardEvent) {
@@ -149,5 +160,13 @@ export class ChatComponent implements AfterViewInit {
             this.messageManager.pushText(textPromise, this.moli.name);
         }
         this.input = "";
+    }
+
+    async sayHello() {
+        this.messageManager.clear();
+        const list = ["你好", "Hello", "こんにちは", "Bonjour", "Hallo", "Witam", "안녕하십니까", "Привет", "Γειά σου", "Olá", "สวัสดี"];
+        for (const text of list) {
+            await this.messageManager.pushText(text, this.moli.name);
+        }
     }
 }

@@ -120,7 +120,6 @@ export class MusicService extends HttpService {
         if (uid) {
             const response2 = await this.get<User>("user/detail", {uid}, headerNoCache);
             if (response2?.data) {
-                forceSSL(response2.data.profile, ["avatarUrl", "backgroundUrl"]);
                 this.userChange.next(response2.data);
                 return;
             }
@@ -159,23 +158,8 @@ export class MusicService extends HttpService {
     async getPlaylistDetail(id: string) {
         const response = await this.get<ObjectOf<any>>("playlist/detail", {id});
         if (response?.data) {
-            const playlist = response.data.playlist;
-            forceSSL(playlist, "coverImgUrl");
-            (playlist.tracks as ObjectOf<any>[]).forEach((v) => forceSSL(v.al, "picUrl"));
             return response.data.playlist as ObjectOf<any>;
         }
         return null;
     }
 }
-
-const forceSSL = (obj: ObjectOf<any>, keys: string[] | string) => {
-    if (typeof keys === "string") {
-        keys = [keys];
-    }
-    keys.forEach((key) => {
-        const value = obj[key];
-        if (typeof value === "string") {
-            obj[key] = value.replace(/^http:/, "https:");
-        }
-    });
-};

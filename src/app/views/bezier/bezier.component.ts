@@ -1,7 +1,7 @@
 import {Component, AfterViewInit, ViewChild, ElementRef} from "@angular/core";
 import {BezierDrawer} from "./bezier-drawer/bezier-drawer";
-import {Vector2} from "three";
 import {MatSlideToggleChange} from "@angular/material/slide-toggle";
+import {Point} from "@lucilor/utils";
 
 @Component({
     selector: "app-bezier",
@@ -11,7 +11,7 @@ import {MatSlideToggleChange} from "@angular/material/slide-toggle";
 export class BezierComponent implements AfterViewInit {
     @ViewChild("container", {read: ElementRef}) container?: ElementRef<HTMLElement>;
     drawer: BezierDrawer;
-    ctrlPoints: Vector2[] = [];
+    ctrlPoints: Point[] = [];
     miniMenu = false;
     get points() {
         return this.drawer?.curve.ctrlPoints || [];
@@ -36,11 +36,11 @@ export class BezierComponent implements AfterViewInit {
         });
     }
 
-    getPointNum(point: Vector2, axis: "x" | "y") {
+    getPointNum(point: Point, axis: "x" | "y") {
         return point[axis].toFixed(2);
     }
 
-    setPointNum(event: Event, point: Vector2, axis: "x" | "y") {
+    setPointNum(event: Event, point: Point, axis: "x" | "y") {
         const value = (event.target as HTMLInputElement).value;
         point[axis] = Number(value);
         this.drawer.start();
