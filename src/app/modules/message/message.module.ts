@@ -29,7 +29,7 @@ import {MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from "@angular/materia
         {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {maxWidth: "unset"}},
         {
             provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
-            useValue: {duration: 3000, verticalPosition: "top"}
+            useValue: {duration: 3000, verticalPosition: "top", panelClass: ["mat-toolbar", "mat-primary"]}
         }
     ]
 })
