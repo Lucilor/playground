@@ -1,4 +1,4 @@
-import {LocalStorage, SessionStorage} from "@lucilor/utils";
+import {LocalStorage, ObjectOf, SessionStorage} from "@lucilor/utils";
 
 export interface Response<T> {
     code: number;
@@ -8,15 +8,15 @@ export interface Response<T> {
     importance?: number;
 }
 
-export const paths = {
-    index: "index",
-    bezier: "bezier",
-    rubiksCube: "rubiks-cube",
-    chinesePoetry: "chinese-poetry",
-    neteaseMusic: "wyyyy",
-    chat: "chat",
-    bullsAndCows: "bulls-and-cows",
-    blog: "blog"
+export const routesInfo: ObjectOf<{path: string; title: string}> = {
+    index: {path: "index", title: "首页"},
+    bezier: {path: "bezier", title: "贝塞尔曲线"},
+    rubiksCube: {path: "rubiks-cube", title: "魔方"},
+    chinesePoetry: {path: "chinese-poetry", title: "古诗词"},
+    neteaseMusic: {path: "wyyyy", title: "更换歌单"},
+    chat: {path: "chat", title: "机器人茉莉"},
+    bullsAndCows: {path: "bulls-and-cows", title: "猜数字"},
+    blog: {path: "blog", title: "博客"}
 };
 
 export const session = new SessionStorage("playground");

@@ -1,6 +1,6 @@
 import {NgModule} from "@angular/core";
 import {Routes, RouterModule} from "@angular/router";
-import {paths} from "./app.common";
+import {routesInfo} from "./app.common";
 import {ChatComponent} from "./modules/ai/components/chat/chat.component";
 import {NeteaseMusicComponent} from "./modules/music-player/views/netease-music/netease-music.component";
 import {PathResolveService} from "./services/path-resolve.service";
@@ -13,16 +13,16 @@ import {PageNotFoundComponent} from "./views/page-not-found/page-not-found.compo
 import {RubiksCubeComponent} from "./views/rubiks-cube/rubiks-cube.component";
 
 const routes: Routes = [
-    {path: "", pathMatch: "full", redirectTo: paths.index},
-    {path: paths.bezier, component: BezierComponent},
-    {path: paths.chinesePoetry, component: ChinesePoetryComponent},
-    {path: paths.index, component: IndexComponent},
-    {path: paths.rubiksCube, component: RubiksCubeComponent},
-    {path: paths.neteaseMusic, component: NeteaseMusicComponent},
-    {path: paths.neteaseMusic, component: NeteaseMusicComponent},
-    {path: paths.chat, component: ChatComponent},
-    {path: paths.bullsAndCows, component: BullsAndCowsComponent},
-    {path: paths.blog, component: BlogComponent},
+    {path: "", pathMatch: "full", redirectTo: routesInfo.index.path},
+    {path: routesInfo.bezier.path, component: BezierComponent},
+    {path: routesInfo.chinesePoetry.path, component: ChinesePoetryComponent},
+    {path: routesInfo.index.path, component: IndexComponent},
+    {path: routesInfo.rubiksCube.path, component: RubiksCubeComponent},
+    {path: routesInfo.neteaseMusic.path, component: NeteaseMusicComponent},
+    {path: routesInfo.neteaseMusic.path, component: NeteaseMusicComponent},
+    {path: routesInfo.chat.path, component: ChatComponent},
+    {path: routesInfo.bullsAndCows.path, component: BullsAndCowsComponent},
+    {path: routesInfo.blog.path, component: BlogComponent},
     {path: "**", component: PageNotFoundComponent, resolve: {redirect: PathResolveService}}
 ];
 

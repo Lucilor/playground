@@ -1,7 +1,8 @@
 import {Component} from "@angular/core";
-import {paths} from "@src/app/app.common";
+import {routesInfo} from "@src/app/app.common";
 import {Subscribed} from "@src/app/mixins/Subscribed.mixin";
 import {MusicService} from "@src/app/modules/music-player/services/music.service";
+import {cloneDeep} from "lodash";
 
 @Component({
     selector: "app-index",
@@ -9,18 +10,19 @@ import {MusicService} from "@src/app/modules/music-player/services/music.service
     styleUrls: ["./index.component.scss"]
 })
 export class IndexComponent extends Subscribed() {
-    paths: typeof paths;
+    routesInfo: typeof routesInfo;
 
     constructor(private music: MusicService) {
         super();
-        this.paths = {...paths};
-        for (const key in this.paths) {
-            const k = key as keyof typeof paths;
-            this.paths[k] = "/" + this.paths[k];
+        this.routesInfo = cloneDeep(routesInfo);
+        delete this.routesInfo.index;
+        for (const key in this.routesInfo) {
+            const k = key as keyof typeof routesInfo;
+            this.routesInfo[k].path = "/" + this.routesInfo[k].path;
         }
     }
 
-    getPath(key: keyof typeof paths) {
-        return "/" + paths[key];
+    getPath(key: keyof typeof routesInfo) {
+        return "/" + routesInfo[key];
     }
 }
