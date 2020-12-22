@@ -12,12 +12,14 @@ export class AppComponent {
     title = "playground";
     loaderText = "";
     showHomeBtn = false;
+    showFooter = true;
 
     constructor(private router: Router, private status: AppStatusService) {
         this.router.events.subscribe((event) => {
             if (event instanceof NavigationEnd) {
                 const routeInfo = Object.values(routesInfo).find((v) => "/" + v.path === event.url);
                 this.showHomeBtn = routeInfo?.path !== "index";
+                this.showFooter = routeInfo?.path !== "blog";
                 document.title = routeInfo?.title || this.getRandomTitle();
             }
         });

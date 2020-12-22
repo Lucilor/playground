@@ -35,12 +35,6 @@ export class NeteaseMusicComponent extends Subscribed() {
         return this.playlists[this.playlistIdx];
     }
 
-    userValidator: ValidatorFn = (control: AbstractControl) => {
-        const emailError = Validators.email(control);
-        const phoneNumError = Validators.pattern(/^1[3-9]\d{9}$/)(control);
-        return !emailError ? emailError : phoneNumError;
-    };
-
     constructor(
         private formBuilder: FormBuilder,
         private music: MusicService,
@@ -48,8 +42,13 @@ export class NeteaseMusicComponent extends Subscribed() {
         private status: AppStatusService
     ) {
         super();
+        const userValidator: ValidatorFn = (control: AbstractControl) => {
+            const emailError = Validators.email(control);
+            const phoneNumError = Validators.pattern(/^1[3-9]\d{9}$/)(control);
+            return !emailError ? emailError : phoneNumError;
+        };
         this.form = this.formBuilder.group({
-            user: ["", [Validators.required, this.userValidator]],
+            user: ["", [Validators.required, userValidator]],
             password: ["", Validators.required]
         });
         this.music.userChange.subscribe(async (user) => {
