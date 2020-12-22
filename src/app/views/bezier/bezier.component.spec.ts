@@ -4,6 +4,7 @@ import {MatExpansionModule} from "@angular/material/expansion";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatIconModule} from "@angular/material/icon";
 import {MatInputModule} from "@angular/material/input";
+import {MatSelectModule} from "@angular/material/select";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MenuComponent} from "@src/app/components/menu/menu.component";
@@ -25,6 +26,7 @@ describe("BezierComponent", () => {
                 MatFormFieldModule,
                 MatIconModule,
                 MatInputModule,
+                MatSelectModule,
                 MatSlideToggleModule,
                 PerfectScrollbarModule
             ]

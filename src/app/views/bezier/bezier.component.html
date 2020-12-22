@@ -1,28 +1,46 @@
 <div #container></div>
 <app-menu>
     <div class="content" content>
-        <mat-expansion-panel expanded class="point-info-container">
+        <mat-expansion-panel class="point-info-container">
             <mat-expansion-panel-header>
-                <mat-panel-title>控制点</mat-panel-title>
+                <mat-panel-title *ngIf="drawer.mode === 'ctrlPoints'">控制点</mat-panel-title>
+                <mat-panel-title *ngIf="drawer.mode === 'fitPoints'">拟合点</mat-panel-title>
             </mat-expansion-panel-header>
             <div class="point-info" *ngFor="let p of points; let i = index">
-                <div class="point-title">P{{ i }} <mat-icon class="delete-btn" (click)="drawer.removeCtrlPoint(i)">clear</mat-icon></div>
+                <div class="point-title">
+                    P{{ i }} <mat-icon class="delete-btn" (click)="removePoint(i)">clear</mat-icon>
+                </div>
                 <mat-form-field>
                     <mat-label>x</mat-label>
-                    <input matInput type="number" [value]="getPointNum(p, 'x')" (change)="setPointNum($event, p, 'x')" autocomplete="off" />
+                    <input matInput type="number" [value]="getPointNum(i, 'x')" (change)="setPointNum($event, i, 'x')" autocomplete="off" />
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label>y</mat-label>
-                    <input matInput type="number" [value]="getPointNum(p, 'y')" (change)="setPointNum($event, p, 'y')" autocomplete="off" />
+                    <input matInput type="number" [value]="getPointNum(i, 'y')" (change)="setPointNum($event, i, 'y')" autocomplete="off" />
                 </mat-form-field>
             </div>
         </mat-expansion-panel>
         <div class="controls" *ngIf="drawer">
+            <mat-form-field *ngIf="drawer.mode === 'fitCurve'">
+                <mat-label>容错度</mat-label>
+                <input matInput type="number" [value]="drawer.config.maxErrors" (change)="setMaxErrors($event)" autocomplete="off" />
+                <mat-hint>容错度越小曲线越精确</mat-hint>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>模式</mat-label>
+                <mat-select [value]="drawer.mode" (selectionChange)="changeMode($event)">
+                    <mat-option value="ctrlPoints">控制点</mat-option>
+                    <mat-option value="fitPoints">拟合曲线（画点）</mat-option>
+                    <mat-option value="fitCurve">拟合曲线（画线）</mat-option>
+                </mat-select>
+            </mat-form-field>
             <mat-form-field>
                 <mat-label>动画时间(ms)</mat-label>
-                <input matInput type="number" [(ngModel)]="drawer.config.duration" autocomplete="off" />
+                <input matInput type="number" [value]="drawer.config.duration" (change)="setDuration($event)" autocomplete="off" />
+                <mat-hint>慢工出细活</mat-hint>
             </mat-form-field>
-            <mat-slide-toggle (change)="toggleLoop($event)">循环播放</mat-slide-toggle>
+            <mat-slide-toggle (change)="toggleLoop($event)" [checked]="drawer.loop">循环播放</mat-slide-toggle>
+            <mat-slide-toggle (change)="toggleHidePoints($event)" [checked]="drawer.config.hidePoints">隐藏点</mat-slide-toggle>
             <button mat-mini-fab (click)="drawer.paused = !drawer.paused">
                 <mat-icon>{{ drawer.paused ? "play_arrow" : "pause" }}</mat-icon>
             </button>
