@@ -9,10 +9,28 @@
             </div>
         </div>
         <div class="pieces">
-            <div class="piece" name="卒" [style.top]="'75%'" [style.left]="'25%'"></div>
+            <div
+                class="piece"
+                *ngFor="let piece of board.black.pieces"
+                [hidden]="piece.eaten"
+                [attr.name]="piece.name.black"
+                [class.selected]="piece.selected"
+                [style.left]="piece.position[0] * 12.5 + '%'"
+                [style.top]="piece.position[1] * 25 + '%'"
+                (click)="onPieceClick(piece)"
+            ></div>
         </div>
     </div>
-    <div class="divider">楚河汉界</div>
+    <div class="divider">
+        <div>
+            <div>楚</div>
+            <div>河</div>
+        </div>
+        <div>
+            <div>漢</div>
+            <div>界</div>
+        </div>
+    </div>
     <div class="area red">
         <div class="tiles">
             <div class="tile" *ngFor="let tile of tilesPerArea; let i = index">
@@ -23,7 +41,16 @@
             </div>
         </div>
         <div class="pieces">
-            <div class="piece" name="卒" [style.top]="'75%'" [style.left]="'25%'"></div>
+            <div
+                class="piece"
+                *ngFor="let piece of board.red.pieces"
+                [hidden]="piece.eaten"
+                [attr.name]="piece.name.red"
+                [class.selected]="piece.selected"
+                [style.left]="100 - piece.position[0] * 12.5 + '%'"
+                [style.top]="100 - piece.position[1] * 25 + '%'"
+                (click)="onPieceClick(piece)"
+            ></div>
         </div>
     </div>
 </div>

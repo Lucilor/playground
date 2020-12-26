@@ -2,6 +2,7 @@ import {Component, Inject} from "@angular/core";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {BullsAndCowsConfig} from "@src/app/views/bulls-and-cows/bulls-and-cows";
+import {getOpenDialogFunc} from "../dialog.common";
 
 export interface BullsAndCowsDifficulty {
     name: string;
@@ -76,10 +77,7 @@ export class BullsAndCowsDifficultyComponent {
     }
 }
 
-export const openBullsAndCowsDifficultyDialog = async (dialog: MatDialog, config: MatDialogConfig<BullsAndCowsDifficulty>) => {
-    const ref = dialog.open<BullsAndCowsDifficultyComponent, BullsAndCowsDifficulty, BullsAndCowsDifficulty>(
-        BullsAndCowsDifficultyComponent,
-        config
-    );
-    return await ref.afterClosed().toPromise();
-};
+type BACD = BullsAndCowsDifficulty;
+export const openBullsAndCowsDifficultyDialog = getOpenDialogFunc<BullsAndCowsDifficultyComponent, BACD, BACD>(
+    BullsAndCowsDifficultyComponent
+);

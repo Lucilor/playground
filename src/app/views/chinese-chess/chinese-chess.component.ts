@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {ChineseChess} from "./chinese-chess";
+import {ChineseChessBoard, ChineseChessPiece} from "./chinese-chess";
 
 @Component({
     selector: "app-chinese-chess",
@@ -8,12 +8,19 @@ import {ChineseChess} from "./chinese-chess";
 })
 export class ChineseChessComponent implements OnInit {
     tilesPerArea = new Array(32);
-    chineseChess = new ChineseChess();
+    board = new ChineseChessBoard();
 
     constructor() {}
 
     ngOnInit() {
         console.log(this);
         document.title = "test";
+    }
+
+    onPieceClick(piece: ChineseChessPiece) {
+        this.board.selectPiece(piece);
+        if (piece.selected) {
+            console.log(piece);
+        }
     }
 }
