@@ -16,7 +16,8 @@ export const routesInfo: ObjectOf<{path: string; title: string}> = {
     neteaseMusic: {path: "wyyyy", title: "更换歌单"},
     chat: {path: "chat", title: "机器人茉莉"},
     bullsAndCows: {path: "bulls-and-cows", title: "猜数字"},
-    blog: {path: "blog", title: "博客"}
+    blog: {path: "blog", title: "博客"},
+    chineseChess: {path: "chinese-chess", title: "中国象棋"}
 };
 
 export const session = new SessionStorage("playground");

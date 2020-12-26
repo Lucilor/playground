@@ -1,0 +1,29 @@
+<div class="board">
+    <div class="area black">
+        <div class="tiles">
+            <div class="tile" *ngFor="let tile of tilesPerArea; let i = index">
+                <div class="corner top left" *ngIf="[17, 23, 24, 26, 28, 30].includes(i)"></div>
+                <div class="corner top right" *ngIf="[16, 22, 25, 27, 29, 31].includes(i)"></div>
+                <div class="corner bottom left" *ngIf="[9, 15, 16, 18, 20, 22].includes(i)"></div>
+                <div class="corner bottom right" *ngIf="[8, 14, 17, 19, 21, 23].includes(i)"></div>
+            </div>
+        </div>
+        <div class="pieces">
+            <div class="piece" name="卒" [style.top]="'75%'" [style.left]="'25%'"></div>
+        </div>
+    </div>
+    <div class="divider">楚河汉界</div>
+    <div class="area red">
+        <div class="tiles">
+            <div class="tile" *ngFor="let tile of tilesPerArea; let i = index">
+                <div class="corner top left" *ngIf="[8, 10, 12, 14, 17, 23].includes(i)"></div>
+                <div class="corner top right" *ngIf="[9, 11, 13, 15, 16, 22].includes(i)"></div>
+                <div class="corner bottom left" *ngIf="[0, 2, 4, 6, 9, 15].includes(i)"></div>
+                <div class="corner bottom right" *ngIf="[1, 3, 5, 7, 8, 14].includes(i)"></div>
+            </div>
+        </div>
+        <div class="pieces">
+            <div class="piece" name="卒" [style.top]="'75%'" [style.left]="'25%'"></div>
+        </div>
+    </div>
+</div>

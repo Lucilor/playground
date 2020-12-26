@@ -1,0 +1,108 @@
+div {
+    box-sizing: border-box;
+    position: relative;
+}
+
+$border-width: 1px;
+$border-color: black;
+
+@mixin border {
+    border-width: $border-width;
+    border-color: $border-color;
+    border-style: solid;
+}
+@mixin border2x {
+    border-width: calc(2 * #{$border-width});
+    border-color: $border-color;
+    border-style: solid;
+}
+
+.board {
+    width: 535px;
+    height: 599px;
+    padding: 20px;
+    margin: 20px;
+    @include border2x();
+    display: flex;
+    flex-direction: column;
+    background-color: burlywood;
+}
+
+.area {
+    @include border();
+    width: 100%;
+    height: 100%;
+    flex: 1 1 0;
+
+    .tiles {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        .tile {
+            @include border();
+            width: 12.5%;
+            height: 25%;
+
+            .corner {
+                width: 25%;
+                height: 25%;
+                position: absolute;
+                border-color: $border-color;
+                border-style: solid;
+                border-width: 0;
+                &.top {
+                    top: 2px;
+                    border-top-width: calc(2 * #{$border-width});
+                }
+                &.right {
+                    right: 2px;
+                    border-right-width: calc(2 * #{$border-width});
+                }
+                &.bottom {
+                    bottom: 2px;
+                    border-bottom-width: calc(2 * #{$border-width});
+                }
+                &.left {
+                    left: 2px;
+                    border-left-width: calc(2 * #{$border-width});
+                }
+            }
+        }
+    }
+
+    .pieces {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        .piece {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid black;
+            width: 50px;
+            height: 50px;
+            transform: translate(-50%, -50%);
+            background-color: wheat;
+            cursor: pointer;
+            &::after {
+                content: attr(name);
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 30px;
+            }
+        }
+    }
+}
+
+.divider {
+    @include border2x();
+    border-top: none;
+    border-bottom: none;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+}

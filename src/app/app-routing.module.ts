@@ -7,6 +7,7 @@ import {PathResolveService} from "./services/path-resolve.service";
 import {BezierComponent} from "./views/bezier/bezier.component";
 import {BlogComponent} from "./views/blog/blog.component";
 import {BullsAndCowsComponent} from "./views/bulls-and-cows/bulls-and-cows.component";
+import {ChineseChessComponent} from "./views/chinese-chess/chinese-chess.component";
 import {ChinesePoetryComponent} from "./views/chinese-poetry/chinese-poetry.component";
 import {IndexComponent} from "./views/index/index.component";
 import {PageNotFoundComponent} from "./views/page-not-found/page-not-found.component";
@@ -23,6 +24,7 @@ const routes: Routes = [
     {path: routesInfo.chat.path, component: ChatComponent},
     {path: routesInfo.bullsAndCows.path, component: BullsAndCowsComponent},
     {path: routesInfo.blog.path, component: BlogComponent},
+    {path: routesInfo.chineseChess.path, component: ChineseChessComponent},
     {path: "**", component: PageNotFoundComponent, resolve: {redirect: PathResolveService}}
 ];
 
