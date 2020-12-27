@@ -1,51 +1,96 @@
-import {clamp, uniqueId} from "lodash";
+import {EventEmitter} from "events";
+import {uniqueId} from "lodash";
 
 export type ChineseChessSideName = "red" | "black";
 
-const getLeft = (position: number[], step = 1) => [clamp(position[0] - step, 0, 9), position[1]];
-const getRight = (position: number[], step = 1) => [clamp(position[0] + step, 0, 9), position[1]];
-const getUp = (position: number[], step = 1) => [position[0], clamp(position[1] + step, 0, 9)];
-const getDown = (position: number[], step = 1) => [position[0], clamp(position[1] - step, 0, 9)];
+const switchPosition = (position: number[]) => [8 - position[0], 9 - position[1]];
 
-export class ChineseChessBoard {
+export interface ChineseChessEvents {
+    pieceselect: [ChineseChessPiece];
+    pieceunselect: [ChineseChessPiece];
+}
+export type ChineseChessEventCallBack<T extends keyof ChineseChessEvents> = (...params: ChineseChessEvents[T]) => void;
+
+export class ChineseChessBoard extends EventEmitter {
     red = new ChineseChessSide("red", this);
     black = new ChineseChessSide("black", this);
-    currentSide: ChineseChessSideName = "red";
+    currentSide = this.red;
 
-    constructor() {}
+    // constructor() {}
 
     selectPiece(id: string | ChineseChessPiece) {
-        if (this.currentSide === "red") {
+        if (this.currentSide.isRed) {
             this.red.selectPiece(id);
-        } else {
+        } else if (this.currentSide.isBlack) {
             this.black.selectPiece(id);
         }
     }
 
-    movePiece(id: string, position: number[]) {}
+    movePiece(id: string | ChineseChessPiece, position: number[]) {
+        const currentSide = this.currentSide;
+        const piece = currentSide.findPiece(id);
+        if (!piece || !piece.path.find((p) => p[0] === position[0] && p[1] === position[1])) {
+            return false;
+        }
+        let pieceToEat: ChineseChessPiece | undefined;
+        if (currentSide.isRed) {
+            pieceToEat = this.red.findPiece(position) || this.black.findPiece(switchPosition(position));
+        } else {
+            pieceToEat = this.black.findPiece(position) || this.red.findPiece(switchPosition(position));
+        }
+        piece.position = position;
+        if (pieceToEat) {
+            pieceToEat.eaten = true;
+        }
+        piece.selected = !piece.selected;
+        this.currentSide = this.currentSide.isRed ? this.black : this.red;
+        return true;
+    }
 
     getValidMoves(piece: ChineseChessPiece) {}
 
-    findPiece(id: string | ChineseChessPiece | number[]) {
-        let piece = this.black.findPiece(id);
-        if (!piece) {
-            if (Array.isArray(id)) {
-                id = [9 - id[0], 9 - id[1]];
-            }
-            piece = this.red.findPiece(id);
-        }
-        return piece;
+    // findPiece(id: string | ChineseChessPiece | number[]) {
+    //     let piece = this.black.findPiece(id);
+    //     if (!piece && Array.isArray(id)) {
+    //         piece = this.red.findPiece(switchPosition(id));
+    //     }
+    //     return piece;
+    // }
+
+    emit<T extends keyof ChineseChessEvents>(type: T, ...params: ChineseChessEvents[T]) {
+        return super.emit(type, ...params);
+    }
+
+    on<T extends keyof ChineseChessEvents>(type: T, listener: ChineseChessEventCallBack<T>) {
+        return super.on(type, listener as (...args: any[]) => void);
+    }
+
+    off<T extends keyof ChineseChessEvents>(type: T, listener: ChineseChessEventCallBack<T>) {
+        return super.off(type, listener as (...args: any[]) => void);
     }
 }
 
 type ChineseChessPieceType = new (...args: any[]) => ChineseChessPiece;
 export class ChineseChessSide {
     pieces: ChineseChessPiece[] = [];
+    get isRed() {
+        return this.name === "red";
+    }
+    get isBlack() {
+        return this.name === "black";
+    }
+    get opponent() {
+        if (this.isRed) {
+            return this.board.black;
+        } else {
+            return this.board.red;
+        }
+    }
     // get eatenPieces() {
     //     return this.pieces.filter((p) => p.eaten);
     // }
 
-    constructor(public name: ChineseChessSideName, public board: ChineseChessBoard) {
+    constructor(readonly name: ChineseChessSideName, public board: ChineseChessBoard) {
         this.initPieces();
     }
 
@@ -109,13 +154,17 @@ export class ChineseChessSide {
         if (id instanceof ChineseChessPiece) {
             id = id.id;
         }
+        let pieceFound: ChineseChessPiece | undefined;
         this.pieces.forEach((piece) => {
             if (piece.id === id) {
-                piece.selected = !piece.selected;
+                pieceFound = piece;
             } else {
                 piece.selected = false;
             }
         });
+        if (pieceFound) {
+            pieceFound.selected = !pieceFound.selected;
+        }
         return this;
     }
 
@@ -129,11 +178,80 @@ export class ChineseChessSide {
         }
         return this.pieces.find((p) => !p.eaten && p.id === id);
     }
+
+    findOpponentPiece(id: string | ChineseChessPiece | number[]) {
+        if (Array.isArray(id)) {
+            return this.opponent.findPiece(switchPosition(id));
+        }
+        return this.opponent.findPiece(id);
+    }
 }
+
+const getLeftUntil = (position: number[], maxStep: number, until: (currPosition: number[]) => boolean) => {
+    const result: number[][] = [];
+    const j = maxStep > 0 ? position[0] - maxStep : 0;
+    for (let i = position[0] - 1; i >= j; i--) {
+        const p = [i, position[1]];
+        result.push(p);
+        if (until(p)) {
+            break;
+        }
+    }
+    return result;
+};
+const getRightUntil = (position: number[], maxStep: number, until: (currPosition: number[]) => boolean) => {
+    const result: number[][] = [];
+    const j = maxStep > 0 ? position[0] + maxStep : 8;
+    for (let i = position[0] + 1; i <= j; i++) {
+        const p = [i, position[1]];
+        result.push(p);
+        if (until(p)) {
+            break;
+        }
+    }
+    return result;
+};
+const getUpUntil = (position: number[], maxStep: number, until: (currPosition: number[]) => boolean) => {
+    const result: number[][] = [];
+    const j = maxStep > 0 ? position[1] + maxStep : 9;
+    for (let i = position[1] + 1; i <= j; i++) {
+        const p = [position[0], i];
+        result.push(p);
+        if (until(p)) {
+            break;
+        }
+    }
+    return result;
+};
+const getDownUntil = (position: number[], maxStep: number, until: (currPosition: number[]) => boolean) => {
+    const result: number[][] = [];
+    const j = maxStep > 0 ? position[1] - maxStep : 0;
+    for (let i = position[1] - 1; i >= j; i--) {
+        const p = [position[0], i];
+        result.push(p);
+        if (until(p)) {
+            break;
+        }
+    }
+    return result;
+};
 
 export abstract class ChineseChessPiece {
     id = uniqueId("piece-");
-    selected = false;
+    private _selected = false;
+    get selected() {
+        return this._selected;
+    }
+    set selected(value) {
+        if (this._selected !== value) {
+            this._selected = value;
+            if (value) {
+                this.side.board.emit("pieceselect", this);
+            } else {
+                this.side.board.emit("pieceunselect", this);
+            }
+        }
+    }
     abstract get path(): number[][];
 
     constructor(
@@ -142,15 +260,40 @@ export abstract class ChineseChessPiece {
         public position: number[],
         public eaten = false
     ) {}
+
+    private _isPositionBlocked(p: number[]) {
+        return !!(this.side.findPiece(p) || this.side.findOpponentPiece(p));
+    }
+
+    private _filterPath(path: number[][]) {
+        return path.filter((postion) => !this.side.findPiece(postion));
+    }
+
+    protected _getLeft(maxStep = 0) {
+        return this._filterPath(getLeftUntil(this.position, maxStep, (p) => this._isPositionBlocked(p)));
+    }
+
+    protected _getRight(maxStep = 0) {
+        return this._filterPath(getRightUntil(this.position, maxStep, (p) => this._isPositionBlocked(p)));
+    }
+
+    protected _getUp(maxStep = 0) {
+        return this._filterPath(getUpUntil(this.position, maxStep, (p) => this._isPositionBlocked(p)));
+    }
+
+    protected _getDown(maxStep = 0) {
+        return this._filterPath(getDownUntil(this.position, maxStep, (p) => this._isPositionBlocked(p)));
+    }
 }
 
 export class ChineseChessPawn extends ChineseChessPiece {
     get path() {
         const position = this.position;
         if (position[1] > 4) {
-            return [getUp(position), getLeft(position), getRight(position)];
+            return [...this._getUp(1), ...this._getLeft(1), ...this._getRight(1)];
+        } else {
+            return this._getUp(1);
         }
-        return [getUp(position)];
     }
 
     constructor(public side: ChineseChessSide, public position: number[], public eaten = false) {
@@ -159,10 +302,59 @@ export class ChineseChessPawn extends ChineseChessPiece {
 }
 export class ChineseChessCannon extends ChineseChessPiece {
     get path() {
-        const board = this.side.board;
-        const position = this.position;
-        const leftPoints = [];
-        return [];
+        const left = this._getLeft();
+        const right = this._getRight();
+        const up = this._getUp();
+        const down = this._getDown();
+        if (left.length) {
+            const mostLeft = left[left.length - 1];
+            const piece = this.side.findOpponentPiece(mostLeft);
+            if (piece) {
+                const left2 = getLeftUntil(mostLeft, 0, (p) => !!this.side.findOpponentPiece(p));
+                if (left2.length) {
+                    left[left.length - 1] = left2[left2.length - 1];
+                } else {
+                    left.pop();
+                }
+            }
+        }
+        if (right.length) {
+            const mostRight = right[right.length - 1];
+            const piece = this.side.findOpponentPiece(mostRight);
+            if (piece) {
+                const right2 = getDownUntil(mostRight, 0, (p) => !!this.side.findOpponentPiece(p));
+                if (right2.length) {
+                    right[right.length - 1] = right2[right2.length - 1];
+                } else {
+                    right.pop();
+                }
+            }
+        }
+        if (up.length) {
+            const mostUp = up[up.length - 1];
+            const piece = this.side.findOpponentPiece(mostUp);
+            if (piece) {
+                const up2 = getUpUntil(mostUp, 0, (p) => !!this.side.findOpponentPiece(p));
+                if (up2.length) {
+                    up[up.length - 1] = up2[up2.length - 1];
+                } else {
+                    up.pop();
+                }
+            }
+        }
+        if (down.length) {
+            const mostDown = down[down.length - 1];
+            const piece = this.side.findOpponentPiece(mostDown);
+            if (piece) {
+                const down2 = getDownUntil(mostDown, 0, (p) => !!this.side.findOpponentPiece(p));
+                if (down2.length) {
+                    down[down.length - 1] = down2[down2.length - 1];
+                } else {
+                    down.pop();
+                }
+            }
+        }
+        return [...left, ...right, ...up, ...down];
     }
 
     constructor(public side: ChineseChessSide, public position: number[], public eaten = false) {
