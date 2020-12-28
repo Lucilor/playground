@@ -14,7 +14,7 @@
                 *ngFor="let piece of board.black.pieces"
                 [hidden]="piece.eaten"
                 [attr.name]="piece.name.black"
-                [class.selected]="piece.selected"
+                [class]="{selectable: board.currentSide.isBlack, selected: piece.selected, 'prev-moved': prevPiece?.id === piece.id}"
                 [style.left]="piece.position[0] * 12.5 + '%'"
                 [style.top]="piece.position[1] * 25 + '%'"
                 (click)="onPieceClick(piece)"
@@ -22,11 +22,18 @@
         </div>
         <div class="prompt-positions" *ngIf="board.currentSide.isBlack">
             <div
-                class="prompt-position"
+                class="prompt-position ripple"
                 *ngFor="let p of promptPositions"
                 [style.left]="p[0] * 12.5 + '%'"
                 [style.top]="p[1] * 25 + '%'"
                 (click)="onPromptPositionsClick(p)"
+            ></div>
+        </div>
+        <div class="prompt-positions" *ngIf="!currPiece && prevPiece?.side?.isBlack">
+            <div
+                class="prompt-position ripple-small"
+                [style.left]="prevPosition[0] * 12.5 + '%'"
+                [style.top]="prevPosition[1] * 25 + '%'"
             ></div>
         </div>
     </div>
@@ -55,7 +62,7 @@
                 *ngFor="let piece of board.red.pieces"
                 [hidden]="piece.eaten"
                 [attr.name]="piece.name.red"
-                [class.selected]="piece.selected"
+                [class]="{selectable: board.currentSide.isRed, selected: piece.selected, 'prev-moved': prevPiece?.id === piece.id}"
                 [style.left]="100 - piece.position[0] * 12.5 + '%'"
                 [style.top]="100 - piece.position[1] * 25 + '%'"
                 (click)="onPieceClick(piece)"
@@ -63,11 +70,18 @@
         </div>
         <div class="prompt-positions" *ngIf="board.currentSide.isRed">
             <div
-                class="prompt-position"
+                class="prompt-position ripple"
                 *ngFor="let p of promptPositions"
                 [style.left]="100 - p[0] * 12.5 + '%'"
                 [style.top]="100 - p[1] * 25 + '%'"
                 (click)="onPromptPositionsClick(p)"
+            ></div>
+        </div>
+        <div class="prompt-positions" *ngIf="!currPiece && prevPiece?.side?.isRed">
+            <div
+                class="prompt-position ripple-small"
+                [style.left]="100 - prevPosition[0] * 12.5 + '%'"
+                [style.top]="100 - prevPosition[1] * 25 + '%'"
             ></div>
         </div>
     </div>

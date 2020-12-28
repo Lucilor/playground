@@ -103,7 +103,6 @@ $border-color: black;
             height: 45px;
             transform: translate(-50%, -50%);
             background-color: wheat;
-            cursor: pointer;
             text-shadow: 0px 0px 2px white;
             box-shadow: 3px 3px 2px black;
             &::after {
@@ -114,13 +113,19 @@ $border-color: black;
                 transform: translate(-50%, -50%);
                 font-size: 30px;
             }
-            &:hover,
-            &:active {
-                transform: translate(-50%, calc(-50% - 2px));
-                box-shadow: 3px 3px 2px black;
+            &.selectable {
+                cursor: pointer;
+                &:hover,
+                &:active {
+                    transform: translate(-50%, calc(-50% - 2px));
+                    box-shadow: 3px 3px 2px black;
+                }
             }
             &.selected {
                 animation: blink 1s infinite;
+            }
+            &.prev-moved {
+                box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
             }
         }
     }
@@ -165,9 +170,9 @@ $border-color: black;
         .prompt-position {
             position: absolute;
             z-index: 2;
-            border: 1px solid black;
-            width: 20px;
-            height: 20px;
+            cursor: pointer;
+            width: 45px;
+            height: 45px;
             transform: translate(-50%, -50%);
         }
     }
@@ -207,5 +212,43 @@ $border-color: black;
     }
     100% {
         opacity: 1;
+    }
+}
+
+$ripple-color: white;
+.ripple::after,
+.ripple-small::after {
+    content: "";
+    display: block;
+    border: 1px solid $ripple-color;
+    background-color: $ripple-color;
+    border-radius: 50%;
+    width: 6px;
+    height: 6px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.ripple::after {
+    animation: ripple 1s linear infinite;
+}
+.ripple-small::after {
+    animation: ripple-small 1s linear infinite;
+}
+@keyframes ripple {
+    0% {
+        box-shadow: 0 0 0 0 rgba($ripple-color, 0.2), 0 0 0 12px rgba($ripple-color, 0.2), 0 0 0 24px rgba($ripple-color, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 0 12px rgba($ripple-color, 0.2), 0 0 0 24px rgba($ripple-color, 0.2), 0 0 0 36px rgba($ripple-color, 0);
+    }
+}
+@keyframes ripple-small {
+    0% {
+        box-shadow: 0 0 0 12px rgba($ripple-color, 0.4), 0 0 0 24px rgba($ripple-color, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba($ripple-color, 0.4), 0 0 0 12px rgba($ripple-color, 0.4);
     }
 }

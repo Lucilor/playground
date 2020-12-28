@@ -17,7 +17,8 @@ export class AppComponent {
     constructor(private router: Router, private status: AppStatusService) {
         this.router.events.subscribe((event) => {
             if (event instanceof NavigationEnd) {
-                const routeInfo = Object.values(routesInfo).find((v) => event.url.startsWith("/" + v.path));
+                const url = event.urlAfterRedirects;
+                const routeInfo = Object.values(routesInfo).find((v) => url.startsWith("/" + v.path));
                 this.showHomeBtn = routeInfo?.path !== "index";
                 this.showFooter = routeInfo?.path !== "blog";
                 document.title = routeInfo?.title || this.getRandomTitle();

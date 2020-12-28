@@ -13,6 +13,8 @@ export class ChineseChessComponent implements OnInit {
     get promptPositions() {
         return this.currPiece?.path || [];
     }
+    prevPiece: ChineseChessPiece | null = null;
+    prevPosition: number[] = [-1, -1];
 
     constructor() {}
 
@@ -24,6 +26,11 @@ export class ChineseChessComponent implements OnInit {
         });
         this.board.on("pieceunselect", () => {
             this.currPiece = null;
+        });
+        this.board.on("piecemove", (info) => {
+            console.log(info);
+            this.prevPiece = info.piece;
+            this.prevPosition = info.from;
         });
     }
 
