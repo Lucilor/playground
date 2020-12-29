@@ -8,7 +8,7 @@ export interface Response<T> {
     importance?: number;
 }
 
-export const routesInfo: ObjectOf<{path: string; title: string}> = {
+export const routesInfo: ObjectOf<{path: string; title: string; beta?: boolean}> = {
     index: {path: "index", title: "首页"},
     bezier: {path: "bezier", title: "贝塞尔曲线"},
     rubiksCube: {path: "rubiks-cube", title: "魔方"},
@@ -17,7 +17,7 @@ export const routesInfo: ObjectOf<{path: string; title: string}> = {
     chat: {path: "chat", title: "机器人茉莉"},
     bullsAndCows: {path: "bulls-and-cows", title: "猜数字"},
     blog: {path: "blog", title: "博客"},
-    chineseChess: {path: "chinese-chess", title: "中国象棋"}
+    chineseChess: {path: "chinese-chess", title: "中国象棋", beta: true}
 };
 
 export const session = new SessionStorage("playground");

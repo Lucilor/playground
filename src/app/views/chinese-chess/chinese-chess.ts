@@ -19,7 +19,7 @@ export class ChineseChessBoard extends EventEmitter {
 
     // constructor() {}
 
-    selectPiece(id: string | ChineseChessPiece) {
+    selectPiece(id: string) {
         if (this.currentSide.isRed) {
             this.red.selectPiece(id);
         } else if (this.currentSide.isBlack) {
@@ -27,25 +27,20 @@ export class ChineseChessBoard extends EventEmitter {
         }
     }
 
-    movePiece(id: string | ChineseChessPiece, position: number[]) {
+    movePiece(id: string, position: number[]) {
         const currentSide = this.currentSide;
         const piece = currentSide.findOwnPiece(id);
-        if (!piece || !piece.path.find((p) => p[0] === position[0] && p[1] === position[1])) {
+        if (!piece || !piece.path.find((p) => p[0] === position[0] && p[1] === position[1]) || currentSide.findOwnPiece(position)) {
             return false;
         }
-        let pieceToEat: ChineseChessPiece | undefined;
-        if (currentSide.isRed) {
-            pieceToEat = this.red.findOwnPiece(position) || this.black.findOwnPiece(switchPosition(position));
-        } else {
-            pieceToEat = this.black.findOwnPiece(position) || this.red.findOwnPiece(switchPosition(position));
-        }
-        this.emit("piecemove", {piece, from: piece.position.slice(), to: position.slice(), eaten: pieceToEat});
+        const target = currentSide.findOpponentPiece(position);
+        this.emit("piecemove", {piece, from: piece.position.slice(), to: position.slice(), eaten: target});
         piece.position = position;
-        if (pieceToEat) {
-            pieceToEat.eaten = true;
+        if (target) {
+            currentSide.opponent.killPiece(target.id);
         }
         piece.selected = !piece.selected;
-        this.currentSide = this.currentSide.isRed ? this.black : this.red;
+        this.currentSide = this.currentSide.opponent;
         return true;
     }
 
@@ -65,6 +60,7 @@ export class ChineseChessBoard extends EventEmitter {
 type ChineseChessPieceType = new (...args: any[]) => ChineseChessPiece;
 export class ChineseChessSide {
     pieces: ChineseChessPiece[] = [];
+    graveyard: ChineseChessPiece[] = [];
     get isRed() {
         return this.name === "red";
     }
@@ -142,10 +138,7 @@ export class ChineseChessSide {
         return this;
     }
 
-    selectPiece(id: string | ChineseChessPiece) {
-        if (id instanceof ChineseChessPiece) {
-            id = id.id;
-        }
+    selectPiece(id: string) {
         let pieceFound: ChineseChessPiece | undefined;
         this.pieces.forEach((piece) => {
             if (piece.id === id) {
@@ -160,32 +153,51 @@ export class ChineseChessSide {
         return this;
     }
 
-    findOwnPiece(id: string | ChineseChessPiece | number[], includeEaten = false) {
+    findOwnPiece(id: string | number[], includeEaten = false) {
         let found: ChineseChessPiece | undefined;
         if (Array.isArray(id)) {
             const [x, y] = id;
             found = this.pieces.find((p) => p.position[0] === x && p.position[1] === y);
         } else {
-            if (id instanceof ChineseChessPiece) {
-                id = id.id;
-            }
-            found = this.pieces.find((p) => !p.eaten && p.id === id);
+            found = this.pieces.find((p) => !p.dead && p.id === id);
         }
-        if (found && found.eaten && !includeEaten) {
+        if (found && found.dead && !includeEaten) {
             return;
         }
         return found;
     }
 
-    findOpponentPiece(id: string | ChineseChessPiece | number[]) {
+    findOpponentPiece(id: string | number[]) {
         if (Array.isArray(id)) {
             return this.opponent.findOwnPiece(switchPosition(id));
         }
         return this.opponent.findOwnPiece(id);
     }
 
-    findPiece(id: string | ChineseChessPiece | number[]) {
+    findPiece(id: string | number[]) {
         return this.findOwnPiece(id) || this.findOpponentPiece(id);
+    }
+
+    killPiece(id: string) {
+        const index = this.pieces.findIndex((p) => p.id === id);
+        if (index > -1) {
+            const piece = this.pieces.splice(index, 1)[0];
+            piece.dead = true;
+            this.graveyard.push(piece);
+            return true;
+        }
+        return false;
+    }
+
+    revivePiece(id: string) {
+        const index = this.graveyard.findIndex((p) => p.id === id);
+        if (index > -1) {
+            const piece = this.graveyard.splice(index, 1)[0];
+            piece.dead = false;
+            this.pieces.push(piece);
+            return true;
+        }
+        return false;
     }
 }
 
@@ -256,12 +268,7 @@ export abstract class ChineseChessPiece {
     }
     abstract get path(): number[][];
 
-    constructor(
-        public side: ChineseChessSide,
-        public name: {red: string; black: string},
-        public position: number[],
-        public eaten = false
-    ) {}
+    constructor(public side: ChineseChessSide, public name: {red: string; black: string}, public position: number[], public dead = false) {}
 
     abstract clone(): ChineseChessPiece;
 
@@ -300,12 +307,12 @@ export class ChineseChessPawn extends ChineseChessPiece {
         }
     }
 
-    constructor(public side: ChineseChessSide, public position: number[], public eaten = false) {
-        super(side, {red: "兵", black: "卒"}, position, eaten);
+    constructor(public side: ChineseChessSide, public position: number[], public dead = false) {
+        super(side, {red: "兵", black: "卒"}, position, dead);
     }
 
     clone() {
-        return new ChineseChessPawn(this.side, this.position.slice(), this.eaten);
+        return new ChineseChessPawn(this.side, this.position.slice(), this.dead);
     }
 }
 export class ChineseChessCannon extends ChineseChessPiece {
@@ -336,7 +343,7 @@ export class ChineseChessCannon extends ChineseChessPiece {
             const mostRight = right[right.length - 1];
             const piece = this.side.findPiece(mostRight);
             if (piece) {
-                const right2 = getDownUntil(mostRight, 0, (p) => !!this.side.findOpponentPiece(p));
+                const right2 = getRightUntil(mostRight, 0, (p) => !!this.side.findOpponentPiece(p));
                 if (findPiece(right2)) {
                     right[right.length - 1] = right2[right2.length - 1];
                 } else {
@@ -371,12 +378,12 @@ export class ChineseChessCannon extends ChineseChessPiece {
         return [...left, ...right, ...up, ...down];
     }
 
-    constructor(public side: ChineseChessSide, public position: number[], public eaten = false) {
-        super(side, {red: "炮", black: "炮"}, position, eaten);
+    constructor(public side: ChineseChessSide, public position: number[], public dead = false) {
+        super(side, {red: "炮", black: "炮"}, position, dead);
     }
 
     clone() {
-        return new ChineseChessCannon(this.side, this.position.slice(), this.eaten);
+        return new ChineseChessCannon(this.side, this.position.slice(), this.dead);
     }
 }
 export class ChineseChessChariot extends ChineseChessPiece {
@@ -384,12 +391,12 @@ export class ChineseChessChariot extends ChineseChessPiece {
         return this._filterPath([...this._getLeft(), ...this._getRight(), ...this._getUp(), ...this._getDown()]);
     }
 
-    constructor(public side: ChineseChessSide, public position: number[], public eaten = false) {
-        super(side, {red: "車", black: "車"}, position, eaten);
+    constructor(public side: ChineseChessSide, public position: number[], public dead = false) {
+        super(side, {red: "車", black: "車"}, position, dead);
     }
 
     clone() {
-        return new ChineseChessChariot(this.side, this.position.slice(), this.eaten);
+        return new ChineseChessChariot(this.side, this.position.slice(), this.dead);
     }
 }
 export class ChineseChessHorse extends ChineseChessPiece {
@@ -413,12 +420,12 @@ export class ChineseChessHorse extends ChineseChessPiece {
         return this._filterPath(result);
     }
 
-    constructor(public side: ChineseChessSide, public position: number[], public eaten = false) {
-        super(side, {red: "馬", black: "馬"}, position, eaten);
+    constructor(public side: ChineseChessSide, public position: number[], public dead = false) {
+        super(side, {red: "馬", black: "馬"}, position, dead);
     }
 
     clone() {
-        return new ChineseChessHorse(this.side, this.position.slice(), this.eaten);
+        return new ChineseChessHorse(this.side, this.position.slice(), this.dead);
     }
 }
 export class ChineseChessElephant extends ChineseChessPiece {
@@ -438,12 +445,12 @@ export class ChineseChessElephant extends ChineseChessPiece {
         return this._filterPath(result);
     }
 
-    constructor(public side: ChineseChessSide, public position: number[], public eaten = false) {
-        super(side, {red: "相", black: "象"}, position, eaten);
+    constructor(public side: ChineseChessSide, public position: number[], public dead = false) {
+        super(side, {red: "相", black: "象"}, position, dead);
     }
 
     clone() {
-        return new ChineseChessElephant(this.side, this.position.slice(), this.eaten);
+        return new ChineseChessElephant(this.side, this.position.slice(), this.dead);
     }
 }
 export class ChineseChessAdvisor extends ChineseChessPiece {
@@ -460,12 +467,12 @@ export class ChineseChessAdvisor extends ChineseChessPiece {
         return this._filterPath(result);
     }
 
-    constructor(public side: ChineseChessSide, public position: number[], public eaten = false) {
-        super(side, {red: "仕", black: "士"}, position, eaten);
+    constructor(public side: ChineseChessSide, public position: number[], public dead = false) {
+        super(side, {red: "仕", black: "士"}, position, dead);
     }
 
     clone() {
-        return new ChineseChessAdvisor(this.side, this.position.slice(), this.eaten);
+        return new ChineseChessAdvisor(this.side, this.position.slice(), this.dead);
     }
 }
 export class ChineseChessGeneral extends ChineseChessPiece {
@@ -482,11 +489,11 @@ export class ChineseChessGeneral extends ChineseChessPiece {
         return this._filterPath(result);
     }
 
-    constructor(public side: ChineseChessSide, public position: number[], public eaten = false) {
-        super(side, {red: "帥", black: "將"}, position, eaten);
+    constructor(public side: ChineseChessSide, public position: number[], public dead = false) {
+        super(side, {red: "帥", black: "將"}, position, dead);
     }
 
     clone() {
-        return new ChineseChessGeneral(this.side, this.position.slice(), this.eaten);
+        return new ChineseChessGeneral(this.side, this.position.slice(), this.dead);
     }
 }

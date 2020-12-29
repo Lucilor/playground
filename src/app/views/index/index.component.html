@@ -1,7 +1,10 @@
 <div class="bg"></div>
 <div class="btn-group">
-    <button mat-raised-button color="primary" *ngFor="let item of routesInfo | keyvalue" [routerLink]="item.value?.path">
-        {{ item.value?.title }}
+    <button mat-raised-button color="primary" *ngFor="let item of routesInfo" [routerLink]="item.path">
+        <div>
+            <span>{{ item.title }}</span>
+            <sup *ngIf="item.beta" style="color: lightpink">beta</sup>
+        </div>
     </button>
 </div>
 <mat-divider></mat-divider>

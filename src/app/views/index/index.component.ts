@@ -9,15 +9,21 @@ import {cloneDeep} from "lodash";
     styleUrls: ["./index.component.scss"]
 })
 export class IndexComponent extends Subscribed() {
-    routesInfo: typeof routesInfo;
+    routesInfo: {
+        path: string;
+        title: string;
+        beta?: boolean | undefined;
+    }[];
 
     constructor() {
         super();
-        this.routesInfo = cloneDeep(routesInfo);
-        delete this.routesInfo.index;
-        for (const key in this.routesInfo) {
-            const k = key as keyof typeof routesInfo;
-            this.routesInfo[k].path = "/" + this.routesInfo[k].path;
+        this.routesInfo = [];
+        for (const v of Object.values(cloneDeep(routesInfo))) {
+            if (!["index", "blog"].includes(v.path)) {
+                const v2 = cloneDeep(v);
+                v2.path = "/" + v2.path;
+                this.routesInfo.push(v2);
+            }
         }
     }
 }
