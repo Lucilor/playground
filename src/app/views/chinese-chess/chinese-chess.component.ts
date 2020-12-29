@@ -26,12 +26,10 @@ export class ChineseChessComponent implements OnInit, OnDestroy {
     };
 
     calcBoardSize = debounce(() => {
-        console.log(1);
         const sizes = this.sizes;
         const ratio = 8 / 9;
-        let w = ((innerWidth - 104) / 8) * 8;
-        let h = ((innerHeight - 104) / 12) * 8;
-        console.log(w, h, w / h, ratio);
+        let w = innerWidth - 64;
+        let h = ((innerHeight - 104) / 12) * 9;
         if (w / h > ratio) {
             w = h * ratio;
         } else {
