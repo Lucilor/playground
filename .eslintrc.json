@@ -12,7 +12,7 @@
  * critical because our .ts files require a different parser and different rules to our
  * .html (and our inline Component) templates.
  */
- {
+{
     "root": true,
     "overrides": [
         /**
@@ -53,7 +53,9 @@
                 "@typescript-eslint/quotes": ["error", "double", {"allowTemplateLiterals": true}],
                 "no-unused-vars": ["warn", {"argsIgnorePattern": "."}],
                 "guard-for-in": "off",
-                "no-underscore-dangle": "off"
+                "no-underscore-dangle": "off",
+                "no-console": "off",
+                "no-restricted-syntax": "off"
             }
         },
 

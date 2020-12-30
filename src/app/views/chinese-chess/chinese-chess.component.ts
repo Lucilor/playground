@@ -2,6 +2,7 @@ import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from "@angular/core
 import {MessageService} from "@src/app/modules/message/services/message.service";
 import {debounce} from "lodash";
 import {ChineseChessBoard, ChineseChessPiece} from "./chinese-chess";
+import {ChineseChessAI} from "./chinese-chess-ai";
 
 @Component({
     selector: "app-chinese-chess",
@@ -11,6 +12,7 @@ import {ChineseChessBoard, ChineseChessPiece} from "./chinese-chess";
 export class ChineseChessComponent implements OnInit, OnDestroy {
     tilesPerSide = new Array(32);
     board = new ChineseChessBoard();
+    ai = new ChineseChessAI(3);
     currPiece: ChineseChessPiece | null = null;
     get promptPositions() {
         return this.currPiece?.path || [];
@@ -53,6 +55,7 @@ export class ChineseChessComponent implements OnInit, OnDestroy {
     ngOnInit() {
         const board = this.board;
         (window as any).board = this.board;
+        (window as any).ai = this.ai;
         document.title = "test";
         this.calcBoardSize();
         board.on("pieceselect", (piece) => {
