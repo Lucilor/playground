@@ -1,4 +1,6 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
+import {MatButtonModule} from "@angular/material/button";
+import {MessageModule} from "@src/app/modules/message/message.module";
 
 import {ChineseChessComponent} from "./chinese-chess.component";
 
@@ -8,7 +10,8 @@ describe("ChineseChessComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ChineseChessComponent]
+            declarations: [ChineseChessComponent],
+            imports: [MatButtonModule, MessageModule]
         }).compileComponents();
     });
 

@@ -1,4 +1,5 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {MessageService} from "@src/app/modules/message/services/message.service";
 import {debounce} from "lodash";
 import {ChineseChessBoard, ChineseChessPiece} from "./chinese-chess";
 
@@ -8,7 +9,7 @@ import {ChineseChessBoard, ChineseChessPiece} from "./chinese-chess";
     styleUrls: ["./chinese-chess.component.scss"]
 })
 export class ChineseChessComponent implements OnInit, OnDestroy {
-    tilesPerArea = new Array(32);
+    tilesPerSide = new Array(32);
     board = new ChineseChessBoard();
     currPiece: ChineseChessPiece | null = null;
     get promptPositions() {
@@ -24,6 +25,12 @@ export class ChineseChessComponent implements OnInit, OnDestroy {
         piece: [0, 0],
         font: 0
     };
+    @ViewChild("boardRef", {read: ElementRef}) boardRef?: ElementRef<HTMLDivElement>;
+    get boardEl() {
+        return this.boardRef?.nativeElement || document.createElement("div");
+    }
+
+    constructor(private message: MessageService) {}
 
     calcBoardSize = debounce(() => {
         const sizes = this.sizes;
@@ -44,18 +51,50 @@ export class ChineseChessComponent implements OnInit, OnDestroy {
     }, 200).bind(this);
 
     ngOnInit() {
-        console.log(this);
+        const board = this.board;
+        (window as any).board = this.board;
         document.title = "test";
         this.calcBoardSize();
-        this.board.on("pieceselect", (piece) => {
+        board.on("pieceselect", (piece) => {
             this.currPiece = piece;
         });
-        this.board.on("pieceunselect", () => {
+        board.on("pieceunselect", () => {
             this.currPiece = null;
         });
-        this.board.on("piecemove", (info) => {
-            this.prevPiece = info.piece;
-            this.prevPosition = info.from;
+        board.on("forward", (item) => {
+            if (board.currentSide.checkmate()) {
+                this.message.alert("请勿送将！");
+                board.backward();
+            } else {
+                this.prevPiece = item.piece;
+                this.prevPosition = item.from;
+            }
+        });
+        board.on("backward", () => {
+            const item = board.history[board.history.length - 1];
+            if (item) {
+                this.prevPiece = item.piece;
+                this.prevPosition = item.from;
+            } else {
+                this.prevPiece = null;
+                this.prevPosition = [-1, -1];
+            }
+        });
+        board.on("checkmate", (side) => {
+            const duration = 1000;
+            const bubbleEl = this.boardEl.querySelector(`.side.${side.name} .chat-bubble`);
+            if (bubbleEl) {
+                bubbleEl.classList.add("shout1");
+                setTimeout(() => bubbleEl.classList.remove("shout1"), duration + 1000);
+            }
+            const generalEl = this.boardEl.querySelector(`.side.${side.opponent.name} [type="general"]`);
+            if (generalEl) {
+                generalEl.classList.add("shout2");
+                setTimeout(() => generalEl.classList.remove("shout2"), duration);
+            }
+        });
+        board.on("brinkmate", (side) => {
+            this.message.alert(`绝杀！${side.isRed ? "红" : "黑"}方胜！`);
         });
         window.addEventListener("resize", this.calcBoardSize);
     }
@@ -70,7 +109,14 @@ export class ChineseChessComponent implements OnInit, OnDestroy {
 
     onPromptPositionsClick(position: number[]) {
         if (this.currPiece) {
-            this.board.movePiece(this.currPiece.id, position);
+            this.board.forward(this.currPiece.id, position);
         }
+    }
+
+    reset() {
+        this.board.init();
+        this.currPiece = null;
+        this.prevPiece = null;
+        this.prevPosition = [-1, -1];
     }
 }

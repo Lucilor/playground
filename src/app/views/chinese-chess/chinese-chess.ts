@@ -2,13 +2,23 @@ import {EventEmitter} from "events";
 import {inRange, uniqueId} from "lodash";
 
 export type ChineseChessSideName = "red" | "black";
+export type ChineseChessHistoryItem = {
+    piece: ChineseChessPiece;
+    from: number[];
+    to: number[];
+    eaten?: ChineseChessPiece;
+};
 
 const switchPosition = (position: number[]) => [8 - position[0], 9 - position[1]];
+const isPositionInPath = (position: number[], path: number[][]) => !!path.find((p) => p[0] === position[0] && p[1] === position[1]);
 
 export interface ChineseChessEvents {
     pieceselect: [ChineseChessPiece];
     pieceunselect: [ChineseChessPiece];
-    piecemove: [{piece: ChineseChessPiece; from: number[]; to: number[]; eaten?: ChineseChessPiece}];
+    forward: [ChineseChessHistoryItem];
+    backward: [ChineseChessHistoryItem];
+    checkmate: [ChineseChessSide];
+    brinkmate: [ChineseChessSide];
 }
 export type ChineseChessEventCallBack<T extends keyof ChineseChessEvents> = (...params: ChineseChessEvents[T]) => void;
 
@@ -16,32 +26,99 @@ export class ChineseChessBoard extends EventEmitter {
     red = new ChineseChessSide("red", this);
     black = new ChineseChessSide("black", this);
     currentSide = this.red;
+    history: ChineseChessHistoryItem[] = [];
+    brinkmate = false;
 
-    // constructor() {}
-
-    selectPiece(id: string) {
-        if (this.currentSide.isRed) {
-            this.red.selectPiece(id);
-        } else if (this.currentSide.isBlack) {
-            this.black.selectPiece(id);
-        }
+    constructor() {
+        super();
+        this.on("checkmate", (side) => {
+            const opponent = side.opponent;
+            for (const piece of opponent.pieces) {
+                const originalPosition = piece.position;
+                const path = piece.path;
+                for (const position of path) {
+                    piece.position = position;
+                    const targetId = opponent.findOpponentPiece(position)?.id || "";
+                    side.killPiece(targetId);
+                    const checkmate = side.checkmate();
+                    side.revivePiece(targetId);
+                    piece.position = originalPosition;
+                    if (!checkmate) {
+                        console.log(piece, side.findOwnPiece(position), position);
+                        return;
+                    }
+                }
+            }
+            this.brinkmate = true;
+            this.emit("brinkmate", side);
+        });
     }
 
-    movePiece(id: string, position: number[]) {
+    init() {
+        this.red.initPieces();
+        this.black.initPieces();
+        this.currentSide = this.red;
+        this.brinkmate = false;
+    }
+
+    selectPiece(id: string) {
+        if (this.brinkmate) {
+            return false;
+        }
+        if (this.currentSide.isRed) {
+            return this.red.selectPiece(id);
+        } else if (this.currentSide.isBlack) {
+            return this.black.selectPiece(id);
+        }
+        return false;
+    }
+
+    forward(id: string, position: number[]) {
+        if (this.brinkmate) {
+            return false;
+        }
         const currentSide = this.currentSide;
         const piece = currentSide.findOwnPiece(id);
-        if (!piece || !piece.path.find((p) => p[0] === position[0] && p[1] === position[1]) || currentSide.findOwnPiece(position)) {
+        if (!piece || !isPositionInPath(position, piece.path) || currentSide.findOwnPiece(position)) {
             return false;
         }
         const target = currentSide.findOpponentPiece(position);
-        this.emit("piecemove", {piece, from: piece.position.slice(), to: position.slice(), eaten: target});
+        const item: ChineseChessHistoryItem = {piece, from: piece.position.slice(), to: position.slice(), eaten: target};
         piece.position = position;
         if (target) {
             currentSide.opponent.killPiece(target.id);
         }
         piece.selected = !piece.selected;
+        this.history.push({...item});
         this.currentSide = this.currentSide.opponent;
+        // if (currentSide.opponent.checkmate()) {
+        //     this.backward();
+        //     return false;
+        // }
+        this.emit("forward", item);
+        if (currentSide.checkmate()) {
+            this.emit("checkmate", currentSide);
+        }
         return true;
+    }
+
+    backward() {
+        const item = this.history.pop();
+        if (item) {
+            const piece = item.piece.side.findOwnPiece(item.piece.id);
+            if (piece) {
+                console.log(piece);
+                piece.position = item.from;
+            }
+            if (item.eaten) {
+                item.eaten.side.revivePiece(item.eaten.id);
+            }
+            this.currentSide = this.currentSide.opponent;
+            this.emit("backward", item);
+            this.brinkmate = false;
+            return true;
+        }
+        return false;
     }
 
     emit<T extends keyof ChineseChessEvents>(type: T, ...params: ChineseChessEvents[T]) {
@@ -132,6 +209,7 @@ export class ChineseChessSide {
             [ChineseChessGeneral, [[4, 0]]]
         ];
         this.pieces = [];
+        this.graveyard = [];
         initialPieces.forEach((v) => {
             v[1].forEach((vv) => this.pieces.push(new v[0](this, vv)));
         });
@@ -196,6 +274,20 @@ export class ChineseChessSide {
             piece.dead = false;
             this.pieces.push(piece);
             return true;
+        }
+        return false;
+    }
+
+    checkmate() {
+        let position = this.opponent.pieces.find((v) => v instanceof ChineseChessGeneral)?.position;
+        if (!position) {
+            throw new Error("General not found.");
+        }
+        position = switchPosition(position);
+        for (const piece of this.pieces) {
+            if (isPositionInPath(position, piece.path)) {
+                return true;
+            }
         }
         return false;
     }
@@ -267,8 +359,17 @@ export abstract class ChineseChessPiece {
         }
     }
     abstract get path(): number[][];
+    get name() {
+        return this.names[this.side.name];
+    }
 
-    constructor(public side: ChineseChessSide, public name: {red: string; black: string}, public position: number[], public dead = false) {}
+    constructor(
+        public type: string,
+        public side: ChineseChessSide,
+        public names: {red: string; black: string},
+        public position: number[],
+        public dead = false
+    ) {}
 
     abstract clone(): ChineseChessPiece;
 
@@ -308,7 +409,7 @@ export class ChineseChessPawn extends ChineseChessPiece {
     }
 
     constructor(public side: ChineseChessSide, public position: number[], public dead = false) {
-        super(side, {red: "兵", black: "卒"}, position, dead);
+        super("pawn", side, {red: "兵", black: "卒"}, position, dead);
     }
 
     clone() {
@@ -323,7 +424,8 @@ export class ChineseChessCannon extends ChineseChessPiece {
         const down = this._getDown();
         const findPiece = (path2: number[][]) => {
             if (path2.length) {
-                return this.side.findOpponentPiece(path2[path2.length - 1]);
+                const piece = this.side.findOpponentPiece(path2[path2.length - 1]);
+                return piece;
             }
             return;
         };
@@ -355,7 +457,7 @@ export class ChineseChessCannon extends ChineseChessPiece {
             const mostUp = up[up.length - 1];
             const piece = this.side.findPiece(mostUp);
             if (piece) {
-                const up2 = getUpUntil(mostUp, 0, (p) => !!this.side.findOpponentPiece(p));
+                const up2 = getUpUntil(mostUp, 0, (p) => !!this.side.findPiece(p));
                 if (findPiece(up2)) {
                     up[up.length - 1] = up2[up2.length - 1];
                 } else {
@@ -379,7 +481,7 @@ export class ChineseChessCannon extends ChineseChessPiece {
     }
 
     constructor(public side: ChineseChessSide, public position: number[], public dead = false) {
-        super(side, {red: "炮", black: "炮"}, position, dead);
+        super("cannon", side, {red: "炮", black: "炮"}, position, dead);
     }
 
     clone() {
@@ -392,7 +494,7 @@ export class ChineseChessChariot extends ChineseChessPiece {
     }
 
     constructor(public side: ChineseChessSide, public position: number[], public dead = false) {
-        super(side, {red: "車", black: "車"}, position, dead);
+        super("chariot", side, {red: "車", black: "車"}, position, dead);
     }
 
     clone() {
@@ -421,7 +523,7 @@ export class ChineseChessHorse extends ChineseChessPiece {
     }
 
     constructor(public side: ChineseChessSide, public position: number[], public dead = false) {
-        super(side, {red: "馬", black: "馬"}, position, dead);
+        super("house", side, {red: "馬", black: "馬"}, position, dead);
     }
 
     clone() {
@@ -446,7 +548,7 @@ export class ChineseChessElephant extends ChineseChessPiece {
     }
 
     constructor(public side: ChineseChessSide, public position: number[], public dead = false) {
-        super(side, {red: "相", black: "象"}, position, dead);
+        super("elephant", side, {red: "相", black: "象"}, position, dead);
     }
 
     clone() {
@@ -468,7 +570,7 @@ export class ChineseChessAdvisor extends ChineseChessPiece {
     }
 
     constructor(public side: ChineseChessSide, public position: number[], public dead = false) {
-        super(side, {red: "仕", black: "士"}, position, dead);
+        super("advisor", side, {red: "仕", black: "士"}, position, dead);
     }
 
     clone() {
@@ -490,7 +592,7 @@ export class ChineseChessGeneral extends ChineseChessPiece {
     }
 
     constructor(public side: ChineseChessSide, public position: number[], public dead = false) {
-        super(side, {red: "帥", black: "將"}, position, dead);
+        super("general", side, {red: "帥", black: "將"}, position, dead);
     }
 
     clone() {

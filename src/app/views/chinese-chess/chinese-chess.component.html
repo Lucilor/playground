@@ -1,101 +1,129 @@
 <div class="bg"></div>
-<div
-    class="board"
-    *ngIf="sizes.font"
-    [style.fontSize.px]="sizes.font"
-    [style.width.px]="sizes.board[0]"
-    [style.height.px]="sizes.board[1]"
->
-    <div class="graveyard black" [style.width.px]="sizes.graveyard[0]" [style.height.px]="sizes.graveyard[1]">
-        <div class="piece black" *ngFor="let piece of board.black.graveyard" [attr.name]="piece.name.black"></div>
-    </div>
-    <div class="battle-field" [style.width.px]="sizes.battleField[0]" [style.height.px]="sizes.battleField[1]">
-        <div class="area black">
-            <div class="tiles">
-                <div class="tile" *ngFor="let tile of tilesPerArea; let i = index">
-                    <div class="corner top left" *ngIf="[17, 23, 24, 26, 28, 30].includes(i)"></div>
-                    <div class="corner top right" *ngIf="[16, 22, 25, 27, 29, 31].includes(i)"></div>
-                    <div class="corner bottom left" *ngIf="[9, 15, 16, 18, 20, 22].includes(i)"></div>
-                    <div class="corner bottom right" *ngIf="[8, 14, 17, 19, 21, 23].includes(i)"></div>
+<div class="container">
+    <div
+        #boardRef
+        class="board"
+        *ngIf="sizes.font"
+        [style.fontSize.px]="sizes.font"
+        [style.width.px]="sizes.board[0]"
+        [style.height.px]="sizes.board[1]"
+    >
+        <div class="graveyard black" [style.width.px]="sizes.graveyard[0]" [style.height.px]="sizes.graveyard[1]">
+            <div class="piece black" *ngFor="let piece of board.black.graveyard" [attr.name]="piece.name"></div>
+        </div>
+        <div class="battle-field" [style.width.px]="sizes.battleField[0]" [style.height.px]="sizes.battleField[1]">
+            <div class="side black">
+                <div class="tiles">
+                    <div class="tile" *ngFor="let tile of tilesPerSide; let i = index">
+                        <div class="corner top left" *ngIf="[17, 23, 24, 26, 28, 30].includes(i)"></div>
+                        <div class="corner top right" *ngIf="[16, 22, 25, 27, 29, 31].includes(i)"></div>
+                        <div class="corner bottom left" *ngIf="[9, 15, 16, 18, 20, 22].includes(i)"></div>
+                        <div class="corner bottom right" *ngIf="[8, 14, 17, 19, 21, 23].includes(i)"></div>
+                    </div>
+                </div>
+                <div class="pieces">
+                    <div
+                        class="piece black"
+                        *ngFor="let piece of board.black.pieces"
+                        [attr.name]="piece.name"
+                        [attr.type]="piece.type"
+                        [class]="{
+                            selectable: board.currentSide.isBlack && !board.brinkmate,
+                            selected: piece.selected,
+                            'prev-moved': prevPiece?.id === piece.id
+                        }"
+                        [style.left]="piece.position[0] * 12.5 + '%'"
+                        [style.top]="piece.position[1] * 25 + '%'"
+                        (click)="onPieceClick(piece)"
+                    >
+                        <div class="chat-bubble" *ngIf="piece.type === 'general'">
+                            <div class="bar"><span>将军！</span></div>
+                            <div class="arrow"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="prompt-positions" *ngIf="board.currentSide.isBlack">
+                    <div
+                        class="prompt-position ripple"
+                        *ngFor="let p of promptPositions"
+                        [style.left]="p[0] * 12.5 + '%'"
+                        [style.top]="p[1] * 25 + '%'"
+                        (click)="onPromptPositionsClick(p)"
+                    ></div>
+                </div>
+                <div class="prompt-positions" *ngIf="!currPiece && prevPiece?.side?.isBlack">
+                    <div
+                        class="prompt-position ripple-small"
+                        [style.left]="prevPosition[0] * 12.5 + '%'"
+                        [style.top]="prevPosition[1] * 25 + '%'"
+                    ></div>
                 </div>
             </div>
-            <div class="pieces">
-                <div
-                    class="piece black"
-                    *ngFor="let piece of board.black.pieces"
-                    [attr.name]="piece.name.black"
-                    [class]="{selectable: board.currentSide.isBlack, selected: piece.selected, 'prev-moved': prevPiece?.id === piece.id}"
-                    [style.left]="piece.position[0] * 12.5 + '%'"
-                    [style.top]="piece.position[1] * 25 + '%'"
-                    (click)="onPieceClick(piece)"
-                ></div>
-            </div>
-            <div class="prompt-positions" *ngIf="board.currentSide.isBlack">
-                <div
-                    class="prompt-position ripple"
-                    *ngFor="let p of promptPositions"
-                    [style.left]="p[0] * 12.5 + '%'"
-                    [style.top]="p[1] * 25 + '%'"
-                    (click)="onPromptPositionsClick(p)"
-                ></div>
-            </div>
-            <div class="prompt-positions" *ngIf="!currPiece && prevPiece?.side?.isBlack">
-                <div
-                    class="prompt-position ripple-small"
-                    [style.left]="prevPosition[0] * 12.5 + '%'"
-                    [style.top]="prevPosition[1] * 25 + '%'"
-                ></div>
-            </div>
-        </div>
-        <div class="divider">
-            <div>
-                <div>楚</div>
-                <div>河</div>
-            </div>
-            <div>
-                <div>界</div>
-                <div>漢</div>
-            </div>
-        </div>
-        <div class="area red">
-            <div class="tiles">
-                <div class="tile" *ngFor="let tile of tilesPerArea; let i = index">
-                    <div class="corner top left" *ngIf="[8, 10, 12, 14, 17, 23].includes(i)"></div>
-                    <div class="corner top right" *ngIf="[9, 11, 13, 15, 16, 22].includes(i)"></div>
-                    <div class="corner bottom left" *ngIf="[0, 2, 4, 6, 9, 15].includes(i)"></div>
-                    <div class="corner bottom right" *ngIf="[1, 3, 5, 7, 8, 14].includes(i)"></div>
+            <div class="divider">
+                <div>
+                    <div>楚</div>
+                    <div>河</div>
+                </div>
+                <div>
+                    <div>界</div>
+                    <div>漢</div>
                 </div>
             </div>
-            <div class="pieces">
-                <div
-                    class="piece red"
-                    *ngFor="let piece of board.red.pieces"
-                    [attr.name]="piece.name.red"
-                    [class]="{selectable: board.currentSide.isRed, selected: piece.selected, 'prev-moved': prevPiece?.id === piece.id}"
-                    [style.left]="100 - piece.position[0] * 12.5 + '%'"
-                    [style.top]="100 - piece.position[1] * 25 + '%'"
-                    (click)="onPieceClick(piece)"
-                ></div>
-            </div>
-            <div class="prompt-positions" *ngIf="board.currentSide.isRed">
-                <div
-                    class="prompt-position ripple"
-                    *ngFor="let p of promptPositions"
-                    [style.left]="100 - p[0] * 12.5 + '%'"
-                    [style.top]="100 - p[1] * 25 + '%'"
-                    (click)="onPromptPositionsClick(p)"
-                ></div>
-            </div>
-            <div class="prompt-positions" *ngIf="!currPiece && prevPiece?.side?.isRed">
-                <div
-                    class="prompt-position ripple-small"
-                    [style.left]="100 - prevPosition[0] * 12.5 + '%'"
-                    [style.top]="100 - prevPosition[1] * 25 + '%'"
-                ></div>
+            <div class="side red">
+                <div class="tiles">
+                    <div class="tile" *ngFor="let tile of tilesPerSide; let i = index">
+                        <div class="corner top left" *ngIf="[8, 10, 12, 14, 17, 23].includes(i)"></div>
+                        <div class="corner top right" *ngIf="[9, 11, 13, 15, 16, 22].includes(i)"></div>
+                        <div class="corner bottom left" *ngIf="[0, 2, 4, 6, 9, 15].includes(i)"></div>
+                        <div class="corner bottom right" *ngIf="[1, 3, 5, 7, 8, 14].includes(i)"></div>
+                    </div>
+                </div>
+                <div class="pieces">
+                    <div
+                        class="piece red"
+                        *ngFor="let piece of board.red.pieces"
+                        [attr.name]="piece.name"
+                        [attr.type]="piece.type"
+                        [class]="{
+                            selectable: board.currentSide.isRed && !board.brinkmate,
+                            selected: piece.selected,
+                            'prev-moved': prevPiece?.id === piece.id
+                        }"
+                        [style.left]="100 - piece.position[0] * 12.5 + '%'"
+                        [style.top]="100 - piece.position[1] * 25 + '%'"
+                        (click)="onPieceClick(piece)"
+                    >
+                        <div class="chat-bubble" *ngIf="piece.type === 'general'">
+                            <div class="bar"><span>将军！</span></div>
+                            <div class="arrow"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="prompt-positions" *ngIf="board.currentSide.isRed">
+                    <div
+                        class="prompt-position ripple"
+                        *ngFor="let p of promptPositions"
+                        [style.left]="100 - p[0] * 12.5 + '%'"
+                        [style.top]="100 - p[1] * 25 + '%'"
+                        (click)="onPromptPositionsClick(p)"
+                    ></div>
+                </div>
+                <div class="prompt-positions" *ngIf="!currPiece && prevPiece?.side?.isRed">
+                    <div
+                        class="prompt-position ripple-small"
+                        [style.left]="100 - prevPosition[0] * 12.5 + '%'"
+                        [style.top]="100 - prevPosition[1] * 25 + '%'"
+                    ></div>
+                </div>
             </div>
         </div>
+        <div class="graveyard red" [style.width.px]="sizes.graveyard[0]" [style.height.px]="sizes.graveyard[1]">
+            <div class="piece red" *ngFor="let piece of board.red.graveyard" [attr.name]="piece.name"></div>
+        </div>
     </div>
-    <div class="graveyard red" [style.width.px]="sizes.graveyard[0]" [style.height.px]="sizes.graveyard[1]">
-        <div class="piece red" *ngFor="let piece of board.red.graveyard" [attr.name]="piece.name.red"></div>
+    <div class="menu">
+        <div>当前行动: {{ board.currentSide.isRed ? "红方" : "黑方" }}</div>
+        <button mat-raised-button color="primary" (click)="board.backward()">悔棋</button>
+        <button mat-raised-button color="primary" (click)="reset()">重来</button>
     </div>
 </div>
