@@ -46,14 +46,31 @@ $tile-size: 58.88px;
 }
 
 .menu {
-    width: 30%;
+    width: 20%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    flex-direction: column;
+
+    .black,
+    .red {
+        flex: 1 1 0;
+    }
+    .divider {
+        display: flex;
+        flex-direction: column;
+    }
+    .red {
+        display: flex;
+        align-items: flex-end;
+    }
 }
 
 .board {
     display: flex;
     flex-direction: column;
     font-family: "魏碑";
-    margin: 20px auto;
+    margin: 20px;
 }
 
 .battle-field {
@@ -61,6 +78,32 @@ $tile-size: 58.88px;
     @include border2x();
     background-color: burlywood;
     padding: 30px;
+
+    .divider {
+        width: 100%;
+        height: 11.11%;
+        @include border2x();
+        border-top: none;
+        border-bottom: none;
+        display: flex;
+        justify-content: space-around;
+
+        > * {
+            display: flex;
+            justify-content: center;
+            font-size: 1em;
+            > * {
+                display: inline-block;
+                transform-origin: center;
+            }
+            &:first-child > * {
+                transform: rotate(-90deg);
+            }
+            &:last-child > * {
+                transform: rotate(90deg);
+            }
+        }
+    }
 }
 
 .piece {
@@ -185,36 +228,12 @@ $tile-size: 58.88px;
         .prompt-position {
             position: absolute;
             z-index: 2;
-            cursor: pointer;
             width: 45px;
             height: 45px;
             transform: translate(-50%, -50%);
         }
-    }
-}
-
-.divider {
-    width: 100%;
-    height: 11.11%;
-    @include border2x();
-    border-top: none;
-    border-bottom: none;
-    display: flex;
-    justify-content: space-around;
-
-    > * {
-        display: flex;
-        justify-content: center;
-        font-size: 1em;
-        > * {
-            display: inline-block;
-            transform-origin: center;
-        }
-        &:first-child > * {
-            transform: rotate(-90deg);
-        }
-        &:last-child > * {
-            transform: rotate(90deg);
+        &.ripple {
+            cursor: pointer;
         }
     }
 }

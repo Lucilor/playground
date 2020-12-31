@@ -1,5 +1,5 @@
 import {environment} from "@src/environments/environment";
-import {ChineseChessBoard, ChineseChessHistoryItem, ChinesePieceType} from "./chinese-chess";
+import {ChineseChessBoard, ChineseChessPieceMove, ChineseChessPieceType} from "./chinese-chess";
 import {chineseChessBoardSize} from "./chinese-chess-helper";
 
 const {height} = chineseChessBoardSize;
@@ -45,11 +45,12 @@ export class ChineseChessAI {
         return value;
     }
 
-    getBestMove(board: ChineseChessBoard) {
+    getBestMove(board: ChineseChessBoard, depth: number) {
+        console.log(depth);
         let max = -Infinity;
         const side = board.currentSide;
         const opponent = side.opponent;
-        let bestMove: ChineseChessHistoryItem | null = null;
+        let bestMove: ChineseChessPieceMove | null = null;
         if (!environment.production) {
             console.time("getBestMove");
         }
@@ -60,9 +61,10 @@ export class ChineseChessAI {
                 const target = side.findOpponentPiece(position);
                 const targetId = target?.id || "";
                 opponent.killPiece(targetId);
-                const value = this.search(board, this.depth - 1, false, -Infinity, Infinity);
+                const value = this.search(board, depth - 1, false, -Infinity, Infinity);
                 piece.position = originalPosition;
                 opponent.revivePiece(targetId);
+                console.log(value, {from: originalPosition, to: position, piece, eaten: target});
                 if (value > max) {
                     max = value;
                     bestMove = {from: originalPosition, to: position, piece, eaten: target};
@@ -72,6 +74,7 @@ export class ChineseChessAI {
         if (!environment.production) {
             console.timeEnd("getBestMove");
         }
+        console.log(bestMove, max);
         return Promise.resolve({bestMove, value: max});
     }
 
@@ -84,12 +87,12 @@ export class ChineseChessAI {
 }
 
 class WeightEvalModel {
-    static evalPieceVal(type: ChinesePieceType) {
-        const pieceVal: Record<ChinesePieceType, number> = {
+    static evalPieceVal(type: ChineseChessPieceType) {
+        const pieceVal: Record<ChineseChessPieceType, number> = {
             general: 1000000,
             advisor: 110,
             elephant: 110,
-            house: 300,
+            horse: 300,
             chariot: 600,
             cannon: 300,
             pawn: 70
@@ -97,9 +100,9 @@ class WeightEvalModel {
         return pieceVal[type];
     }
 
-    static evalPosVal(type: ChinesePieceType, position: number[]) {
+    static evalPosVal(type: ChineseChessPieceType, position: number[]) {
         const [x, y] = position;
-        const posVal: Record<ChinesePieceType, number[][] | number> = {
+        const posVal: Record<ChineseChessPieceType, number[][] | number> = {
             cannon: [
                 [6, 4, 0, -10, -12, -10, 0, 4, 6],
                 [2, 2, 0, -4, -14, -4, 0, 2, 2],
@@ -112,7 +115,7 @@ class WeightEvalModel {
                 [0, 2, 4, 6, 6, 6, 4, 2, 0],
                 [0, 0, 2, 6, 6, 6, 2, 0, 0]
             ],
-            house: [
+            horse: [
                 [4, 8, 16, 12, 4, 12, 16, 8, 4],
                 [4, 10, 28, 16, 8, 16, 28, 10, 4],
                 [12, 14, 16, 20, 18, 20, 16, 14, 12],

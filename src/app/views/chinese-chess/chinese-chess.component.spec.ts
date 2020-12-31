@@ -1,5 +1,7 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {MatButtonModule} from "@angular/material/button";
+import {MatSelectModule} from "@angular/material/select";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MessageModule} from "@src/app/modules/message/message.module";
 
 import {ChineseChessComponent} from "./chinese-chess.component";
@@ -11,7 +13,7 @@ describe("ChineseChessComponent", () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [ChineseChessComponent],
-            imports: [MatButtonModule, MessageModule]
+            imports: [BrowserAnimationsModule, MatButtonModule, MatSelectModule, MessageModule]
         }).compileComponents();
     });
 

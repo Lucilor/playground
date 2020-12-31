@@ -28,7 +28,7 @@
                         [attr.name]="piece.name"
                         [attr.type]="piece.type"
                         [class]="{
-                            selectable: board.currentSide.isBlack && !board.brinkmate,
+                            selectable: isPieceSelectable('black'),
                             selected: piece.selected,
                             'prev-moved': prevPiece?.id === piece.id
                         }"
@@ -85,7 +85,7 @@
                         [attr.name]="piece.name"
                         [attr.type]="piece.type"
                         [class]="{
-                            selectable: board.currentSide.isRed && !board.brinkmate,
+                            selectable: isPieceSelectable('red'),
                             selected: piece.selected,
                             'prev-moved': prevPiece?.id === piece.id
                         }"
@@ -121,9 +121,29 @@
             <div class="piece red" *ngFor="let piece of board.red.graveyard" [attr.name]="piece.name"></div>
         </div>
     </div>
-    <div class="menu">
-        <div>当前行动: {{ board.currentSide.isRed ? "红方" : "黑方" }}</div>
-        <button mat-raised-button color="primary" (click)="board.backward()">悔棋</button>
-        <button mat-raised-button color="primary" (click)="reset()">重来</button>
+    <div class="menu" [style.height.px]="sizes.battleField[1]">
+        <div class="sub-menu black">
+            <mat-form-field>
+                <mat-label>黑方</mat-label>
+                <mat-select [value]="players.black" (selectionChange)="setPlayer($event, 'black')">
+                    <mat-option *ngFor="let player of playersList" [value]="player.value">{{ player.name }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="sub-menu divider">
+            <div>当前行动: {{ board.currentSide.isRed ? "红方" : "黑方" }}</div>
+            <div class="btn-group">
+                <button mat-raised-button color="primary" (click)="backward()">悔棋</button>
+                <button mat-raised-button color="primary" (click)="reset()">重来</button>
+            </div>
+        </div>
+        <div class="sub-menu red">
+            <mat-form-field>
+                <mat-label>红方</mat-label>
+                <mat-select [value]="players.red" (selectionChange)="setPlayer($event, 'red')">
+                    <mat-option *ngFor="let player of playersList" [value]="player.value">{{ player.name }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
     </div>
 </div>
