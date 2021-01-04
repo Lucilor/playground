@@ -133,11 +133,14 @@ export class ChineseChessBoard extends EventEmitter {
 
     testMove<T>(move: ChineseChessPieceMove, testFn: (...args: any[]) => T) {
         const {from, to, piece, eaten} = move;
+        const side = this.currentSide;
         piece.moveTo(to);
         eaten?.kill();
+        this.switchSide(side.opponent);
         const result = testFn();
         piece.moveTo(from);
         eaten?.revive();
+        this.switchSide(side);
         return result;
     }
 

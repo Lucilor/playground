@@ -18,14 +18,7 @@ export class ChineseChessAI {
         let value = isMax ? -Infinity : Infinity;
         const moves = currentSide.getAllMoves();
         for (const move of moves) {
-            const {from, to, piece, eaten} = move;
-            piece.moveTo(to);
-            eaten?.kill();
-            board.switchSide();
-            const value2 = this.search(board, side, depth - 1, !isMax, alpha, beta);
-            piece.moveTo(from);
-            eaten?.revive();
-            board.switchSide(currentSide);
+            const value2 = board.testMove(move, () => this.search(board, side, depth - 1, !isMax, alpha, beta));
             if (isMax) {
                 value = Math.max(value, value2);
                 if (this.cutOff) {
@@ -44,36 +37,6 @@ export class ChineseChessAI {
                 }
             }
         }
-        // for (const piece of currentSide.pieces) {
-        //     for (const position of piece.path) {
-        //         const originalPosition = piece.position;
-        //         piece.position = position;
-        //         const targetId = currentSide.findOpponentPiece(position)?.id || "";
-        //         currentSide.opponent.killPiece(targetId);
-        //         board.switchSide();
-        //         const value2 = this.search(board, side, depth - 1, !isMax, alpha, beta);
-        //         piece.position = originalPosition;
-        //         currentSide.opponent.revivePiece(targetId);
-        //         board.switchSide(currentSide);
-        //         if (isMax) {
-        //             value = Math.max(value, value2);
-        //             if (this.cutOff) {
-        //                 alpha = Math.max(alpha, value);
-        //                 if (alpha >= beta) {
-        //                     return alpha;
-        //                 }
-        //             }
-        //         } else {
-        //             value = Math.min(value, value2);
-        //             if (this.cutOff) {
-        //                 beta = Math.min(beta, value);
-        //                 if (alpha >= beta) {
-        //                     return beta;
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
         return value;
     }
 
@@ -81,40 +44,13 @@ export class ChineseChessAI {
         board = new ChineseChessBoard(board.save());
         let max = -Infinity;
         const side = board.currentSide;
-        const opponent = side.opponent;
         let bestMove: ChineseChessPieceMove | null = null;
         if (!environment.production) {
             console.time("getBestMove");
         }
-        // for (const piece of side.pieces) {
-        //     for (const position of piece.path) {
-        //         const originalPosition = piece.position;
-        //         piece.position = position;
-        //         const target = side.findOpponentPiece(position);
-        //         const targetId = target?.id || "";
-        //         opponent.killPiece(targetId);
-        //         board.switchSide(opponent);
-        //         const value = this.search(board, side, depth - 1, false, -Infinity, Infinity);
-        //         piece.position = originalPosition;
-        //         opponent.revivePiece(targetId);
-        //         board.currentSide = side;
-        //         board.switchSide(side);
-        //         if (value > max) {
-        //             max = value;
-        //             bestMove = {from: originalPosition, to: position, piece, eaten: target};
-        //         }
-        //     }
-        // }
         const moves = side.getAllMoves();
         for (const move of moves) {
-            const {from, to, piece, eaten} = move;
-            piece.moveTo(to);
-            eaten?.kill();
-            board.switchSide(opponent);
-            const value = this.search(board, side, depth - 1, false, -Infinity, Infinity);
-            piece.moveTo(from);
-            eaten?.revive();
-            board.switchSide(side);
+            const value = board.testMove(move, () => this.search(board, side, depth - 1, false, -Infinity, Infinity));
             if (value > max) {
                 max = value;
                 bestMove = move;

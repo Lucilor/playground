@@ -46,7 +46,7 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
 
     constructor(private message: MessageService, private cd: ChangeDetectorRef) {
         super("chinese-chess", local);
-        this.players = this.load("players") || {red: "human", black: "human"};
+        this.players = this.load("players") || {red: "human", black: "ai-3"};
     }
 
     calcBoardSize = debounce(() => {
