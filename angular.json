@@ -28,7 +28,8 @@
                         "aot": true,
                         "assets": ["src/favicon.ico", "src/assets"],
                         "styles": ["./node_modules/@angular/material/prebuilt-themes/indigo-pink.css", "src/styles.scss"],
-                        "scripts": []
+                        "scripts": [],
+                        "webWorkerTsConfig": "tsconfig.worker.json"
                     },
                     "configurations": {
                         "production": {
@@ -97,7 +98,10 @@
                 "lint": {
                     "builder": "@angular-eslint/builder:lint",
                     "options": {
-                        "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
+                        "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"],
+                        "tsConfig": [
+                            "tsconfig.worker.json"
+                        ]
                     }
                 },
                 "e2e": {

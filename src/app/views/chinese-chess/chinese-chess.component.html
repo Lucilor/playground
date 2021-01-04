@@ -125,7 +125,7 @@
         <div class="sub-menu black">
             <mat-form-field>
                 <mat-label>黑方</mat-label>
-                <mat-select [value]="players.black" (selectionChange)="setPlayer($event, 'black')">
+                <mat-select #blackPlayerSelect [value]="players.black" (selectionChange)="setPlayer($event, 'black')">
                     <mat-option *ngFor="let player of playersList" [value]="player.value">{{ player.name }}</mat-option>
                 </mat-select>
             </mat-form-field>
@@ -140,7 +140,7 @@
         <div class="sub-menu red">
             <mat-form-field>
                 <mat-label>红方</mat-label>
-                <mat-select [value]="players.red" (selectionChange)="setPlayer($event, 'red')">
+                <mat-select #redPlayerSelect [value]="players.red" (selectionChange)="setPlayer($event, 'red')">
                     <mat-option *ngFor="let player of playersList" [value]="player.value">{{ player.name }}</mat-option>
                 </mat-select>
             </mat-form-field>

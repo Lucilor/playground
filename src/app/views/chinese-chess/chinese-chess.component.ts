@@ -1,11 +1,12 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from "@angular/core";
-import {MatSelectChange} from "@angular/material/select";
+import {ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {MatSelect, MatSelectChange} from "@angular/material/select";
+import {timeout} from "@lucilor/utils";
 import {local} from "@src/app/app.common";
 import {Storaged} from "@src/app/mixins/Storage.minin";
 import {MessageService} from "@src/app/modules/message/services/message.service";
 import {debounce} from "lodash";
-import {ChineseChessBoard, ChineseChessPiece, ChineseChessSideName} from "./chinese-chess";
-import {ChineseChessAI} from "./chinese-chess-ai";
+import {ChineseChessBoard, ChineseChessPiece, ChineseChessSideName} from "../../components/chinese-chess/chinese-chess";
+import {ChineseChessAI} from "../../components/chinese-chess/chinese-chess-ai";
 
 @Component({
     selector: "app-chinese-chess",
@@ -15,7 +16,7 @@ import {ChineseChessAI} from "./chinese-chess-ai";
 export class ChineseChessComponent extends Storaged() implements OnInit, OnDestroy {
     tilesPerSide = new Array(32);
     board = new ChineseChessBoard();
-    ai = new ChineseChessAI(3);
+    ai = new ChineseChessAI();
     currPiece: ChineseChessPiece | null = null;
     get promptPositions() {
         return this.currPiece?.path || [];
@@ -30,17 +31,20 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
         piece: [0, 0],
         font: 0
     };
+    pieceMoveDelay = 400;
     @ViewChild("boardRef", {read: ElementRef}) boardRef?: ElementRef<HTMLDivElement>;
+    @ViewChild("blackPlayerSelect") blackPlayerSelect?: MatSelect;
+    @ViewChild("redPlayerSelect") redPlayerSelect?: MatSelect;
     get boardEl() {
         return this.boardRef?.nativeElement || document.createElement("div");
     }
     playersList = [
-        {name: "人类", value: "human"}
-        // {name: "电脑(简单)", value: "ai-3"}
+        {name: "人类", value: "human"},
+        {name: "电脑(简单)", value: "ai-3"}
     ];
     players: Record<ChineseChessSideName, string>;
 
-    constructor(private message: MessageService) {
+    constructor(private message: MessageService, private cd: ChangeDetectorRef) {
         super("chinese-chess", local);
         this.players = this.load("players") || {red: "human", black: "human"};
     }
@@ -65,9 +69,9 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
 
     ngOnInit() {
         const board = this.board;
-        (window as any).board = this.board;
-        (window as any).ai = this.ai;
-        document.title = "test";
+        // (window as any).board = this.board;
+        // (window as any).ai = this.ai;
+        // document.title = "test";
         this.calcBoardSize();
         board.on("pieceselect", (piece) => {
             this.currPiece = piece;
@@ -75,32 +79,28 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
         board.on("pieceunselect", () => {
             this.currPiece = null;
         });
-        board.on("forward", async (item) => {
+        board.on("forward", async (move) => {
+            move.piece.selected = false;
             const player = this.players[board.currentSide.name];
-            const arr = player.split("-");
-            item.piece.selected = false;
-            if (arr[0] === "ai") {
-                const {bestMove} = await this.ai.getBestMove(this.board, 1);
-                if (bestMove) {
-                    this.board.forward(bestMove.piece.id, bestMove.to);
-                }
-            } else {
+            if (this.getAIDepth(player)) {
                 const player2 = this.players[board.currentSide.opponent.name];
                 if (player2 === "human" && board.currentSide.checkmate()) {
                     this.message.alert("请勿送将！");
                     board.backward();
-                    item.piece.selected = true;
-                } else {
-                    this.prevPiece = item.piece;
-                    this.prevPosition = item.from;
+                    move.piece.selected = true;
+                    return;
                 }
             }
+            this.prevPiece = move.piece;
+            this.prevPosition = move.from;
+            await timeout(this.pieceMoveDelay);
+            this.aiMove();
         });
         board.on("backward", () => {
-            const item = board.history[board.history.length - 1];
-            if (item) {
-                this.prevPiece = item.piece;
-                this.prevPosition = item.from;
+            const move = board.history[board.history.length - 1];
+            if (move) {
+                this.prevPiece = move.piece;
+                this.prevPosition = move.from;
             } else {
                 this.prevPiece = null;
                 this.prevPosition = [-1, -1];
@@ -123,6 +123,7 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
             this.message.alert(`绝杀！${side.isRed ? "红" : "黑"}方胜！`);
         });
         window.addEventListener("resize", this.calcBoardSize);
+        this.aiMove();
     }
 
     ngOnDestroy() {
@@ -153,9 +154,42 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
         this.prevPosition = [-1, -1];
     }
 
+    getAIDepth(player: string) {
+        const arr = player.split("-");
+        if (arr[0] === "ai") {
+            return Number(arr[1]);
+        }
+        return NaN;
+    }
+
+    async aiMove() {
+        const player = this.players[this.board.currentSide.name];
+        const depth = this.getAIDepth(player);
+        if (depth) {
+            const {bestMove} = await this.ai.getBestMove(this.board, depth);
+            if (bestMove) {
+                this.board.forward(bestMove.piece.id, bestMove.to);
+            }
+            return true;
+        }
+        return false;
+    }
+
     setPlayer(event: MatSelectChange, sideName: ChineseChessSideName) {
-        this.players[sideName] = event.value;
-        this.save("players", this.players);
+        const opponent: ChineseChessSideName = sideName === "red" ? "black" : "red";
+        if (this.getAIDepth(event.value) && this.getAIDepth(this.players[opponent])) {
+            this.message.alert("电脑不能左右互搏！");
+            if (sideName === "red" && this.redPlayerSelect) {
+                this.redPlayerSelect.value = "human";
+            }
+            if (sideName === "black" && this.blackPlayerSelect) {
+                this.blackPlayerSelect.value = "human";
+            }
+        } else {
+            this.players[sideName] = event.value;
+            this.save("players", this.players);
+        }
+        this.aiMove();
     }
 
     backward() {
@@ -164,5 +198,9 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
             this.currPiece = null;
         }
         this.board.backward();
+        const player = this.players[this.board.currentSide.name];
+        if (this.getAIDepth(player)) {
+            this.backward();
+        }
     }
 }
