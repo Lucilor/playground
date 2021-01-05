@@ -1,11 +1,17 @@
-import {ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {MatSelect, MatSelectChange} from "@angular/material/select";
 import {timeout} from "@lucilor/utils";
 import {local} from "@src/app/app.common";
+import {ChineseChessAIBridge} from "@src/app/components/chinese-chess/chinese-chess-ai.bridge";
 import {Storaged} from "@src/app/mixins/Storage.minin";
 import {MessageService} from "@src/app/modules/message/services/message.service";
 import {debounce} from "lodash";
-import {ChineseChessBoard, ChineseChessPiece, ChineseChessSideName} from "../../components/chinese-chess/chinese-chess";
+import {
+    ChineseChessBoard,
+    ChineseChessPiece,
+    ChineseChessPieceMove,
+    ChineseChessSideName
+} from "../../components/chinese-chess/chinese-chess";
 import {ChineseChessAI} from "../../components/chinese-chess/chinese-chess-ai";
 
 @Component({
@@ -17,6 +23,7 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
     tilesPerSide = new Array(32);
     board = new ChineseChessBoard();
     ai = new ChineseChessAI();
+    aiBridge = typeof Worker !== "undefined" ? new ChineseChessAIBridge(this.ai, 32) : undefined;
     currPiece: ChineseChessPiece | null = null;
     get promptPositions() {
         return this.currPiece?.path || [];
@@ -40,11 +47,14 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
     }
     playersList = [
         {name: "人类", value: "human"},
-        {name: "电脑(简单)", value: "ai-3"}
+        {name: "电脑(简单)", value: "ai-3"},
+        {name: "电脑(中等)", value: "ai-5"},
+        {name: "电脑(困难)", value: "ai-7"}
     ];
     players: Record<ChineseChessSideName, string>;
+    aiThinking = false;
 
-    constructor(private message: MessageService, private cd: ChangeDetectorRef) {
+    constructor(private message: MessageService) {
         super("chinese-chess", local);
         this.players = this.load("players") || {red: "human", black: "ai-3"};
     }
@@ -166,7 +176,18 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
         const player = this.players[this.board.currentSide.name];
         const depth = this.getAIDepth(player);
         if (depth) {
-            const {bestMove} = await this.ai.getBestMove(this.board, depth);
+            let bestMove: ChineseChessPieceMove | null = null;
+            this.aiThinking = true;
+            if (this.aiBridge) {
+                bestMove = await this.aiBridge.getMove(this.board, depth);
+            } else {
+                bestMove = await this.ai.getMove(this.board, depth);
+            }
+            this.aiThinking = false;
+            // const board = new ChineseChessBoard(this.board.save(true));
+            // const moves = board.currentSide.getAllMoves();
+            // const {bestMove, value} = await this.ai.getBestMove(board, depth, moves);
+            // console.log(bestMove, value);
             if (bestMove) {
                 this.board.forward(bestMove.piece.id, bestMove.to);
             }

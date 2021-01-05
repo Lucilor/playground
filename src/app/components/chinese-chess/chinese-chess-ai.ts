@@ -1,7 +1,6 @@
 /**
  * 参考项目: https://github.com/ParadeTo/chinese-chess
  */
-import {environment} from "@src/environments/environment";
 import {ChineseChessBoard, ChineseChessPieceMove, ChineseChessPieceType, ChineseChessSide} from "./chinese-chess";
 import {chineseChessBoardSize} from "./chinese-chess-helper";
 
@@ -40,15 +39,10 @@ export class ChineseChessAI {
         return value;
     }
 
-    getBestMove(board: ChineseChessBoard, depth: number) {
-        board = new ChineseChessBoard(board.save());
+    searchBestMove(board: ChineseChessBoard, depth: number, moves: ChineseChessPieceMove[]) {
         let max = -Infinity;
         const side = board.currentSide;
         let bestMove: ChineseChessPieceMove | null = null;
-        if (!environment.production) {
-            console.time("getBestMove");
-        }
-        const moves = side.getAllMoves();
         for (const move of moves) {
             const value = board.testMove(move, () => this.search(board, side, depth - 1, false, -Infinity, Infinity));
             if (value > max) {
@@ -56,19 +50,13 @@ export class ChineseChessAI {
                 bestMove = move;
             }
         }
-        if (!environment.production) {
-            console.timeEnd("getBestMove");
-        }
-        console.log(bestMove, max);
         return Promise.resolve({bestMove, value: max});
     }
 
-    // async getNextMove(board: ChineseChessBoard) {
-    //     console.time("getNextMove");
-    //     const {bestMove} = await this.getBestMove(board);
-    //     console.timeEnd("getNextMove");
-    //     return bestMove;
-    // }
+    async getMove(board: ChineseChessBoard, depth: number) {
+        board = new ChineseChessBoard(board.save(true));
+        return (await this.searchBestMove(board, depth, board.currentSide.getAllMoves())).bestMove;
+    }
 }
 
 class WeightEvalModel {
@@ -166,16 +154,4 @@ class WeightEvalModel {
 
         return selfPieceVal + selfPosVal - opponentPieceVal - opponentPosVal;
     }
-}
-
-if (typeof Worker !== "undefined") {
-    // Create a new
-    const worker = new Worker("./chinese-chess-ai.worker", {type: "module"});
-    worker.onmessage = ({data}) => {
-        console.log(`page got message: ${data}`);
-    };
-    worker.postMessage("hello");
-} else {
-    // Web Workers are not supported in this environment.
-    // You should add a fallback so that your program still executes correctly.
 }

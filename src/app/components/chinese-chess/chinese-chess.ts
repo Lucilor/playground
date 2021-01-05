@@ -18,7 +18,7 @@ export type ChineseChessPieceMove = {
     eaten?: ChineseChessPiece;
 };
 export type ChineseChessPieceType = "pawn" | "cannon" | "chariot" | "horse" | "elephant" | "advisor" | "general";
-export type ChineseChessPieceInfo = {id?: string; type: ChineseChessPieceType; position: number[]};
+export type ChineseChessPieceInfo = {id?: string; type: ChineseChessPieceType; position: number[]; side: ChineseChessSideName};
 export type ChineseChessBoardInfo = {
     red: ChineseChessPieceInfo[];
     black: ChineseChessPieceInfo[];
@@ -136,16 +136,25 @@ export class ChineseChessBoard extends EventEmitter {
         const side = this.currentSide;
         piece.moveTo(to);
         eaten?.kill();
+        const brinkmate = this.brinkmate;
+        if (eaten instanceof ChineseChessGeneral) {
+            this.brinkmate = true;
+        }
         this.switchSide(side.opponent);
         const result = testFn();
         piece.moveTo(from);
         eaten?.revive();
+        this.brinkmate = brinkmate;
         this.switchSide(side);
         return result;
     }
 
     switchSide(side = this.currentSide.opponent) {
         this.currentSide = side;
+    }
+
+    findPiece(id: string | number[]) {
+        return this.currentSide.findPiece(id);
     }
 
     emit<T extends keyof ChineseChessEvents>(type: T, ...params: ChineseChessEvents[T]) {
@@ -208,19 +217,21 @@ export class ChineseChessSide {
                 {type: "advisor", position: [3, 0]},
                 {type: "advisor", position: [5, 0]},
                 {type: "general", position: [4, 0]}
-            ];
+            ].map((v) => ({...v, side: this.name})) as ChineseChessPieceInfo[];
         }
-        this.pieces = pieces.map((p) => createPiece(this, p));
+        this.pieces = pieces.map((p) => createPiece(this.board, p));
         this.graveyard = [];
         return this;
     }
 
     save(withId = true): ChineseChessPieceInfo[] {
-        if (withId) {
-            return this.pieces.map((p) => ({id: p.id, type: p.type, position: p.position.slice()}));
-        } else {
-            return this.pieces.map((p) => ({type: p.type, position: p.position.slice()}));
-        }
+        return this.pieces.map((p) => {
+            const info = p.info;
+            if (!withId) {
+                delete info.id;
+            }
+            return info;
+        });
     }
 
     selectPiece(id: string) {
@@ -326,6 +337,9 @@ export abstract class ChineseChessPiece {
     abstract get path(): number[][];
     get name() {
         return this.names[this.side.name];
+    }
+    get info(): ChineseChessPieceInfo {
+        return {id: this.id, type: this.type, position: this.position.slice(), side: this.side.name};
     }
 
     constructor(
@@ -590,8 +604,9 @@ export class ChineseChessGeneral extends ChineseChessPiece {
     }
 }
 
-const createPiece = (side: ChineseChessSide, info: ChineseChessPieceInfo) => {
+const createPiece = (board: ChineseChessBoard, info: ChineseChessPieceInfo) => {
     const {id, type, position} = info;
+    const side = info.side === "black" ? board.black : board.red;
     switch (type) {
         case "pawn":
             return new ChineseChessPawn(side, position, id);
