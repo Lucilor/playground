@@ -537,7 +537,8 @@ export class ChineseChessElephant extends ChineseChessPiece {
                 const vv = v.map((vvv) => (vvv === 2 ? 1 : -1));
                 return !this.side.findPiece([x + vv[0], y + vv[1]]);
             })
-            .map((v) => [x + v[0], y + v[1]]);
+            .map((v) => [x + v[0], y + v[1]])
+            .filter((v) => v[1] < 5);
         return this._filterPath(result);
     }
 
