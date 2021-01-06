@@ -1,29 +1,17 @@
 import {EventEmitter} from "events";
-import {ChineseChessBoard, ChineseChessPiece, ChineseChessPieceMove} from "./chinese-chess";
+import {ChineseChessBoard, ChineseChessPiece, ChineseChessPieceMove, getMovesPlain} from "./chinese-chess";
 import {ChineseChessAI} from "./chinese-chess-ai";
 
-// if (typeof Worker !== "undefined") {
-//     // Create a new
-//     const worker = new Worker("./chinese-chess-ai.worker", {type: "module"});
-//     worker.onmessage = ({data}) => {
-//         console.log(`page got message: ${data}`);
-//     };
-//     worker.postMessage("hello");
-// } else {
-//     // Web Workers are not supported in this environment.
-//     // You should add a fallback so that your program still executes correctly.
-// }
-
-export class ChineseChessAIBridge extends EventEmitter {
+export class ChineseChessAIBridge {
     private _workers: Worker[];
+    private _event = new EventEmitter();
 
     constructor(public ai: ChineseChessAI, public workerNum: number) {
-        super();
         this._workers = [];
         for (let i = 0; i < workerNum; i++) {
             const worker = new Worker("./chinese-chess-ai.worker", {type: "module"});
             worker.onmessage = (event) => {
-                this.emit("workermessage", event);
+                this._event.emit("workermessage", event);
             };
             this._workers.push(worker);
         }
@@ -34,13 +22,11 @@ export class ChineseChessAIBridge extends EventEmitter {
             const moves = board.currentSide.getAllMoves();
             const total = moves.length;
             const workersCount = this._workers.length;
-            const average = Math.floor(total / workersCount);
+            const average = Math.ceil(total / workersCount);
             let offset = 0;
-            const boardInfo = board.save(true);
-            this._workers.forEach((worker, i) => {
-                const subMoves = moves
-                    .slice(offset, offset + average)
-                    .map((move) => ({from: move.from, to: move.to, piece: move.piece.id, eaten: move.eaten?.id}));
+            const boardInfo = board.save();
+            this._workers.forEach((worker) => {
+                const subMoves = getMovesPlain(moves.slice(offset, offset + average));
                 worker.postMessage({boardInfo, moves: subMoves, depth});
                 offset += average;
                 if (total - offset < average) {
@@ -62,11 +48,11 @@ export class ChineseChessAIBridge extends EventEmitter {
                     maxValue = value;
                 }
                 if (++count === workersCount) {
-                    this.removeListener("workermessage", onWorkerMessage);
+                    this._event.removeListener("workermessage", onWorkerMessage);
                     resolve(bestMove);
                 }
             };
-            this.addListener("workermessage", onWorkerMessage);
+            this._event.addListener("workermessage", onWorkerMessage);
         });
     }
 }

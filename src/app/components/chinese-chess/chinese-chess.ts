@@ -17,6 +17,12 @@ export type ChineseChessPieceMove = {
     to: number[];
     eaten?: ChineseChessPiece;
 };
+export type ChineseChessPieceMovePlain = {
+    piece: string;
+    from: number[];
+    to: number[];
+    eaten?: string;
+};
 export type ChineseChessPieceType = "pawn" | "cannon" | "chariot" | "horse" | "elephant" | "advisor" | "general";
 export type ChineseChessPieceInfo = {id?: string; type: ChineseChessPieceType; position: number[]; side: ChineseChessSideName};
 export type ChineseChessBoardInfo = {
@@ -24,8 +30,23 @@ export type ChineseChessBoardInfo = {
     black: ChineseChessPieceInfo[];
     currentSide: ChineseChessSideName;
     brinkmate: boolean;
+    histroy?: ChineseChessPieceMovePlain[];
 };
 const {width, height} = chineseChessBoardSize;
+export const getMovesPlain = (moves: ChineseChessPieceMove[]): ChineseChessPieceMovePlain[] =>
+    moves.map((move) => ({
+        from: move.from,
+        to: move.to,
+        piece: move.piece.id,
+        eaten: move.eaten?.id
+    }));
+export const getMoves = (moves: ChineseChessPieceMovePlain[], board: ChineseChessBoard): ChineseChessPieceMove[] =>
+    moves.map((move) => ({
+        from: move.from,
+        to: move.to,
+        piece: board.findPiece(move.piece, true),
+        eaten: board.findPiece(move.eaten)
+    }));
 
 export interface ChineseChessEvents {
     pieceselect: [ChineseChessPiece];
@@ -67,14 +88,20 @@ export class ChineseChessBoard extends EventEmitter {
         this.black.load(info?.black);
         this.currentSide = info?.currentSide === "black" ? this.black : this.red;
         this.brinkmate = info?.brinkmate === true;
+        if (info?.histroy) {
+            this.history = getMoves(info.histroy, this);
+        } else {
+            this.history = [];
+        }
     }
 
-    save(withId = true): ChineseChessBoardInfo {
+    save(withHistory = false, withId = true): ChineseChessBoardInfo {
         return {
             red: this.red.save(withId),
             black: this.black.save(withId),
             currentSide: this.currentSide.name,
-            brinkmate: this.brinkmate
+            brinkmate: this.brinkmate,
+            histroy: withHistory ? getMovesPlain(this.history) : undefined
         };
     }
 
@@ -153,8 +180,14 @@ export class ChineseChessBoard extends EventEmitter {
         this.currentSide = side;
     }
 
-    findPiece(id: string | number[]) {
-        return this.currentSide.findPiece(id);
+    findPiece(id?: string | number[]): ChineseChessPiece | undefined;
+    findPiece(id: string | number[], force: true): ChineseChessPiece;
+    findPiece(id?: string | number[], force?: true) {
+        const piece = this.currentSide.findPiece(id);
+        if (!piece && force) {
+            throw new Error("can not find piece: " + JSON.stringify(id));
+        }
+        return piece;
     }
 
     emit<T extends keyof ChineseChessEvents>(type: T, ...params: ChineseChessEvents[T]) {
@@ -219,7 +252,7 @@ export class ChineseChessSide {
                 {type: "general", position: [4, 0]}
             ].map((v) => ({...v, side: this.name})) as ChineseChessPieceInfo[];
         }
-        this.pieces = pieces.map((p) => createPiece(this.board, p));
+        this.pieces = pieces.map((p) => createPiece(this, p));
         this.graveyard = [];
         return this;
     }
@@ -265,7 +298,10 @@ export class ChineseChessSide {
         return this.opponent.findOwnPiece(id);
     }
 
-    findPiece(id: string | number[]) {
+    findPiece(id?: string | number[]) {
+        if (!id) {
+            return undefined;
+        }
         return this.findOwnPiece(id) || this.findOpponentPiece(id);
     }
 
@@ -347,7 +383,7 @@ export abstract class ChineseChessPiece {
         public side: ChineseChessSide,
         public names: {red: string; black: string},
         public position: number[],
-        public id = uniqueId("piece-"),
+        public id = uniqueId(type + "-"),
         public dead = false
     ) {}
 
@@ -427,7 +463,7 @@ export class ChineseChessCannon extends ChineseChessPiece {
             const mostLeft = left[left.length - 1];
             const piece = this.side.findPiece(mostLeft);
             if (piece) {
-                const left2 = getLeftUntil(mostLeft, 0, (p) => !!this.side.findOpponentPiece(p));
+                const left2 = this._getLeft(0, mostLeft);
                 if (findPiece(left2)) {
                     left[left.length - 1] = left2[left2.length - 1];
                 } else {
@@ -439,7 +475,7 @@ export class ChineseChessCannon extends ChineseChessPiece {
             const mostRight = right[right.length - 1];
             const piece = this.side.findPiece(mostRight);
             if (piece) {
-                const right2 = getRightUntil(mostRight, 0, (p) => !!this.side.findOpponentPiece(p));
+                const right2 = this._getRight(0, mostRight);
                 if (findPiece(right2)) {
                     right[right.length - 1] = right2[right2.length - 1];
                 } else {
@@ -451,7 +487,7 @@ export class ChineseChessCannon extends ChineseChessPiece {
             const mostUp = up[up.length - 1];
             const piece = this.side.findPiece(mostUp);
             if (piece) {
-                const up2 = getUpUntil(mostUp, 0, (p) => !!this.side.findPiece(p));
+                const up2 = this._getUp(0, mostUp);
                 if (findPiece(up2)) {
                     up[up.length - 1] = up2[up2.length - 1];
                 } else {
@@ -463,7 +499,7 @@ export class ChineseChessCannon extends ChineseChessPiece {
             const mostDown = down[down.length - 1];
             const piece = this.side.findPiece(mostDown);
             if (piece) {
-                const down2 = getDownUntil(mostDown, 0, (p) => !!this.side.findOpponentPiece(p));
+                const down2 = this._getDown(0, mostDown);
                 if (findPiece(down2)) {
                     down[down.length - 1] = down2[down2.length - 1];
                 } else {
@@ -605,9 +641,8 @@ export class ChineseChessGeneral extends ChineseChessPiece {
     }
 }
 
-const createPiece = (board: ChineseChessBoard, info: ChineseChessPieceInfo) => {
+const createPiece = (side: ChineseChessSide, info: ChineseChessPieceInfo) => {
     const {id, type, position} = info;
-    const side = info.side === "black" ? board.black : board.red;
     switch (type) {
         case "pawn":
             return new ChineseChessPawn(side, position, id);

@@ -48,8 +48,8 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
     playersList = [
         {name: "人类", value: "human"},
         {name: "电脑(简单)", value: "ai-3"},
-        {name: "电脑(中等)", value: "ai-5"},
-        {name: "电脑(困难)", value: "ai-7"}
+        {name: "电脑(中等)", value: "ai-4"},
+        {name: "电脑(困难)", value: "ai-5"}
     ];
     players: Record<ChineseChessSideName, string>;
     aiThinking = false;
@@ -83,6 +83,7 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
         // (window as any).ai = this.ai;
         // document.title = "test";
         this.calcBoardSize();
+        this.loadBoardInfo();
         board.on("pieceselect", (piece) => {
             this.currPiece = piece;
         });
@@ -105,6 +106,7 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
             this.prevPosition = move.from;
             await timeout(this.pieceMoveDelay);
             this.aiMove();
+            this.saveBoardInfo();
         });
         board.on("backward", () => {
             const move = board.history[board.history.length - 1];
@@ -115,6 +117,7 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
                 this.prevPiece = null;
                 this.prevPosition = [-1, -1];
             }
+            this.saveBoardInfo();
         });
         board.on("checkmate", (side) => {
             const duration = 1000;
@@ -162,6 +165,8 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
         this.currPiece = null;
         this.prevPiece = null;
         this.prevPosition = [-1, -1];
+        this.aiThinking = false;
+        this.saveBoardInfo();
     }
 
     getAIDepth(player: string) {
@@ -184,12 +189,10 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
                 bestMove = await this.ai.getMove(this.board, depth);
             }
             this.aiThinking = false;
-            // const board = new ChineseChessBoard(this.board.save(true));
-            // const moves = board.currentSide.getAllMoves();
-            // const {bestMove, value} = await this.ai.getBestMove(board, depth, moves);
-            // console.log(bestMove, value);
             if (bestMove) {
                 this.board.forward(bestMove.piece.id, bestMove.to);
+            } else {
+                this.message.alert("电脑放弃思考");
             }
             return true;
         }
@@ -223,5 +226,13 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
         if (this.getAIDepth(player)) {
             this.backward();
         }
+    }
+
+    saveBoardInfo() {
+        this.save("boardInfo", this.board.save(true));
+    }
+
+    loadBoardInfo() {
+        this.board.load(this.load("boardInfo"));
     }
 }
