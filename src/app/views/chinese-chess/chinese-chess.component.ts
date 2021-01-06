@@ -1,11 +1,13 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {MatSelect, MatSelectChange} from "@angular/material/select";
-import {timeout} from "@lucilor/utils";
+import {downloadFile, timeout} from "@lucilor/utils";
 import {local} from "@src/app/app.common";
 import {ChineseChessAIBridge} from "@src/app/components/chinese-chess/chinese-chess-ai.bridge";
+import {CC_BOARD_HEIGHT, CC_BOARD_WIDTH} from "@src/app/components/chinese-chess/chinese-chess-helper";
 import {Storaged} from "@src/app/mixins/Storage.minin";
 import {MessageService} from "@src/app/modules/message/services/message.service";
 import {debounce} from "lodash";
+import {BehaviorSubject} from "rxjs";
 import {
     ChineseChessBoard,
     ChineseChessPiece,
@@ -13,6 +15,14 @@ import {
     ChineseChessSideName
 } from "../../components/chinese-chess/chinese-chess";
 import {ChineseChessAI} from "../../components/chinese-chess/chinese-chess-ai";
+
+type Mode = "普通" | "摆棋";
+const allPositions: number[][] = [];
+for (let i = 0; i < CC_BOARD_WIDTH; i++) {
+    for (let j = 0; j < CC_BOARD_HEIGHT; j++) {
+        allPositions.push([i, j]);
+    }
+}
 
 @Component({
     selector: "app-chinese-chess",
@@ -26,7 +36,14 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
     aiBridge = typeof Worker !== "undefined" ? new ChineseChessAIBridge(this.ai, 32) : undefined;
     currPiece: ChineseChessPiece | null = null;
     get promptPositions() {
-        return this.currPiece?.path || [];
+        const mode = this.$mode.getValue();
+        if (mode === "普通") {
+            return this.currPiece?.path || [];
+        } else if (mode === "摆棋") {
+            return this.currPiece ? allPositions : [];
+        } else {
+            return [];
+        }
     }
     prevPiece: ChineseChessPiece | null = null;
     prevPosition: number[] = [-1, -1];
@@ -53,10 +70,16 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
     ];
     players: Record<ChineseChessSideName, string>;
     aiThinking = false;
+    modes: Mode[] = ["普通", "摆棋"];
+    $mode: BehaviorSubject<Mode>;
 
     constructor(private message: MessageService) {
         super("chinese-chess", local);
         this.players = this.load("players") || {red: "human", black: "ai-3"};
+        this.$mode = new BehaviorSubject(this.load("mode") || "普通");
+        this.$mode.subscribe((mode) => {
+            console.log(mode);
+        });
     }
 
     calcBoardSize = debounce(() => {
@@ -160,8 +183,8 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
         }
     }
 
-    reset() {
-        if (this.message.confirm("确定要重来吗？")) {
+    async reset() {
+        if (await this.message.confirm("确定要重来吗？")) {
             this.board.load();
             this.currPiece = null;
             this.prevPiece = null;
@@ -242,5 +265,30 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
             this.message.alert("载入棋局出错");
             this.board.load();
         }
+    }
+
+    exportBoardInfo() {
+        downloadFile(JSON.stringify(this.board.save()), "board.json");
+    }
+
+    async importBoardInfo(event: Event) {
+        const input = event.target as HTMLInputElement;
+        const file = input.files?.[0];
+        if (file) {
+            try {
+                const boardInfo = JSON.parse(await file.text());
+                this.board.load(boardInfo);
+                this.saveBoardInfo();
+            } catch (error) {
+                console.warn(error);
+                this.message.alert("读取文件时出错");
+            }
+            input.value = "";
+        }
+    }
+
+    setMode(event: MatSelectChange) {
+        this.$mode.next(event.value);
+        this.save("mode", event.value);
     }
 }

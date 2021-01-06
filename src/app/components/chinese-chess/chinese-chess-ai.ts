@@ -2,9 +2,8 @@
  * 参考项目: https://github.com/ParadeTo/chinese-chess
  */
 import {ChineseChessBoard, ChineseChessPieceMove, ChineseChessPieceType, ChineseChessSide} from "./chinese-chess";
-import {chineseChessBoardSize} from "./chinese-chess-helper";
+import {CC_BOARD_HEIGHT} from "./chinese-chess-helper";
 
-const {height} = chineseChessBoardSize;
 const defaultPieceValues: Record<ChineseChessPieceType, number> = {
     general: 1000000,
     advisor: 110,
@@ -79,7 +78,7 @@ export class ChineseChessAI {
         const [x, y] = position;
         let val = this._positionValues[type];
         if (Array.isArray(val)) {
-            val = val[height - y][x];
+            val = val[CC_BOARD_HEIGHT - 1 - y][x];
             return val;
         }
         return val;

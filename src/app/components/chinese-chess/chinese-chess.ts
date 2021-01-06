@@ -1,7 +1,8 @@
 import {EventEmitter} from "events";
 import {inRange, uniqueId} from "lodash";
 import {
-    chineseChessBoardSize,
+    CC_BOARD_HEIGHT,
+    CC_BOARD_WIDTH,
     getDownUntil,
     getLeftUntil,
     getRightUntil,
@@ -32,7 +33,6 @@ export type ChineseChessBoardInfo = {
     brinkmate: boolean;
     histroy?: ChineseChessPieceMovePlain[];
 };
-const {width, height} = chineseChessBoardSize;
 export const getMovesPlain = (moves: ChineseChessPieceMove[]): ChineseChessPieceMovePlain[] =>
     moves.map((move) => ({
         from: move.from,
@@ -395,7 +395,7 @@ export abstract class ChineseChessPiece {
 
     protected _filterPath(path: number[][]) {
         return path.filter(
-            (postion) => !this.side.findOwnPiece(postion) && inRange(postion[0], width + 1) && inRange(postion[1], height + 1)
+            (postion) => !this.side.findOwnPiece(postion) && inRange(postion[0], CC_BOARD_WIDTH) && inRange(postion[1], CC_BOARD_HEIGHT)
         );
     }
 
