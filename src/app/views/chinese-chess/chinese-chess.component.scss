@@ -51,18 +51,34 @@ $tile-size: 58.88px;
     background: rgba(255, 255, 255, 0.8);
     display: flex;
     flex-direction: column;
+    padding: 10px;
+    color: grey;
 
-    .black,
-    .red {
-        flex: 1 1 0;
-    }
-    .divider {
+    .sub-menu {
         display: flex;
-        flex-direction: column;
-    }
-    .red {
-        display: flex;
-        align-items: flex-end;
+
+        .mat-form-field {
+            width: 100%;
+        }
+
+        &.black,
+        &.red {
+            flex: 1 1 0;
+        }
+        &.red {
+            align-items: flex-end;
+        }
+        &.divider {
+            flex-direction: column;
+            .red::after {
+                content: "红方";
+                color: red;
+            }
+            .black::after {
+                content: "黑方";
+                color: black;
+            }
+        }
     }
 }
 

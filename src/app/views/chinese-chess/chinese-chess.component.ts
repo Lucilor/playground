@@ -161,12 +161,14 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
     }
 
     reset() {
-        this.board.load();
-        this.currPiece = null;
-        this.prevPiece = null;
-        this.prevPosition = [-1, -1];
-        this.aiThinking = false;
-        this.saveBoardInfo();
+        if (this.message.confirm("确定要重来吗？")) {
+            this.board.load();
+            this.currPiece = null;
+            this.prevPiece = null;
+            this.prevPosition = [-1, -1];
+            this.aiThinking = false;
+            this.saveBoardInfo();
+        }
     }
 
     getAIDepth(player: string) {
@@ -202,7 +204,7 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
     setPlayer(event: MatSelectChange, sideName: ChineseChessSideName) {
         const opponent: ChineseChessSideName = sideName === "red" ? "black" : "red";
         if (this.getAIDepth(event.value) && this.getAIDepth(this.players[opponent])) {
-            this.message.alert("电脑不能左右互搏！");
+            this.message.alert("电脑并不想跟自己玩。");
             if (sideName === "red" && this.redPlayerSelect) {
                 this.redPlayerSelect.value = "human";
             }
@@ -233,6 +235,12 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
     }
 
     loadBoardInfo() {
-        this.board.load(this.load("boardInfo"));
+        try {
+            this.board.load(this.load("boardInfo"));
+        } catch (error) {
+            console.warn(error);
+            this.message.alert("载入棋局出错");
+            this.board.load();
+        }
     }
 }

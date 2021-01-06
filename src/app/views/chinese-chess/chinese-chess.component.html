@@ -132,9 +132,9 @@
         </div>
         <div class="sub-menu divider">
             <div>
-                <span>当前行动: {{ board.currentSide.isRed ? "红方" : "黑方" }}</span>
-                <span *ngIf="this.aiThinking">（电脑思考中...）</span>
+                <span [attr.class]="board.currentSide.name"> 当前行动: </span>
             </div>
+            <div *ngIf="this.aiThinking">电脑思考中...</div>
             <div class="btn-group">
                 <button mat-raised-button color="primary" (click)="backward()">悔棋</button>
                 <button mat-raised-button color="primary" (click)="reset()">重来</button>
