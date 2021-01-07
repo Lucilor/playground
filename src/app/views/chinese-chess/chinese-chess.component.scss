@@ -150,12 +150,14 @@ $tile-size: 58.88px;
         cursor: pointer;
         &:hover,
         &:active {
-            transform: translate(-50%, calc(-50% - 2px));
-            box-shadow: 3px 3px 2px black;
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 5px 2px black;
         }
     }
     &.selected {
         animation: blink 1s infinite;
+        transform: translateY(-2px);
+        box-shadow: 3px 3px 5px 2px black;
     }
     &.prev-moved {
         box-shadow: 3px 3px 2px black, 0 0 0 3px rgba(255, 255, 255, 0.3);
@@ -174,6 +176,12 @@ $tile-size: 58.88px;
             height: 18.75%;
             position: absolute;
             transform: translate(-50%, -50%);
+            &.selectable {
+                &:hover,
+                &:active {
+                    transform: translate(-50%, calc(-50% - 2px));
+                }
+            }
         }
     }
 
@@ -257,7 +265,7 @@ $tile-size: 58.88px;
 
 .graveyard {
     .piece {
-        width: 12.5%;
+        width: 8.33%;
         height: 50%;
         display: inline-block;
     }
@@ -266,6 +274,9 @@ $tile-size: 58.88px;
         .piece {
             transform: scaleY(-1);
         }
+    }
+    &.ripple {
+        cursor: pointer;
     }
 }
 

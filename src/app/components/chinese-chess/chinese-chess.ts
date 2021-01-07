@@ -26,13 +26,32 @@ export type ChineseChessPieceMovePlain = {
 };
 export type ChineseChessPieceType = "pawn" | "cannon" | "chariot" | "horse" | "elephant" | "advisor" | "general";
 export type ChineseChessPieceInfo = {id?: string; type: ChineseChessPieceType; position: number[]; side: ChineseChessSideName};
+export type ChineseChessSideInfo = {pieces?: ChineseChessPieceInfo[]; graveyard?: ChineseChessPieceInfo[]};
 export type ChineseChessBoardInfo = {
-    red: ChineseChessPieceInfo[];
-    black: ChineseChessPieceInfo[];
+    red: ChineseChessSideInfo;
+    black: ChineseChessSideInfo;
     currentSide: ChineseChessSideName;
     brinkmate: boolean;
     histroy?: ChineseChessPieceMovePlain[];
 };
+const initialPieces: Omit<ChineseChessPieceInfo, "side">[] = [
+    {type: "pawn", position: [0, 3]},
+    {type: "pawn", position: [2, 3]},
+    {type: "pawn", position: [4, 3]},
+    {type: "pawn", position: [6, 3]},
+    {type: "pawn", position: [8, 3]},
+    {type: "cannon", position: [1, 2]},
+    {type: "cannon", position: [7, 2]},
+    {type: "chariot", position: [0, 0]},
+    {type: "chariot", position: [8, 0]},
+    {type: "horse", position: [1, 0]},
+    {type: "horse", position: [7, 0]},
+    {type: "elephant", position: [2, 0]},
+    {type: "elephant", position: [6, 0]},
+    {type: "advisor", position: [3, 0]},
+    {type: "advisor", position: [5, 0]},
+    {type: "general", position: [4, 0]}
+];
 export const getMovesPlain = (moves: ChineseChessPieceMove[]): ChineseChessPieceMovePlain[] =>
     moves.map((move) => ({
         from: move.from,
@@ -49,8 +68,6 @@ export const getMoves = (moves: ChineseChessPieceMovePlain[], board: ChineseChes
     }));
 
 export interface ChineseChessEvents {
-    pieceselect: [ChineseChessPiece];
-    pieceunselect: [ChineseChessPiece];
     forward: [ChineseChessPieceMove];
     backward: [ChineseChessPieceMove];
     checkmate: [ChineseChessSide];
@@ -103,18 +120,6 @@ export class ChineseChessBoard extends EventEmitter {
             brinkmate: this.brinkmate,
             histroy: withHistory ? getMovesPlain(this.history) : undefined
         };
-    }
-
-    selectPiece(id: string) {
-        if (this.brinkmate) {
-            return false;
-        }
-        if (this.currentSide.isRed) {
-            return this.red.selectPiece(id);
-        } else if (this.currentSide.isBlack) {
-            return this.black.selectPiece(id);
-        }
-        return false;
     }
 
     forward(id: string, position: number[]) {
@@ -180,14 +185,34 @@ export class ChineseChessBoard extends EventEmitter {
         this.currentSide = side;
     }
 
-    findPiece(id?: string | number[]): ChineseChessPiece | undefined;
-    findPiece(id: string | number[], force: true): ChineseChessPiece;
-    findPiece(id?: string | number[], force?: true) {
+    findPiece(id?: string | number[] | ChineseChessPiece): ChineseChessPiece | undefined;
+    findPiece(id: string | number[] | ChineseChessPiece, force: true): ChineseChessPiece;
+    findPiece(id?: string | number[] | ChineseChessPiece, force?: true) {
         const piece = this.currentSide.findPiece(id);
         if (!piece && force) {
             throw new Error("can not find piece: " + JSON.stringify(id));
         }
         return piece;
+    }
+
+    swapPieces(...ids: (string | number[] | ChineseChessPiece)[]) {
+        for (let i = 1; i < ids.length; i++) {
+            const prevId = ids[i - 1];
+            const currId = ids[i];
+            const prev = this.findPiece(prevId);
+            const curr = this.findPiece(currId);
+            if (prev && curr) {
+                if (prev.side.name === curr.side.name) {
+                    [prev.position, curr.position] = [curr.position, prev.position];
+                } else {
+                    [prev.position, curr.position] = [switchPosition(curr.position), switchPosition(prev.position)];
+                }
+            } else if (Array.isArray(prevId) && curr) {
+                curr.position = prevId;
+            } else if (Array.isArray(currId) && prev) {
+                prev.position = currId;
+            }
+        }
     }
 
     emit<T extends keyof ChineseChessEvents>(type: T, ...params: ChineseChessEvents[T]) {
@@ -231,74 +256,53 @@ export class ChineseChessSide {
         this.load();
     }
 
-    load(pieces?: ChineseChessPieceInfo[]) {
-        if (!pieces) {
-            pieces = [
-                {type: "pawn", position: [0, 3]},
-                {type: "pawn", position: [2, 3]},
-                {type: "pawn", position: [4, 3]},
-                {type: "pawn", position: [6, 3]},
-                {type: "pawn", position: [8, 3]},
-                {type: "cannon", position: [1, 2]},
-                {type: "cannon", position: [7, 2]},
-                {type: "chariot", position: [0, 0]},
-                {type: "chariot", position: [8, 0]},
-                {type: "horse", position: [1, 0]},
-                {type: "horse", position: [7, 0]},
-                {type: "elephant", position: [2, 0]},
-                {type: "elephant", position: [6, 0]},
-                {type: "advisor", position: [3, 0]},
-                {type: "advisor", position: [5, 0]},
-                {type: "general", position: [4, 0]}
-            ].map((v) => ({...v, side: this.name})) as ChineseChessPieceInfo[];
+    load(info?: ChineseChessSideInfo) {
+        if (!info) {
+            info = {};
         }
-        this.pieces = pieces.map((p) => createPiece(this, p));
-        this.graveyard = [];
+        if (!info.pieces) {
+            info.pieces = initialPieces.map((p) => ({...p, side: this.name}));
+        }
+        if (!info.graveyard) {
+            info.graveyard = [];
+        }
+        this.pieces = info.pieces?.map((p) => createPiece(this, p, false));
+        this.graveyard = info.graveyard.map((p) => createPiece(this, p, true));
         return this;
     }
 
-    save(withId = true): ChineseChessPieceInfo[] {
-        return this.pieces.map((p) => {
-            const info = p.info;
-            if (!withId) {
-                delete info.id;
-            }
-            return info;
-        });
+    save(withId = true): ChineseChessSideInfo {
+        const getInfo = (ps: ChineseChessPiece[]) =>
+            ps.map((p) => {
+                const info = p.info;
+                if (!withId) {
+                    delete info.id;
+                }
+                return info;
+            });
+        return {pieces: getInfo(this.pieces), graveyard: getInfo(this.graveyard)};
     }
 
-    selectPiece(id: string) {
-        let pieceFound: ChineseChessPiece | undefined;
-        this.pieces.forEach((piece) => {
-            if (piece.id === id) {
-                pieceFound = piece;
-            } else {
-                piece.selected = false;
-            }
-        });
-        if (pieceFound) {
-            pieceFound.selected = !pieceFound.selected;
-        }
-        return this;
-    }
-
-    findOwnPiece(id: string | number[]) {
+    findOwnPiece(id: string | number[] | ChineseChessPiece) {
         if (Array.isArray(id)) {
             const [x, y] = id;
             return this.pieces.find((p) => p.position[0] === x && p.position[1] === y);
         } else {
+            if (id instanceof ChineseChessPiece) {
+                id = id.id;
+            }
             return this.pieces.find((p) => !p.dead && p.id === id);
         }
     }
 
-    findOpponentPiece(id: string | number[]) {
+    findOpponentPiece(id: string | number[] | ChineseChessPiece) {
         if (Array.isArray(id)) {
             return this.opponent.findOwnPiece(switchPosition(id));
         }
         return this.opponent.findOwnPiece(id);
     }
 
-    findPiece(id?: string | number[]) {
+    findPiece(id?: string | number[] | ChineseChessPiece) {
         if (!id) {
             return undefined;
         }
@@ -356,20 +360,6 @@ export class ChineseChessSide {
 }
 
 export abstract class ChineseChessPiece {
-    private _selected = false;
-    get selected() {
-        return this._selected;
-    }
-    set selected(value) {
-        if (this._selected !== value) {
-            this._selected = value;
-            if (value) {
-                this.side.board.emit("pieceselect", this);
-            } else {
-                this.side.board.emit("pieceunselect", this);
-            }
-        }
-    }
     abstract get path(): number[][];
     get name() {
         return this.names[this.side.name];
@@ -641,22 +631,22 @@ export class ChineseChessGeneral extends ChineseChessPiece {
     }
 }
 
-const createPiece = (side: ChineseChessSide, info: ChineseChessPieceInfo) => {
+const createPiece = (side: ChineseChessSide, info: ChineseChessPieceInfo, dead: boolean) => {
     const {id, type, position} = info;
     switch (type) {
         case "pawn":
-            return new ChineseChessPawn(side, position, id);
+            return new ChineseChessPawn(side, position, id, dead);
         case "cannon":
-            return new ChineseChessCannon(side, position, id);
+            return new ChineseChessCannon(side, position, id, dead);
         case "chariot":
-            return new ChineseChessChariot(side, position, id);
+            return new ChineseChessChariot(side, position, id, dead);
         case "horse":
-            return new ChineseChessHorse(side, position, id);
+            return new ChineseChessHorse(side, position, id, dead);
         case "elephant":
-            return new ChineseChessElephant(side, position, id);
+            return new ChineseChessElephant(side, position, id, dead);
         case "advisor":
-            return new ChineseChessAdvisor(side, position, id);
+            return new ChineseChessAdvisor(side, position, id, dead);
         case "general":
-            return new ChineseChessGeneral(side, position, id);
+            return new ChineseChessGeneral(side, position, id, dead);
     }
 };
