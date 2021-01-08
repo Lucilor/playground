@@ -1,0 +1,25 @@
+<perfect-scrollbar>
+    <mat-form-field>
+        <mat-label>棋谱名字</mat-label>
+        <input type="text" matInput [(ngModel)]="data.name" name="棋谱名字" />
+    </mat-form-field>
+    <mat-card class="boards" *ngFor="let board of data.boards; let i = index">
+        <mat-card-content>
+            <mat-form-field>
+                <mat-label>棋局名字</mat-label>
+                <input type="text" matInput [(ngModel)]="board.name" name="棋局名字" />
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>棋局描述</mat-label>
+                <textarea matInput cdkTextareaAutosize [cdkAutosizeMaxRows]="5" [(ngModel)]="board.desc" name="棋局描述"></textarea>
+            </mat-form-field>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-raised-button color="primary" (click)="loadBoard(i)">载入</button>
+            <button mat-raised-button color="primary" (click)="deleteBoard(i)">删除</button>
+        </mat-card-actions>
+    </mat-card>
+    <div class="btn-group" style="text-align: center">
+        <button mat-raised-button color="primary" (click)="close()">关闭</button>
+    </div>
+</perfect-scrollbar>

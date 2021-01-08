@@ -185,9 +185,9 @@ export class ChineseChessBoard extends EventEmitter {
         this.currentSide = side;
     }
 
-    findPiece(id?: string | number[] | ChineseChessPiece): ChineseChessPiece | undefined;
-    findPiece(id: string | number[] | ChineseChessPiece, force: true): ChineseChessPiece;
-    findPiece(id?: string | number[] | ChineseChessPiece, force?: true) {
+    findPiece(id?: string | number[]): ChineseChessPiece | undefined;
+    findPiece(id: string | number[], force: true): ChineseChessPiece;
+    findPiece(id?: string | number[], force?: true) {
         const piece = this.currentSide.findPiece(id);
         if (!piece && force) {
             throw new Error("can not find piece: " + JSON.stringify(id));
@@ -199,18 +199,36 @@ export class ChineseChessBoard extends EventEmitter {
         for (let i = 1; i < ids.length; i++) {
             const prevId = ids[i - 1];
             const currId = ids[i];
-            const prev = this.findPiece(prevId);
-            const curr = this.findPiece(currId);
+            const prev = prevId instanceof ChineseChessPiece ? prevId : this.findPiece(prevId);
+            const curr = currId instanceof ChineseChessPiece ? currId : this.findPiece(currId);
+            console.log(prevId, currId);
             if (prev && curr) {
+                if (prev.dead && !curr.dead) {
+                    prev.revive();
+                    curr.kill();
+                } else if (!prev.dead && curr.dead) {
+                    prev.kill();
+                    curr.revive();
+                }
                 if (prev.side.name === curr.side.name) {
                     [prev.position, curr.position] = [curr.position, prev.position];
                 } else {
                     [prev.position, curr.position] = [switchPosition(curr.position), switchPosition(prev.position)];
                 }
             } else if (Array.isArray(prevId) && curr) {
-                curr.position = prevId;
+                if (curr.side.name !== this.currentSide.name) {
+                    curr.position = switchPosition(prevId);
+                } else {
+                    curr.position = prevId;
+                }
+                curr.revive();
             } else if (Array.isArray(currId) && prev) {
-                prev.position = currId;
+                if (prev.side.name !== this.currentSide.name) {
+                    prev.position = switchPosition(currId);
+                } else {
+                    prev.position = currId;
+                }
+                prev.revive();
             }
         }
     }
@@ -283,26 +301,23 @@ export class ChineseChessSide {
         return {pieces: getInfo(this.pieces), graveyard: getInfo(this.graveyard)};
     }
 
-    findOwnPiece(id: string | number[] | ChineseChessPiece) {
+    findOwnPiece(id: string | number[]) {
         if (Array.isArray(id)) {
             const [x, y] = id;
             return this.pieces.find((p) => p.position[0] === x && p.position[1] === y);
         } else {
-            if (id instanceof ChineseChessPiece) {
-                id = id.id;
-            }
             return this.pieces.find((p) => !p.dead && p.id === id);
         }
     }
 
-    findOpponentPiece(id: string | number[] | ChineseChessPiece) {
+    findOpponentPiece(id: string | number[]) {
         if (Array.isArray(id)) {
             return this.opponent.findOwnPiece(switchPosition(id));
         }
         return this.opponent.findOwnPiece(id);
     }
 
-    findPiece(id?: string | number[] | ChineseChessPiece) {
+    findPiece(id?: string | number[]) {
         if (!id) {
             return undefined;
         }
@@ -335,6 +350,18 @@ export class ChineseChessSide {
             return true;
         }
         return false;
+    }
+
+    killAllPiece() {
+        this.pieces.forEach((p) => (p.dead = true));
+        this.graveyard = this.graveyard.concat(this.pieces);
+        this.pieces = [];
+    }
+
+    reviveAllPiece() {
+        this.graveyard.forEach((p) => (p.dead = false));
+        this.pieces = this.pieces.concat(this.graveyard);
+        this.graveyard = [];
     }
 
     checkmate() {

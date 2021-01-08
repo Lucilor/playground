@@ -1,5 +1,5 @@
 <div class="bg"></div>
-<input type="file" accept=".json" #importInput hidden (change)="importBoardInfo($event)" />
+<input type="file" accept=".json" #importInput hidden (change)="importCollection($event)" />
 <div class="container">
     <div
         #boardRef
@@ -26,29 +26,40 @@
         </div>
         <ng-container *ngTemplateOutlet="graveyard; context: {$implicit: 'red'}"> </ng-container>
     </div>
-    <div class="menu" [style.height.px]="sizes.battleField[1]">
-        <ng-template *ngTemplateOutlet="subMenu; context: {$implicit: 'black'}"></ng-template>
-        <div class="sub-menu divider">
-            <div>
-                <mat-form-field>
-                    <mat-label>模式</mat-label>
-                    <mat-select [value]="$mode.value" (selectionChange)="setMode($event)">
-                        <mat-option *ngFor="let mode of modes" [value]="mode">{{ mode }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
+    <div class="menu" [style.height.px]="sizes.battleField[1]" [ngSwitch]="$mode.value">
+        <ng-container *ngSwitchCase="'普通'">
+            <ng-template *ngTemplateOutlet="subMenu; context: {$implicit: 'black'}"></ng-template>
+            <div class="sub-menu divider">
+                <ng-template *ngTemplateOutlet="mode"></ng-template>
                 <div>
                     <span [attr.class]="board.currentSide.name"> 当前行动: </span>
                 </div>
                 <div *ngIf="this.aiThinking">电脑思考中...</div>
+                <div class="btn-group">
+                    <button mat-raised-button color="primary" (click)="backward()">悔棋</button>
+                    <button mat-raised-button color="primary" (click)="reset()">重来</button>
+                </div>
             </div>
-            <div class="btn-group">
-                <button mat-raised-button color="primary" (click)="backward()">悔棋</button>
-                <button mat-raised-button color="primary" (click)="reset()">重来</button>
-                <button mat-raised-button color="primary" (click)="exportBoardInfo()">导出</button>
-                <button mat-raised-button color="primary" (click)="importInput.click()">导入</button>
+            <ng-template *ngTemplateOutlet="subMenu; context: {$implicit: 'red'}"></ng-template>
+        </ng-container>
+        <ng-container *ngSwitchCase="'摆棋'">
+            <div class="sub-menu divider">
+                <ng-template *ngTemplateOutlet="mode"></ng-template>
+                <mat-form-field>
+                    <mat-label>当前棋谱</mat-label>
+                    <input type="text" readonly matInput name="当前棋谱" [value]="collection.name" />
+                    <mat-icon matSuffix color="primary" (click)="editCollection()">list</mat-icon>
+                </mat-form-field>
+                <div class="btn-group">
+                    <button mat-raised-button color="primary" (click)="reset(false)">初始局面</button>
+                    <button mat-raised-button color="primary" (click)="killAllPieces()">世界末日</button>
+                    <button mat-raised-button color="primary" (click)="createCollection()">新建棋谱</button>
+                    <button mat-raised-button color="primary" (click)="exportCollection()">保存棋谱</button>
+                    <button mat-raised-button color="primary" (click)="importInput.click()">载入棋谱</button>
+                    <button mat-raised-button color="primary" (click)="addToCollection()">添加当前棋局到棋谱</button>
+                </div>
             </div>
-        </div>
-        <ng-template *ngTemplateOutlet="subMenu; context: {$implicit: 'red'}"></ng-template>
+        </ng-container>
     </div>
 </div>
 
@@ -94,7 +105,7 @@
                 (click)="onPromptPositionsClick(p)"
             ></div>
         </div>
-        <div class="prompt-positions" *ngIf="!currPiece && prevPiece?.side?.isBlack">
+        <div class="prompt-positions" *ngIf="!currPiece && prevPiece?.side?.name === side">
             <div
                 class="prompt-position ripple-small"
                 [style.left]="getLeft(prevPosition[0], side)"
@@ -129,4 +140,12 @@
             </mat-select>
         </mat-form-field>
     </div>
+</ng-template>
+<ng-template #mode>
+    <mat-form-field>
+        <mat-label>模式</mat-label>
+        <mat-select [value]="$mode.value" (selectionChange)="setMode($event)">
+            <mat-option *ngFor="let mode of modes" [value]="mode">{{ mode }}</mat-option>
+        </mat-select>
+    </mat-form-field>
 </ng-template>

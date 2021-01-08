@@ -1,6 +1,6 @@
 import {Component, Inject} from "@angular/core";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {BullsAndCowsConfig} from "@src/app/views/bulls-and-cows/bulls-and-cows";
 import {getOpenDialogFunc} from "../dialog.common";
 
