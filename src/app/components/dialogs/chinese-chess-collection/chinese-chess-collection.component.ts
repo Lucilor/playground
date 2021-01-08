@@ -16,7 +16,7 @@ export interface ChineseChessCollection {
 })
 export class ChineseChessCollectionComponent {
     constructor(
-        public dialogRef: MatDialogRef<ChineseChessCollectionComponent, ChineseChessBoardInfo>,
+        public dialogRef: MatDialogRef<ChineseChessCollectionComponent, number>,
         @Inject(MAT_DIALOG_DATA) public data: ChineseChessCollection,
         private message: MessageService
     ) {}
@@ -27,7 +27,7 @@ export class ChineseChessCollectionComponent {
 
     async loadBoard(i: number) {
         if (await this.message.confirm("载入此棋局？")) {
-            this.dialogRef.close(this.data.boards[i].info);
+            this.dialogRef.close(i);
         }
     }
 
@@ -39,7 +39,6 @@ export class ChineseChessCollectionComponent {
 }
 
 type CCC = ChineseChessCollection;
-type CCBI = ChineseChessBoardInfo;
-export const openChineseChessCollectionDialog = getOpenDialogFunc<ChineseChessCollectionComponent, CCC, CCBI>(
+export const openChineseChessCollectionDialog = getOpenDialogFunc<ChineseChessCollectionComponent, CCC, number>(
     ChineseChessCollectionComponent
 );

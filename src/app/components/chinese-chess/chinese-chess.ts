@@ -72,6 +72,7 @@ export interface ChineseChessEvents {
     backward: [ChineseChessPieceMove];
     checkmate: [ChineseChessSide];
     brinkmate: [ChineseChessSide];
+    draw: [];
 }
 export type ChineseChessEventCallBack<T extends keyof ChineseChessEvents> = (...params: ChineseChessEvents[T]) => void;
 
@@ -81,23 +82,54 @@ export class ChineseChessBoard extends EventEmitter {
     currentSide = this.red;
     history: ChineseChessPieceMove[] = [];
     brinkmate = false;
+    // draw = false;
+    // get finished() {
+    //     return !this.brinkmate && !this.draw;
+    // }
 
     constructor(info?: ChineseChessBoardInfo) {
         super();
         this.on("checkmate", (side) => {
-            if (this.brinkmate) {
-                return;
-            }
-            const opponent = side.opponent;
-            for (const move of opponent.getAllMoves()) {
-                if (!this.testMove(move, () => side.checkmate())) {
-                    return;
-                }
-            }
-            this.brinkmate = true;
-            this.emit("brinkmate", side);
+            this._checkBrinkmate(side);
+            this._checkDraw();
         });
         this.load(info);
+    }
+
+    private _checkBrinkmate(side: ChineseChessSide) {
+        if (this.brinkmate) {
+            return;
+        }
+        const opponent = side.opponent;
+        for (const move of opponent.getAllMoves()) {
+            if (!this.testMove(move, () => side.checkmate())) {
+                return;
+            }
+        }
+        this.brinkmate = true;
+        this.emit("brinkmate", side);
+    }
+
+    private _checkDraw() {
+        if (this.brinkmate) {
+            return;
+        }
+        const {history} = this;
+        const count = history.length;
+        if (count >= 60) {
+            let j = 0;
+            for (let i = count - 1; i >= 0; i--) {
+                if (history[i].eaten) {
+                    return;
+                } else {
+                    j++;
+                }
+                if (j >= 60) {
+                    this.emit("draw");
+                    break;
+                }
+            }
+        }
     }
 
     load(info?: ChineseChessBoardInfo) {

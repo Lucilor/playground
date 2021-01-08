@@ -47,7 +47,7 @@
                 <ng-template *ngTemplateOutlet="mode"></ng-template>
                 <mat-form-field>
                     <mat-label>当前棋谱</mat-label>
-                    <input type="text" readonly matInput name="当前棋谱" [value]="collection.name" />
+                    <input type="text" readonly matInput name="当前棋谱" [value]="collectionName" />
                     <mat-icon matSuffix color="primary" (click)="editCollection()">list</mat-icon>
                 </mat-form-field>
                 <div class="btn-group">
@@ -56,7 +56,8 @@
                     <button mat-raised-button color="primary" (click)="createCollection()">新建棋谱</button>
                     <button mat-raised-button color="primary" (click)="exportCollection()">保存棋谱</button>
                     <button mat-raised-button color="primary" (click)="importInput.click()">载入棋谱</button>
-                    <button mat-raised-button color="primary" (click)="addToCollection()">添加当前棋局到棋谱</button>
+                    <button mat-raised-button color="primary" (click)="addToCollection()">添加当前棋局</button>
+                    <button mat-raised-button color="primary" (click)="updateToCollection()">更新当前棋局</button>
                 </div>
             </div>
         </ng-container>

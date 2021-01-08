@@ -94,16 +94,27 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
     modes: Mode[] = ["普通", "摆棋"];
     $mode: BehaviorSubject<Mode>;
     collection: ChineseChessCollection;
+    collectionIdx: number;
+    get collectionName() {
+        const {collection, collectionIdx} = this;
+        let name = collection.name;
+        const board = collection.boards[collectionIdx];
+        if (board) {
+            name += " —— " + board.name;
+        }
+        return name;
+    }
 
     constructor(private message: MessageService, private dialog: MatDialog) {
         super("chinese-chess", local);
-        this.players = this.load("players") || {red: "human", black: "ai-3"};
+        this.players = this.load("players") ?? {red: "human", black: "ai-3"};
         this.$mode = new BehaviorSubject(this.load("mode") || "普通");
         this.$mode.subscribe(() => {
             this.currPiece = null;
             this.prevPiece = null;
         });
-        this.collection = this.load("collection") || {name: "无题", boards: []};
+        this.collection = this.load("collection") ?? {name: "无题", boards: []};
+        this.collectionIdx =  this.load("collectionIdx") ?? -1;
     }
 
     calcBoardSize = debounce(() => {
@@ -380,12 +391,33 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
         }
     }
 
+    async updateToCollection() {
+        const {collection, collectionIdx} = this;
+        const board = collection.boards[collectionIdx];
+        if (!board) {
+            this.message.alert("请先添加或载入棋局！");
+        } else if (await this.message.confirm("是否更新此棋局？")) {
+            board.info = this.board.save(true);
+            this.saveCollection();
+        }
+    }
+
     async createCollection() {
         const name = await this.message.prompt({value: "无题", placeholder: "棋谱名字", hint: "新建后当前数据将消失，清注意保存"});
         if (typeof name === "string") {
             this.collection = {name, boards: []};
             this.saveCollection();
         }
+    }
+
+    async editCollection() {
+        const index = await openChineseChessCollectionDialog(this.dialog, {data: this.collection});
+        if (typeof index === "number") {
+            this.collectionIdx = index;
+            this.reset(false, this.collection.boards[index].info);
+            this.save("collectionIdx", index);
+        }
+        this.saveCollection();
     }
 
     async exportCollection() {
@@ -432,13 +464,5 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
         red.killAllPiece();
         black.killAllPiece();
         this.saveBoardInfo();
-    }
-
-    async editCollection() {
-        const info = await openChineseChessCollectionDialog(this.dialog, {data: this.collection});
-        if (info) {
-            this.reset(false, info);
-        }
-        this.saveCollection();
     }
 }
