@@ -11,11 +11,13 @@ import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
 
 import {MessageComponent} from "./components/message/message.component";
 import {MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from "@angular/material/snack-bar";
+import {EditorModule} from "../editor/editor.module";
 
 @NgModule({
     declarations: [MessageComponent],
     imports: [
         CommonModule,
+        EditorModule,
         FormsModule,
         ReactiveFormsModule,
         MatButtonModule,

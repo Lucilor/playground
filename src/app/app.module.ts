@@ -1,6 +1,7 @@
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {Injectable, NgModule} from "@angular/core";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MatButtonModule} from "@angular/material/button";
 import {MatCardModule} from "@angular/material/card";
 import {MatDividerModule} from "@angular/material/divider";
@@ -24,18 +25,18 @@ import {BullsAndCowsDifficultyComponent} from "./components/dialogs/bulls-and-co
 import {ChinesePoetrySearchComponent} from "./components/dialogs/chinese-poetry-search/chinese-poetry-search.component";
 import {MenuComponent} from "./components/menu/menu.component";
 import {AIModule} from "./modules/ai/ai.module";
+import {EditorModule} from "./modules/editor/editor.module";
 import {HttpModule} from "./modules/http/http.module";
 import {MessageModule} from "./modules/message/message.module";
 import {MusicPlayerModule} from "./modules/music-player/music-player.module";
 import {BezierComponent} from "./views/bezier/bezier.component";
+import {BlogComponent} from "./views/blog/blog.component";
 import {BullsAndCowsComponent} from "./views/bulls-and-cows/bulls-and-cows.component";
+import {ChineseChessComponent} from "./views/chinese-chess/chinese-chess.component";
 import {ChinesePoetryComponent} from "./views/chinese-poetry/chinese-poetry.component";
 import {IndexComponent} from "./views/index/index.component";
-import {RubiksCubeComponent} from "./views/rubiks-cube/rubiks-cube.component";
-import {BlogComponent} from "./views/blog/blog.component";
 import {PageNotFoundComponent} from "./views/page-not-found/page-not-found.component";
-import {ChineseChessComponent} from "./views/chinese-chess/chinese-chess.component";
-import {ChineseChessCollectionComponent} from "./components/dialogs/chinese-chess-collection/chinese-chess-collection.component";
+import {RubiksCubeComponent} from "./views/rubiks-cube/rubiks-cube.component";
 
 @Injectable()
 export class MyMatPaginatorIntl extends MatPaginatorIntl {
@@ -68,8 +69,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         BullsAndCowsDifficultyComponent,
         BlogComponent,
         PageNotFoundComponent,
-        ChineseChessComponent,
-        ChineseChessCollectionComponent
+        ChineseChessComponent
     ],
     imports: [
         AIModule,
@@ -78,8 +78,10 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         BrowserModule,
         ColorChromeModule,
         DragDropModule,
+        EditorModule,
         FormsModule,
         HttpModule,
+        MatAutocompleteModule,
         MatButtonModule,
         MatCardModule,
         MatDividerModule,

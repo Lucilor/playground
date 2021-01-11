@@ -10,7 +10,7 @@ import {
 } from "@src/app/components/dialogs/bulls-and-cows-difficulty/bulls-and-cows-difficulty.component";
 import {Storaged} from "@src/app/mixins/Storage.minin";
 import {MessageService} from "@src/app/modules/message/services/message.service";
-import * as md5 from "md5";
+import md5 from "md5";
 import {BullsAndCows} from "./bulls-and-cows";
 
 @Component({
