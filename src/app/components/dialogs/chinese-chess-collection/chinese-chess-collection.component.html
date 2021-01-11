@@ -3,6 +3,10 @@
         <mat-label>棋谱名字</mat-label>
         <input type="text" matInput [(ngModel)]="data.name" name="棋谱名字" />
     </mat-form-field>
+    <mat-form-field>
+        <mat-label>棋谱描述</mat-label>
+        <textarea matInput cdkTextareaAutosize [cdkAutosizeMaxRows]="5" [(ngModel)]="data.desc" name="棋谱描述"></textarea>
+    </mat-form-field>
     <mat-card class="boards" *ngFor="let board of data.boards; let i = index">
         <mat-card-content>
             <mat-form-field>

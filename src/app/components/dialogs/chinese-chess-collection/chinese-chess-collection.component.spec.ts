@@ -11,7 +11,11 @@ import {ChineseChessBoard} from "../../chinese-chess/chinese-chess";
 
 import {ChineseChessCollection, ChineseChessCollectionComponent} from "./chinese-chess-collection.component";
 
-const data: ChineseChessCollection = {name: "test", boards: [{name: "test", desc: "test-desc", info: new ChineseChessBoard().save()}]};
+const data: ChineseChessCollection = {
+    name: "test",
+    desc: "test-desc",
+    boards: [{name: "test", desc: "test-desc", info: new ChineseChessBoard().save()}]
+};
 
 describe("ChineseChessCollectionComponent", () => {
     let component: ChineseChessCollectionComponent;

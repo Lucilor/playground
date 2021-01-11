@@ -27,9 +27,15 @@
         <ng-container *ngTemplateOutlet="graveyard; context: {$implicit: 'red'}"> </ng-container>
     </div>
     <div class="menu" [style.height.px]="sizes.battleField[1]" [ngSwitch]="$mode.value">
-        <ng-container *ngSwitchCase="'普通'">
+        <ng-container *ngSwitchCase="'下棋'">
             <ng-template *ngTemplateOutlet="subMenu; context: {$implicit: 'black'}"></ng-template>
             <div class="sub-menu divider">
+                <mat-slide-toggle [checked]="applyCollection" (change)="toggleApplyCollection($event)">应用棋谱</mat-slide-toggle>
+                <mat-form-field *ngIf="applyCollection">
+                    <mat-label>当前棋谱</mat-label>
+                    <input type="text" readonly matInput name="当前棋谱" [value]="collectionName" />
+                    <mat-icon matSuffix color="primary" (click)="editCollection()">list</mat-icon>
+                </mat-form-field>
                 <ng-template *ngTemplateOutlet="mode"></ng-template>
                 <div>
                     <span [attr.class]="board.currentSide.name"> 当前行动: </span>

@@ -6,6 +6,7 @@ import {getOpenDialogFunc} from "../dialog.common";
 
 export interface ChineseChessCollection {
     name: string;
+    desc: string;
     boards: {name: string; desc: string; info: ChineseChessBoardInfo}[];
 }
 
