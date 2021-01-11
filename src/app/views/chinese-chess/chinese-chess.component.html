@@ -30,13 +30,11 @@
         <ng-container *ngSwitchCase="'下棋'">
             <ng-template *ngTemplateOutlet="subMenu; context: {$implicit: 'black'}"></ng-template>
             <div class="sub-menu divider">
-                <mat-slide-toggle [checked]="applyCollection" (change)="toggleApplyCollection($event)">应用棋谱</mat-slide-toggle>
-                <mat-form-field *ngIf="applyCollection">
-                    <mat-label>当前棋谱</mat-label>
-                    <input type="text" readonly matInput name="当前棋谱" [value]="collectionName" />
-                    <mat-icon matSuffix color="primary" (click)="editCollection()">list</mat-icon>
-                </mat-form-field>
                 <ng-template *ngTemplateOutlet="mode"></ng-template>
+                <mat-slide-toggle [checked]="applyCollection" (change)="toggleApplyCollection($event)">应用集合</mat-slide-toggle>
+                <ng-container *ngIf="applyCollection">
+                    <ng-template *ngTemplateOutlet="collectionState"></ng-template>
+                </ng-container>
                 <div>
                     <span [attr.class]="board.currentSide.name"> 当前行动: </span>
                 </div>
@@ -51,19 +49,15 @@
         <ng-container *ngSwitchCase="'摆棋'">
             <div class="sub-menu divider">
                 <ng-template *ngTemplateOutlet="mode"></ng-template>
-                <mat-form-field>
-                    <mat-label>当前棋谱</mat-label>
-                    <input type="text" readonly matInput name="当前棋谱" [value]="collectionName" />
-                    <mat-icon matSuffix color="primary" (click)="editCollection()">list</mat-icon>
-                </mat-form-field>
+                <ng-template *ngTemplateOutlet="collectionState"></ng-template>
                 <div class="btn-group">
                     <button mat-raised-button color="primary" (click)="reset(false)">初始局面</button>
                     <button mat-raised-button color="primary" (click)="killAllPieces()">世界末日</button>
-                    <button mat-raised-button color="primary" (click)="createCollection()">新建棋谱</button>
-                    <button mat-raised-button color="primary" (click)="exportCollection()">保存棋谱</button>
-                    <button mat-raised-button color="primary" (click)="importInput.click()">载入棋谱</button>
-                    <button mat-raised-button color="primary" (click)="addToCollection()">添加当前棋局</button>
-                    <button mat-raised-button color="primary" (click)="updateToCollection()">更新当前棋局</button>
+                    <button mat-raised-button color="primary" (click)="createCollection()">新建集合</button>
+                    <button mat-raised-button color="primary" (click)="exportCollection()">保存集合</button>
+                    <button mat-raised-button color="primary" (click)="importInput.click()">载入集合</button>
+                    <button mat-raised-button color="primary" (click)="addToCollection()">新建棋局</button>
+                    <button mat-raised-button color="primary" (click)="updateToCollection()">更新棋局</button>
                 </div>
             </div>
         </ng-container>
@@ -154,5 +148,29 @@
         <mat-select [value]="$mode.value" (selectionChange)="setMode($event)">
             <mat-option *ngFor="let mode of modes" [value]="mode">{{ mode }}</mat-option>
         </mat-select>
+    </mat-form-field>
+</ng-template>
+<ng-template #collectionState>
+    <mat-form-field>
+        <mat-label>当前集合</mat-label>
+        <input type="text" matInput name="当前集合" [(ngModel)]="collection.name" />
+        <mat-icon matSuffix color="primary" (click)="editCollection()">description</mat-icon>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>当前棋局</mat-label>
+        <input
+            type="text"
+            matInput
+            name="当前棋局"
+            [value]="collectionBoard?.name || ''"
+            (change)="changeBoardName($event)"
+            [matAutocomplete]="boards"
+        />
+        <mat-autocomplete #boards="matAutocomplete" (optionSelected)="changeCollectionIdx($event)">
+            <mat-option *ngFor="let board of collection.boards; let i = index" [value]="board.name">
+                {{ board.name }}
+            </mat-option>
+        </mat-autocomplete>
+        <mat-icon matSuffix color="primary" (click)="editCollectionBoard($event)">description</mat-icon>
     </mat-form-field>
 </ng-template>
