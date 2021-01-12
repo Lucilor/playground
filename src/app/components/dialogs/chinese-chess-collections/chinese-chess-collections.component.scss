@@ -1,0 +1,16 @@
+:host {
+    display: flex;
+    width: calc(60vw - 48px);
+    height: calc(70vh - 48px);
+    flex-direction: column;
+}
+
+.collections {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    a {
+        margin: 5px 0;
+    }
+}

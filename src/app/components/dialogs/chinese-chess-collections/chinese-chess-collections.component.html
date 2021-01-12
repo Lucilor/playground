@@ -1,0 +1,11 @@
+<ngx-ui-loader [loaderId]="loadId"></ngx-ui-loader>
+<perfect-scrollbar>
+    <div class="collections">
+        <ng-container *ngFor="let item of data">
+            <a mat-raised-button color="primary" [href]="item.url" download target="_blank">{{ item.name }}</a>
+        </ng-container>
+    </div>
+</perfect-scrollbar>
+<div class="btn-group" style="text-align: center">
+    <button mat-raised-button color="primary" (click)="dialogRef.close()">关闭</button>
+</div>

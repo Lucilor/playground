@@ -5,7 +5,7 @@ import {ChineseChessBoard, ChineseChessPieceMove, ChineseChessPieceType, Chinese
 import {CC_BOARD_HEIGHT} from "./chinese-chess-helper";
 
 const defaultPieceValues: Record<ChineseChessPieceType, number> = {
-    general: 1000000,
+    general: Math.pow(10, 10),
     advisor: 110,
     elephant: 110,
     horse: 300,

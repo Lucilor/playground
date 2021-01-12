@@ -81,6 +81,7 @@ export class ChineseChessBoard extends EventEmitter {
     black = new ChineseChessSide("black", this);
     currentSide = this.red;
     history: ChineseChessPieceMove[] = [];
+    historyDesc: string[] = [];
     brinkmate = false;
     // draw = false;
     // get finished() {
@@ -132,13 +133,81 @@ export class ChineseChessBoard extends EventEmitter {
         }
     }
 
+    getHistoryDesc() {
+        const board = new ChineseChessBoard(this.save(true));
+        const history = board.history;
+        for (let i = history.length - 1; i >= 0; i--) {
+            const {from, piece, eaten} = history[i];
+            piece.moveTo(from);
+            eaten?.revive();
+        }
+        const map: Record<string, string[]> = {
+            0: ["零", "０"],
+            1: ["一", "１"],
+            2: ["二", "２"],
+            3: ["三", "３"],
+            4: ["四", "４"],
+            5: ["五", "５"],
+            6: ["六", "６"],
+            7: ["七", "７"],
+            8: ["八", "８"],
+            9: ["九", "９"]
+        };
+        const result: string[] = [];
+        for (const move of history) {
+            const {from, to, piece, eaten} = move;
+            const sideIdx = piece.side.name === "black" ? 1 : 0;
+            const pieceName = piece.name;
+            const dx = to[0] - from[0];
+            const dy = to[1] - from[1];
+            let d = 0;
+            let direction = "";
+            const diagonalPieces: ChineseChessPieceType[] = ["horse", "advisor", "elephant"];
+            if (diagonalPieces.includes(piece.type)) {
+                direction = dy < 0 ? "退" : "进";
+                d = to[0] + 1;
+            } else {
+                if (Math.abs(dx) > Math.abs(dy)) {
+                    direction = "平";
+                    d = to[0] + 1;
+                } else {
+                    direction = dy < 0 ? "退" : "进";
+                    d = Math.abs(dy);
+                }
+            }
+            let duplicate = "无";
+            for (let i = 0; i < CC_BOARD_HEIGHT; i++) {
+                if (i === from[1]) {
+                    continue;
+                }
+                const piece2 = piece.side.findOwnPiece([from[0], i]);
+                if (piece2?.name === pieceName) {
+                    duplicate = i < from[1] ? "前" : "后";
+                }
+            }
+            if (duplicate === "无") {
+                result.push(pieceName + map[from[0] + 1][sideIdx] + direction + map[d][sideIdx]);
+            } else {
+                result.push(duplicate + pieceName + direction + map[d][sideIdx]);
+            }
+            piece.moveTo(to);
+            eaten?.kill();
+        }
+        return result;
+    }
+
     load(info?: ChineseChessBoardInfo) {
         this.red.load(info?.red);
         this.black.load(info?.black);
         this.currentSide = info?.currentSide === "black" ? this.black : this.red;
         this.brinkmate = info?.brinkmate === true;
         if (info?.histroy) {
+            const redGraveyard = this.red.graveyard;
+            const blackGraveyard = this.black.graveyard;
+            this.red.reviveAllPiece();
+            this.black.reviveAllPiece();
             this.history = getMoves(info.histroy, this);
+            redGraveyard.concat(blackGraveyard).forEach((p) => p.kill());
         } else {
             this.history = [];
         }
@@ -165,15 +234,15 @@ export class ChineseChessBoard extends EventEmitter {
         }
         const target = currentSide.findOpponentPiece(position);
         const move: ChineseChessPieceMove = {piece, from: piece.position.slice(), to: position.slice(), eaten: target};
+        this.history.push({...move});
         piece.moveTo(position);
         target?.kill();
-        this.history.push({...move});
+        this.switchSide();
         if (target instanceof ChineseChessGeneral) {
             this.brinkmate = true;
             this.emit("brinkmate", currentSide);
             return true;
         }
-        this.switchSide();
         this.emit("forward", move);
         if (currentSide.checkmate()) {
             this.emit("checkmate", currentSide);
@@ -233,7 +302,6 @@ export class ChineseChessBoard extends EventEmitter {
             const currId = ids[i];
             const prev = prevId instanceof ChineseChessPiece ? prevId : this.findPiece(prevId);
             const curr = currId instanceof ChineseChessPiece ? currId : this.findPiece(currId);
-            console.log(prevId, currId);
             if (prev && curr) {
                 if (prev.dead && !curr.dead) {
                     prev.revive();

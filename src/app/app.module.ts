@@ -9,6 +9,7 @@ import {MatExpansionModule} from "@angular/material/expansion";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatIconModule} from "@angular/material/icon";
 import {MatInputModule} from "@angular/material/input";
+import {MatListModule} from "@angular/material/list";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatPaginatorIntl, MatPaginatorModule} from "@angular/material/paginator";
 import {MatSelectModule} from "@angular/material/select";
@@ -37,6 +38,7 @@ import {ChinesePoetryComponent} from "./views/chinese-poetry/chinese-poetry.comp
 import {IndexComponent} from "./views/index/index.component";
 import {PageNotFoundComponent} from "./views/page-not-found/page-not-found.component";
 import {RubiksCubeComponent} from "./views/rubiks-cube/rubiks-cube.component";
+import {ChineseChessCollectionsComponent} from "./components/dialogs/chinese-chess-collections/chinese-chess-collections.component";
 
 @Injectable()
 export class MyMatPaginatorIntl extends MatPaginatorIntl {
@@ -69,7 +71,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         BullsAndCowsDifficultyComponent,
         BlogComponent,
         PageNotFoundComponent,
-        ChineseChessComponent
+        ChineseChessComponent,
+        ChineseChessCollectionsComponent
     ],
     imports: [
         AIModule,
@@ -89,6 +92,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         MatFormFieldModule,
         MatIconModule,
         MatInputModule,
+        MatListModule,
         MatMenuModule,
         MatPaginatorModule,
         MatSelectModule,

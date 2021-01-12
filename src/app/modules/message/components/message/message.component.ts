@@ -130,7 +130,7 @@ export class MessageComponent implements OnInit {
                 this.dialogRef.close(this.input.value);
             }
         } else if (this.data.type === "editor") {
-            this.dialogRef.close(this.input.value);
+            this.dialogRef.close(this.data.content);
         } else {
             this.cancle();
         }

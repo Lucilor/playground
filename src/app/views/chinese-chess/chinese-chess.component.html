@@ -26,7 +26,7 @@
         </div>
         <ng-container *ngTemplateOutlet="graveyard; context: {$implicit: 'red'}"> </ng-container>
     </div>
-    <div class="menu" [style.height.px]="sizes.battleField[1]" [ngSwitch]="$mode.value">
+    <div class="menu" [style.height.px]="sizes.battleField[1]" [ngSwitch]="mode$.value">
         <ng-container *ngSwitchCase="'下棋'">
             <ng-template *ngTemplateOutlet="subMenu; context: {$implicit: 'black'}"></ng-template>
             <div class="sub-menu divider">
@@ -42,6 +42,7 @@
                 <div class="btn-group">
                     <button mat-raised-button color="primary" (click)="backward()">悔棋</button>
                     <button mat-raised-button color="primary" (click)="reset()">重来</button>
+                    <button mat-raised-button color="primary" (click)="showBoardMoves()">步法</button>
                 </div>
             </div>
             <ng-template *ngTemplateOutlet="subMenu; context: {$implicit: 'red'}"></ng-template>
@@ -58,6 +59,7 @@
                     <button mat-raised-button color="primary" (click)="importInput.click()">载入集合</button>
                     <button mat-raised-button color="primary" (click)="addToCollection()">新建棋局</button>
                     <button mat-raised-button color="primary" (click)="updateToCollection()">更新棋局</button>
+                    <button mat-raised-button color="primary" (click)="getCollections()">下载范例</button>
                 </div>
             </div>
         </ng-container>
@@ -89,6 +91,7 @@
                 }"
                 [style.left]="getLeft(piece.position[0], side)"
                 [style.top]="getTop(piece.position[1], side)"
+                [style.zIndex]="piece.type === 'general' ? 2 : 1"
                 (click)="onPieceClick(piece)"
             >
                 <div class="chat-bubble" *ngIf="piece.type === 'general'">
@@ -145,7 +148,7 @@
 <ng-template #mode>
     <mat-form-field>
         <mat-label>模式</mat-label>
-        <mat-select [value]="$mode.value" (selectionChange)="setMode($event)">
+        <mat-select [value]="mode$.value" (selectionChange)="setMode($event)">
             <mat-option *ngFor="let mode of modes" [value]="mode">{{ mode }}</mat-option>
         </mat-select>
     </mat-form-field>
