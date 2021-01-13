@@ -87,7 +87,7 @@
                     black: side === 'black',
                     selectable: isPieceSelectable(piece),
                     selected: isPieceSelected(piece),
-                    'prev-moved': prevPiece?.id === piece.id
+                    'prev-moved': prevPiece$.value?.id === piece.id
                 }"
                 [style.left]="getLeft(piece.position[0], side)"
                 [style.top]="getTop(piece.position[1], side)"
@@ -109,7 +109,7 @@
                 (click)="onPromptPositionsClick(p)"
             ></div>
         </div>
-        <div class="prompt-positions" *ngIf="!currPiece && prevPiece?.side?.name === side">
+        <div class="prompt-positions" *ngIf="!currPiece$.value && prevPiece$.value?.side?.name === side">
             <div
                 class="prompt-position ripple-small"
                 [style.left]="getLeft(prevPosition[0], side)"

@@ -758,7 +758,7 @@ export class ChineseChessGeneral extends ChineseChessPiece {
     }
 }
 
-const createPiece = (side: ChineseChessSide, info: ChineseChessPieceInfo, dead: boolean) => {
+export const createPiece = (side: ChineseChessSide, info: ChineseChessPieceInfo, dead: boolean) => {
     const {id, type, position} = info;
     switch (type) {
         case "pawn":

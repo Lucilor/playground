@@ -17,8 +17,10 @@ import {
     ChineseChessBoard,
     ChineseChessBoardInfo,
     ChineseChessPiece,
+    ChineseChessPieceInfo,
     ChineseChessPieceMove,
-    ChineseChessSideName
+    ChineseChessSideName,
+    createPiece
 } from "../../components/chinese-chess/chinese-chess";
 import {ChineseChessAI} from "../../components/chinese-chess/chinese-chess-ai";
 
@@ -62,19 +64,24 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
     board = new ChineseChessBoard();
     ai = new ChineseChessAI();
     aiBridge = typeof Worker !== "undefined" ? new ChineseChessAIBridge(this.ai, 32) : undefined;
-    currPiece: ChineseChessPiece | null = null;
+    currPiece$ = new BehaviorSubject<ChineseChessPiece | null>(null);
+    prevPiece$ = new BehaviorSubject<ChineseChessPiece | null>(null);
+    prevPiece = 1;
+    private _currentPiecePath: number[][] = [];
     get promptPositions() {
         const mode = this.mode$.value;
+        const currPiece = this.currPiece$.value;
         if (mode === "下棋") {
-            return this.currPiece?.path || [];
+            return this._currentPiecePath;
         } else if (mode === "摆棋") {
-            return this.currPiece ? allPositions : [];
+            return currPiece ? allPositions : [];
         } else {
             return [];
         }
     }
-    prevPiece: ChineseChessPiece | null = null;
-    prevPosition: number[] = [-1, -1];
+    get prevPosition() {
+        return this.prevPiece$.value?.position ?? [];
+    }
     sizes = {
         board: [0, 0],
         battleField: [0, 0],
@@ -114,8 +121,8 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
         this.players = this.load("players") ?? {red: "human", black: "ai-3"};
         this.mode$ = new BehaviorSubject(this.load("mode") ?? "下棋");
         this.mode$.subscribe((value) => {
-            this.currPiece = null;
-            this.prevPiece = null;
+            this.currPiece$.next(null);
+            this.prevPiece$.next(null);
             this.save("mode", value);
         });
         this.collection = this.load("collection") ?? {name: "无题", boards: []};
@@ -127,6 +134,13 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
             }
         });
         this.applyCollection = this.load("applyCollection") ?? false;
+        this.currPiece$.subscribe((piece) => (this._currentPiecePath = piece?.path ?? []));
+        const prevPieceInfo: ChineseChessPieceInfo = this.load("prevPiece");
+        if (prevPieceInfo) {
+            const side = prevPieceInfo.side === "black" ? this.board.black : this.board.red;
+            this.prevPiece$.next(createPiece(side, prevPieceInfo, false));
+        }
+        this.prevPiece$.subscribe((piece) => this.save("prevPiece", piece?.info || null));
     }
 
     calcBoardSize = debounce(() => {
@@ -162,8 +176,9 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
                 board.backward();
                 return;
             }
-            this.prevPiece = move.piece;
-            this.prevPosition = move.from;
+            const prevPiece = move.piece.clone();
+            prevPiece.moveTo(move.from);
+            this.prevPiece$.next(prevPiece);
             await timeout(this.pieceMoveDelay);
             this.aiMove();
             this.saveBoardInfo();
@@ -171,11 +186,11 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
         board.on("backward", () => {
             const move = board.history[board.history.length - 1];
             if (move) {
-                this.prevPiece = move.piece;
-                this.prevPosition = move.from;
+                const prevPiece = move.piece.clone();
+                prevPiece.moveTo(move.from);
+                this.prevPiece$.next(prevPiece);
             } else {
-                this.prevPiece = null;
-                this.prevPosition = [-1, -1];
+                this.prevPiece$.next(null);
             }
             this.saveBoardInfo();
         });
@@ -213,7 +228,7 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
         return this.board[sideName].graveyard;
     }
 
-    getLeft(num: number, sideName: ChineseChessSideName) {
+    getLeft(num = 0, sideName: ChineseChessSideName) {
         if (sideName === "red") {
             return 100 - num * 12.5 + "%";
         } else {
@@ -250,31 +265,31 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
     }
 
     isPieceSelected(piece: ChineseChessPiece) {
-        return piece.id === this.currPiece?.id;
+        return piece.id === this.currPiece$.value?.id;
     }
 
     onPieceClick(piece: ChineseChessPiece) {
         const mode = this.mode$.value;
-        if (this.currPiece?.id === piece.id) {
-            this.currPiece = null;
+        if (this.currPiece$.value?.id === piece.id) {
+            this.currPiece$.next(null);
         } else if (this.isPieceSelectable(piece)) {
             if (mode === "下棋") {
                 if (this.players[piece.side.name] === "human") {
-                    this.currPiece = piece;
+                    this.currPiece$.next(piece);
                 }
             } else if (mode === "摆棋") {
-                this.currPiece = piece;
+                this.currPiece$.next(piece);
             }
         }
     }
 
     onGraveyardClick(sideName: ChineseChessSideName) {
-        const currPiece = this.currPiece;
+        const currPiece = this.currPiece$.value;
         if (currPiece?.side.name === sideName) {
             if (this.mode$.value === "摆棋") {
                 if (!currPiece.dead) {
                     currPiece.kill();
-                    this.currPiece = null;
+                    this.currPiece$.next(null);
                     this.saveBoardInfo();
                 }
             }
@@ -283,16 +298,17 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
 
     onPromptPositionsClick(position: number[]) {
         const mode = this.mode$.value;
-        const {board, currPiece} = this;
+        const {board, currPiece$} = this;
+        const currPiece = currPiece$.value;
         if (mode === "下棋") {
             if (currPiece) {
                 board.forward(currPiece.id, position);
-                this.currPiece = null;
+                currPiece$.next(null);
             }
         } else if (mode === "摆棋") {
             if (currPiece) {
                 board.swapPieces(currPiece, position);
-                this.currPiece = null;
+                this.currPiece$.next(null);
                 this.saveBoardInfo();
             }
         }
@@ -307,9 +323,8 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
                 }
             }
             this.board.load(info);
-            this.currPiece = null;
-            this.prevPiece = null;
-            this.prevPosition = [-1, -1];
+            this.currPiece$.next(null);
+            this.prevPiece$.next(null);
             this.aiThinking = false;
             this.saveBoardInfo();
             this.aiMove();
@@ -363,8 +378,8 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
     }
 
     backward() {
-        if (this.currPiece) {
-            this.currPiece = null;
+        if (this.currPiece$) {
+            this.currPiece$.next(null);
         }
         this.board.backward();
         const player = this.players[this.board.currentSide.name];
@@ -500,7 +515,8 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
     }
 
     showGraveyardRipple(sideName: ChineseChessSideName) {
-        const {currPiece, mode$} = this;
+        const {currPiece$, mode$} = this;
+        const currPiece = currPiece$.value;
         if (!currPiece) {
             return false;
         }

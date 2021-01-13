@@ -26,7 +26,6 @@ import {BullsAndCowsDifficultyComponent} from "./components/dialogs/bulls-and-co
 import {ChinesePoetrySearchComponent} from "./components/dialogs/chinese-poetry-search/chinese-poetry-search.component";
 import {MenuComponent} from "./components/menu/menu.component";
 import {AIModule} from "./modules/ai/ai.module";
-import {EditorModule} from "./modules/editor/editor.module";
 import {HttpModule} from "./modules/http/http.module";
 import {MessageModule} from "./modules/message/message.module";
 import {MusicPlayerModule} from "./modules/music-player/music-player.module";
@@ -81,7 +80,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         BrowserModule,
         ColorChromeModule,
         DragDropModule,
-        EditorModule,
         FormsModule,
         HttpModule,
         MatAutocompleteModule,

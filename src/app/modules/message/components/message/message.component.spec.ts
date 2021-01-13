@@ -4,8 +4,8 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
-import {EditorModule} from "@src/app/modules/editor/editor.module";
 import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
+import {QuillModule} from "ngx-quill";
 
 import {MessageComponent} from "./message.component";
 
@@ -16,7 +16,7 @@ describe("MessageComponent", () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [MessageComponent],
-            imports: [EditorModule, FormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, PerfectScrollbarModule],
+            imports: [FormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, PerfectScrollbarModule, QuillModule],
             providers: [
                 {provide: MatDialogRef, useValue: {}},
                 {provide: MAT_DIALOG_DATA, useValue: {}}
