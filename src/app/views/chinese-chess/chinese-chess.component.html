@@ -27,6 +27,7 @@
         <ng-container *ngTemplateOutlet="graveyard; context: {$implicit: 'red'}"> </ng-container>
     </div>
     <div class="menu" [style.height.px]="sizes.battleField[1]" [ngSwitch]="mode$.value">
+        <div class="help"><mat-icon color="primary" (click)="showInfo()">help</mat-icon></div>
         <ng-container *ngSwitchCase="'下棋'">
             <ng-template *ngTemplateOutlet="subMenu; context: {$implicit: 'black'}"></ng-template>
             <div class="sub-menu divider">

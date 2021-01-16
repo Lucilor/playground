@@ -52,10 +52,20 @@ $tile-size: 58.88px;
     display: flex;
     flex-direction: column;
     padding: 10px;
-    // color: grey;
+    border-radius: 20px;
+    box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.2);
+
+    .help {
+        cursor: pointer;
+        text-align: right;
+    }
 
     .sub-menu {
         display: flex;
+        &:not(:last-child) {
+            border-bottom: 2px solid gray;
+            margin-bottom: 5px;
+        }
 
         .mat-form-field {
             width: 100%;

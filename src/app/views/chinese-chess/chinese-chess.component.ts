@@ -551,4 +551,26 @@ export class ChineseChessComponent extends Storaged() implements OnInit, OnDestr
     async getCollections() {
         openChineseChessCollectionsDialog(this.dialog);
     }
+
+    showInfo() {
+        const getList = (content: string[]) => `<ul>${content.map((v) => `<li>${v}</li>`).join("")}</ul>`;
+        this.message.book(
+            [
+                {
+                    title: "关于模式",
+                    content: getList(["下棋：正常地下棋，开启“应用集合”时可以玩对应残局。", "摆棋：编辑残局，可用于上述的“应用集合”。"])
+                },
+                {
+                    title: "关于电脑(AI)",
+                    content: getList([
+                        "AI算法是最简单的遍历算法，所以不要对它的智商抱有期待。",
+                        "电脑（简单）：请不要欺负它。",
+                        "电脑（中等）：可能没有那么智障了。",
+                        "电脑（困难）：效果拔群（指CPU的负荷）！渣渣CPU请勿轻易尝试。",
+                    ])
+                }
+            ],
+            "说明书"
+        );
+    }
 }
