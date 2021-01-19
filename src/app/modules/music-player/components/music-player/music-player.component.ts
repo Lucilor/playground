@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from "@angular/core";
 import {timeout} from "@lucilor/utils";
 import {local} from "@src/app/app.common";
-import {Storaged} from "@src/app/mixins/Storage.minin";
+import {AppStorage} from "@src/app/mixins/app-storage.mixin";
 import {AppStatusService} from "@src/app/services/app-status.service";
 import cplayer from "cplayer";
 import {random} from "lodash";
@@ -12,7 +12,7 @@ import {MusicService} from "../../services/music.service";
     templateUrl: "./music-player.component.html",
     styleUrls: ["./music-player.component.scss"]
 })
-export class MusicPlayerComponent extends Storaged() implements AfterViewInit {
+export class MusicPlayerComponent extends AppStorage() implements AfterViewInit {
     player?: cplayer;
     isMini: boolean;
     @ViewChild("playerEl", {read: ElementRef}) playerEl?: ElementRef<HTMLDivElement>;

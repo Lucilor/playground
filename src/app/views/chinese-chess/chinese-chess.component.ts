@@ -8,7 +8,7 @@ import {local} from "@src/app/app.common";
 import {ChineseChessAIBridge} from "@src/app/components/chinese-chess/chinese-chess-ai.bridge";
 import {CC_BOARD_HEIGHT, CC_BOARD_WIDTH} from "@src/app/components/chinese-chess/chinese-chess-helper";
 import {openChineseChessCollectionsDialog} from "@src/app/components/dialogs/chinese-chess-collections/chinese-chess-collections.component";
-import {Storaged} from "@src/app/mixins/Storage.minin";
+import {AppStorage} from "@src/app/mixins/app-storage.mixin";
 import {MessageService} from "@src/app/modules/message/services/message.service";
 import {environment} from "@src/environments/environment";
 import {debounce} from "lodash";
@@ -58,7 +58,7 @@ interface ChineseChessCollection {
     templateUrl: "./chinese-chess.component.html",
     styleUrls: ["./chinese-chess.component.scss"]
 })
-export class ChineseChessComponent extends Storaged() implements OnInit, OnDestroy {
+export class ChineseChessComponent extends AppStorage() implements OnInit, OnDestroy {
     sideNames: ChineseChessSideName[] = ["black", "red"];
     tilesPerSide = new Array(32);
     board = new ChineseChessBoard();

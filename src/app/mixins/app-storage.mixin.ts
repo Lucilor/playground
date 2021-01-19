@@ -1,6 +1,6 @@
 import {Constructor, LocalStorage, SessionStorage} from "@lucilor/utils";
 
-export const Storaged = <T extends Constructor>(base: T = class {} as T) =>
+export const AppStorage = <T extends Constructor>(base: T = class {} as T) =>
     class extends base {
         key: string;
         storage: LocalStorage | SessionStorage;

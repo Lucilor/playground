@@ -3,7 +3,7 @@ import {Component} from "@angular/core";
 import {AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators} from "@angular/forms";
 import {MatSelectionListChange} from "@angular/material/list";
 import {ObjectOf} from "@lucilor/utils";
-import {Subscribed} from "@src/app/mixins/Subscribed.mixin";
+import {Subscribed} from "@src/app/mixins/subscribed.mixin";
 import {MessageService} from "@src/app/modules/message/services/message.service";
 import {AppStatusService} from "@src/app/services/app-status.service";
 import {MusicService, User} from "../../services/music.service";

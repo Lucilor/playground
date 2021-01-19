@@ -8,7 +8,7 @@ import {
     difficulties,
     openBullsAndCowsDifficultyDialog
 } from "@src/app/components/dialogs/bulls-and-cows-difficulty/bulls-and-cows-difficulty.component";
-import {Storaged} from "@src/app/mixins/Storage.minin";
+import {AppStorage} from "@src/app/mixins/app-storage.mixin";
 import {MessageService} from "@src/app/modules/message/services/message.service";
 import md5 from "md5";
 import {BullsAndCows} from "./bulls-and-cows";
@@ -18,7 +18,7 @@ import {BullsAndCows} from "./bulls-and-cows";
     templateUrl: "./bulls-and-cows.component.html",
     styleUrls: ["./bulls-and-cows.component.scss"]
 })
-export class BullsAndCowsComponent extends Storaged() {
+export class BullsAndCowsComponent extends AppStorage() {
     bc: BullsAndCows;
     difficulty: BullsAndCowsDifficulty;
     answerPrompt = "点击重来按钮生成数字";

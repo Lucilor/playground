@@ -2,7 +2,7 @@ import {Component, AfterViewInit, ViewChild, ElementRef} from "@angular/core";
 import {BezierDrawer} from "./bezier-drawer/bezier-drawer";
 import {MatSlideToggleChange} from "@angular/material/slide-toggle";
 import {Point} from "@lucilor/utils";
-import {Storaged} from "@src/app/mixins/Storage.minin";
+import {AppStorage} from "@src/app/mixins/app-storage.mixin";
 import {local} from "@src/app/app.common";
 import {MatSelectChange} from "@angular/material/select";
 import {Vector2} from "three";
@@ -12,7 +12,7 @@ import {Vector2} from "three";
     templateUrl: "./bezier.component.html",
     styleUrls: ["./bezier.component.scss"]
 })
-export class BezierComponent extends Storaged() implements AfterViewInit {
+export class BezierComponent extends AppStorage() implements AfterViewInit {
     @ViewChild("container", {read: ElementRef}) container?: ElementRef<HTMLElement>;
     drawer: BezierDrawer;
     ctrlPoints: Point[] = [];
