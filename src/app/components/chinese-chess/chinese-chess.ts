@@ -363,11 +363,7 @@ export class ChineseChessSide {
         }
     }
     get general() {
-        const result = this.pieces.find((v) => v instanceof ChineseChessGeneral);
-        if (!result) {
-            throw new Error("General not found.");
-        }
-        return result;
+        return this.pieces.find((v) => v instanceof ChineseChessGeneral);
     }
 
     constructor(readonly name: ChineseChessSideName, public board: ChineseChessBoard) {
@@ -465,10 +461,13 @@ export class ChineseChessSide {
     }
 
     checkmate() {
-        const position = switchPosition(this.opponent.general.position);
-        for (const piece of this.pieces) {
-            if (isPositionInPath(position, piece.path)) {
-                return true;
+        const general = this.opponent.general;
+        if (general) {
+            const position = switchPosition(general.position);
+            for (const piece of this.pieces) {
+                if (isPositionInPath(position, piece.path)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -736,17 +735,19 @@ export class ChineseChessGeneral extends ChineseChessPiece {
         ]
             .map((v) => [x + v[0], y + v[1]])
             .filter((v) => inRange(v[0], 3, 6) && inRange(v[1], 0, 3));
-        const position = switchPosition(this.side.opponent.general.position);
-        const up = this._getUp();
-        if (up.length) {
-            const mostUp = up[up.length - 1];
-            if (mostUp[0] === position[0] && mostUp[1] === position[1]) {
-                result.push(position);
+        const general = this.side.opponent.general;
+        if (general) {
+            const position = switchPosition(general.position);
+            const up = this._getUp();
+            if (up.length) {
+                const mostUp = up[up.length - 1];
+                if (mostUp[0] === position[0] && mostUp[1] === position[1]) {
+                    result.push(position);
+                }
             }
+            return this._filterPath(result);
         }
-        // if (position[0] === this.position[0]) {
-        // }
-        return this._filterPath(result);
+        return [];
     }
 
     constructor(side: ChineseChessSide, position: number[], id?: string, dead = false) {
