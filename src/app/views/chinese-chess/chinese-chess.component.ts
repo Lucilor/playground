@@ -106,9 +106,9 @@ export class ChineseChessComponent extends AppStorage() implements OnInit, OnDes
     modes: Mode[] = ["下棋", "摆棋"];
     mode$: BehaviorSubject<Mode>;
     collection: ChineseChessCollection;
-    $collectionIdx: BehaviorSubject<number>;
+    collectionIdx$: BehaviorSubject<number>;
     get collectionBoard(): ChineseChessCollection["boards"][0] | undefined {
-        return this.collection.boards[this.$collectionIdx.value];
+        return this.collection.boards[this.collectionIdx$.value];
     }
     applyCollection: boolean;
     private get _applyCollection() {
@@ -126,8 +126,8 @@ export class ChineseChessComponent extends AppStorage() implements OnInit, OnDes
             this.save("mode", value);
         });
         this.collection = this.load("collection") ?? {name: "无题", boards: []};
-        this.$collectionIdx = new BehaviorSubject(this.load("collectionIdx") ?? -1);
-        this.$collectionIdx.subscribe((value) => {
+        this.collectionIdx$ = new BehaviorSubject(this.load("collectionIdx") ?? -1);
+        this.collectionIdx$.subscribe((value) => {
             this.save("collectionIdx", value);
             if (this._applyCollection) {
                 this.reset(false, this.collectionBoard?.info);
@@ -416,18 +416,30 @@ export class ChineseChessComponent extends AppStorage() implements OnInit, OnDes
             placeholder: "棋局名字"
         });
         if (typeof name === "string") {
+            this.reset(false);
             this.collection.boards.push({name, desc: "", info: this.board.save(true)});
             this.saveCollection();
             this.changeCollectionIdx(this.collection.boards.length - 1);
         }
     }
 
-    async updateToCollection() {
+    updateToCollection() {
         const board = this.collectionBoard;
         if (!board) {
             this.message.alert("请先添加或载入棋局！");
         } else {
             board.info = this.board.save(true);
+            this.saveCollection();
+        }
+    }
+
+    deleteFromCollection() {
+        const index = this.collectionIdx$.value;
+        if (index <= 0) {
+            this.message.alert("请先添加或载入棋局！");
+        } else {
+            this.collection.boards.splice(index, 1);
+            this.collectionIdx$.next(index - 1);
             this.saveCollection();
         }
     }
@@ -470,9 +482,9 @@ export class ChineseChessComponent extends AppStorage() implements OnInit, OnDes
 
     changeCollectionIdx(event: MatAutocompleteSelectedEvent | number) {
         if (event instanceof MatAutocompleteSelectedEvent) {
-            this.$collectionIdx.next(this.collection.boards.findIndex((v) => v.name === event.option.value));
+            this.collectionIdx$.next(this.collection.boards.findIndex((v) => v.name === event.option.value));
         } else {
-            this.$collectionIdx.next(event);
+            this.collectionIdx$.next(event);
         }
     }
 
@@ -495,10 +507,8 @@ export class ChineseChessComponent extends AppStorage() implements OnInit, OnDes
             } finally {
                 if (collection) {
                     this.collection = collection;
+                    this.collectionIdx$.next(0);
                     this.saveCollection();
-                    if (collection.boards.length && this._applyCollection) {
-                        this.reset(false, collection.boards[0].info);
-                    }
                 }
                 input.value = "";
             }
@@ -566,7 +576,7 @@ export class ChineseChessComponent extends AppStorage() implements OnInit, OnDes
                         "AI算法是最简单的遍历算法，所以不要对它的智商抱有期待。",
                         "电脑（简单）：请不要欺负它。",
                         "电脑（中等）：可能没有那么智障了。",
-                        "电脑（困难）：效果拔群（指CPU的负荷）！渣渣CPU请勿轻易尝试。",
+                        "电脑（困难）：效果拔群（指CPU的负荷）！渣渣CPU请勿轻易尝试。"
                     ])
                 }
             ],

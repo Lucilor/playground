@@ -26,44 +26,47 @@
         </div>
         <ng-container *ngTemplateOutlet="graveyard; context: {$implicit: 'red'}"> </ng-container>
     </div>
-    <div class="menu" [style.height.px]="sizes.battleField[1]" [ngSwitch]="mode$.value">
+    <div class="menu" [style.height.px]="sizes.battleField[1] + 60" [ngSwitch]="mode$.value">
         <div class="help"><mat-icon color="primary" (click)="showInfo()">help</mat-icon></div>
-        <ng-container *ngSwitchCase="'下棋'">
-            <ng-template *ngTemplateOutlet="subMenu; context: {$implicit: 'black'}"></ng-template>
-            <div class="sub-menu divider">
-                <ng-template *ngTemplateOutlet="mode"></ng-template>
-                <mat-slide-toggle [checked]="applyCollection" (change)="toggleApplyCollection($event)">应用集合</mat-slide-toggle>
-                <ng-container *ngIf="applyCollection">
+        <perfect-scrollbar>
+            <ng-container *ngSwitchCase="'下棋'">
+                <ng-template *ngTemplateOutlet="subMenu; context: {$implicit: 'black'}"></ng-template>
+                <div class="sub-menu divider">
+                    <ng-template *ngTemplateOutlet="mode"></ng-template>
+                    <mat-slide-toggle [checked]="applyCollection" (change)="toggleApplyCollection($event)">应用集合</mat-slide-toggle>
+                    <ng-container *ngIf="applyCollection">
+                        <ng-template *ngTemplateOutlet="collectionState"></ng-template>
+                    </ng-container>
+                    <div>
+                        <span [attr.class]="board.currentSide.name"> 当前行动: </span>
+                    </div>
+                    <div *ngIf="this.aiThinking">电脑思考中...</div>
+                    <div class="btn-group">
+                        <button mat-raised-button color="primary" (click)="backward()">悔棋</button>
+                        <button mat-raised-button color="primary" (click)="reset()">重来</button>
+                        <button mat-raised-button color="primary" (click)="showBoardMoves()">步法</button>
+                    </div>
+                </div>
+                <ng-template *ngTemplateOutlet="subMenu; context: {$implicit: 'red'}"></ng-template>
+            </ng-container>
+            <ng-container *ngSwitchCase="'摆棋'">
+                <div class="sub-menu divider">
+                    <ng-template *ngTemplateOutlet="mode"></ng-template>
                     <ng-template *ngTemplateOutlet="collectionState"></ng-template>
-                </ng-container>
-                <div>
-                    <span [attr.class]="board.currentSide.name"> 当前行动: </span>
+                    <div class="btn-group">
+                        <button mat-raised-button color="primary" (click)="reset(false)">初始局面</button>
+                        <button mat-raised-button color="primary" (click)="killAllPieces()">世界末日</button>
+                        <button mat-raised-button color="primary" (click)="createCollection()">新建集合</button>
+                        <button mat-raised-button color="primary" (click)="exportCollection()">保存集合</button>
+                        <button mat-raised-button color="primary" (click)="importInput.click()">载入集合</button>
+                        <button mat-raised-button color="primary" (click)="addToCollection()">新建棋局</button>
+                        <button mat-raised-button color="primary" (click)="updateToCollection()">更新棋局</button>
+                        <button mat-raised-button color="primary" (click)="deleteFromCollection()">删除棋局</button>
+                        <button mat-raised-button color="primary" (click)="getCollections()">下载范例</button>
+                    </div>
                 </div>
-                <div *ngIf="this.aiThinking">电脑思考中...</div>
-                <div class="btn-group">
-                    <button mat-raised-button color="primary" (click)="backward()">悔棋</button>
-                    <button mat-raised-button color="primary" (click)="reset()">重来</button>
-                    <button mat-raised-button color="primary" (click)="showBoardMoves()">步法</button>
-                </div>
-            </div>
-            <ng-template *ngTemplateOutlet="subMenu; context: {$implicit: 'red'}"></ng-template>
-        </ng-container>
-        <ng-container *ngSwitchCase="'摆棋'">
-            <div class="sub-menu divider">
-                <ng-template *ngTemplateOutlet="mode"></ng-template>
-                <ng-template *ngTemplateOutlet="collectionState"></ng-template>
-                <div class="btn-group">
-                    <button mat-raised-button color="primary" (click)="reset(false)">初始局面</button>
-                    <button mat-raised-button color="primary" (click)="killAllPieces()">世界末日</button>
-                    <button mat-raised-button color="primary" (click)="createCollection()">新建集合</button>
-                    <button mat-raised-button color="primary" (click)="exportCollection()">保存集合</button>
-                    <button mat-raised-button color="primary" (click)="importInput.click()">载入集合</button>
-                    <button mat-raised-button color="primary" (click)="addToCollection()">新建棋局</button>
-                    <button mat-raised-button color="primary" (click)="updateToCollection()">更新棋局</button>
-                    <button mat-raised-button color="primary" (click)="getCollections()">下载范例</button>
-                </div>
-            </div>
-        </ng-container>
+            </ng-container>
+        </perfect-scrollbar>
     </div>
 </div>
 

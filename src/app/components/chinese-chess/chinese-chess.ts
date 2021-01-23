@@ -134,7 +134,7 @@ export class ChineseChessBoard extends EventEmitter {
     }
 
     getHistoryDesc() {
-        const board = new ChineseChessBoard(this.save(true));
+        const board = new ChineseChessBoard(this.save(true, true));
         const history = board.history;
         for (let i = history.length - 1; i >= 0; i--) {
             const {from, piece, eaten} = history[i];
@@ -213,7 +213,10 @@ export class ChineseChessBoard extends EventEmitter {
         }
     }
 
-    save(withHistory = false, withId = true): ChineseChessBoardInfo {
+    save(withHistory = false, withId = false): ChineseChessBoardInfo {
+        if (withHistory) {
+            withId = true;
+        }
         return {
             red: this.red.save(withId),
             black: this.black.save(withId),
@@ -385,7 +388,7 @@ export class ChineseChessSide {
         return this;
     }
 
-    save(withId = true): ChineseChessSideInfo {
+    save(withId = false): ChineseChessSideInfo {
         const getInfo = (ps: ChineseChessPiece[]) =>
             ps.map((p) => {
                 const info = p.info;
