@@ -566,6 +566,7 @@ export class ChineseChessComponent extends AppStorage() implements OnInit, OnDes
         const getList = (content: string[]) => `<ul>${content.map((v) => `<li>${v}</li>`).join("")}</ul>`;
         this.message.book(
             [
+                {title:"关于字体",content:"字体文件可能需要加载较长时间，但不影响其他功能。"},
                 {
                     title: "关于模式",
                     content: getList(["下棋：正常地下棋，开启“应用集合”时可以玩对应残局。", "摆棋：编辑残局，可用于上述的“应用集合”。"])
