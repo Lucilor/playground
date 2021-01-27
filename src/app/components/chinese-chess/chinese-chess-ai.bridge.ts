@@ -24,7 +24,7 @@ export class ChineseChessAIBridge {
             const workersCount = this._workers.length;
             const average = Math.ceil(total / workersCount);
             let offset = 0;
-            const boardInfo = board.save();
+            const boardInfo = board.save(true);
             this._workers.forEach((worker) => {
                 const subMoves = getMovesPlain(moves.slice(offset, offset + average));
                 worker.postMessage({boardInfo, moves: subMoves, depth});
