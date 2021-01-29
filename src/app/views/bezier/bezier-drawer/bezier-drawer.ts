@@ -376,7 +376,7 @@ const calcCtrlPoints = (points: Point[]) => {
         const y4 = (y2 + y1) / 2;
         const x5 = (x3 + x2) / 2;
         const y5 = (y3 + y2) / 2;
-        const l1 = distance(x1, y2, x2, y2);
+        const l1 = distance(x1, y1, x2, y2);
         const l2 = distance(x2, y2, x3, y3);
         const l3 = distance(x4, y4, x5, y5);
         const k = l1 / l2;
