@@ -1,5 +1,5 @@
 import {TestBed} from "@angular/core/testing";
-import {HttpModule} from "../../http/http.module";
+import {HttpModule} from "@modules/http/http.module";
 import {MusicService} from "./music.service";
 
 describe("MusicPlayerService", () => {

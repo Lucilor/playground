@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ViewChild} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {timeout} from "@lucilor/utils";
-import {headerNoCache, HttpService} from "@src/app/modules/http/services/http.service";
+import {headerNoCache, HttpService} from "@modules/http/services/http.service";
 import {PerfectScrollbarComponent} from "ngx-perfect-scrollbar";
 
 export interface User {

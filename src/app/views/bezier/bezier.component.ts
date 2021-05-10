@@ -1,11 +1,11 @@
 import {Component, AfterViewInit, ViewChild, ElementRef} from "@angular/core";
-import {BezierDrawer} from "./bezier-drawer/bezier-drawer";
-import {MatSlideToggleChange} from "@angular/material/slide-toggle";
-import {Point} from "@lucilor/utils";
-import {AppStorage} from "@src/app/mixins/app-storage.mixin";
-import {local} from "@src/app/app.common";
 import {MatSelectChange} from "@angular/material/select";
+import {MatSlideToggleChange} from "@angular/material/slide-toggle";
+import {local} from "@app/app.common";
+import {Point} from "@lucilor/utils";
+import {AppStorage} from "@mixins/app-storage.mixin";
 import {Vector2} from "three";
+import {BezierDrawer} from "./bezier-drawer/bezier-drawer";
 
 @Component({
     selector: "app-bezier",

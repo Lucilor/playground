@@ -1,28 +1,28 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {Component, OnInit, OnDestroy, ViewChild, ElementRef} from "@angular/core";
 import {MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
 import {MatDialog} from "@angular/material/dialog";
 import {MatSelectChange} from "@angular/material/select";
 import {MatSlideToggleChange} from "@angular/material/slide-toggle";
-import {downloadByString, timeout} from "@lucilor/utils";
-import {local} from "@src/app/app.common";
-import {ChineseChessAIBridge} from "@src/app/components/chinese-chess/chinese-chess-ai.bridge";
-import {CC_BOARD_HEIGHT, CC_BOARD_WIDTH} from "@src/app/components/chinese-chess/chinese-chess-helper";
-import {openChineseChessCollectionsDialog} from "@src/app/components/dialogs/chinese-chess-collections/chinese-chess-collections.component";
-import {AppStorage} from "@src/app/mixins/app-storage.mixin";
-import {MessageService} from "@src/app/modules/message/services/message.service";
-import {environment} from "@src/environments/environment";
-import {debounce} from "lodash";
-import {BehaviorSubject} from "rxjs";
+import {local} from "@app/app.common";
 import {
-    ChineseChessBoard,
     ChineseChessBoardInfo,
+    ChineseChessSideName,
+    ChineseChessBoard,
     ChineseChessPiece,
     ChineseChessPieceInfo,
-    ChineseChessPieceMove,
-    ChineseChessSideName,
-    createPiece
-} from "../../components/chinese-chess/chinese-chess";
-import {ChineseChessAI} from "../../components/chinese-chess/chinese-chess-ai";
+    createPiece,
+    ChineseChessPieceMove
+} from "@components/chinese-chess/chinese-chess";
+import {ChineseChessAI} from "@components/chinese-chess/chinese-chess-ai";
+import {ChineseChessAIBridge} from "@components/chinese-chess/chinese-chess-ai.bridge";
+import {CC_BOARD_WIDTH, CC_BOARD_HEIGHT} from "@components/chinese-chess/chinese-chess-helper";
+import {openChineseChessCollectionsDialog} from "@components/dialogs/chinese-chess-collections/chinese-chess-collections.component";
+import {timeout, downloadByString} from "@lucilor/utils";
+import {AppStorage} from "@mixins/app-storage.mixin";
+import {MessageService} from "@modules/message/services/message.service";
+import {debounce} from "lodash";
+import {BehaviorSubject} from "rxjs";
+import {environment} from "src/environments/environment";
 
 type Mode = "下棋" | "摆棋";
 const allPositions: number[][] = [];

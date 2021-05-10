@@ -10,11 +10,11 @@ import {MatPaginatorIntl, MatPaginatorModule} from "@angular/material/paginator"
 import {MatSelectModule} from "@angular/material/select";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {HttpModule} from "@modules/http/http.module";
+import {ImageModule} from "@modules/image/image.module";
+import {MessageModule} from "@modules/message/message.module";
 import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
 import {NgxUiLoaderModule} from "ngx-ui-loader";
-import {HttpModule} from "../http/http.module";
-import {ImageModule} from "../image/image.module";
-import {MessageModule} from "../message/message.module";
 import {MusicPlayerComponent} from "./components/music-player/music-player.component";
 import {NeteaseMusicComponent} from "./views/netease-music/netease-music.component";
 

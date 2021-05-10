@@ -4,7 +4,7 @@ import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {MessageModule} from "@src/app/modules/message/message.module";
+import {MessageModule} from "@modules/message/message.module";
 import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
 
 import {ChinesePoetrySearchComponent} from "./chinese-poetry-search.component";

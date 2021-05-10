@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
 import {MatSnackBar, MatSnackBarConfig} from "@angular/material/snack-bar";
-import {BookData, MessageData, PromptData} from "../components/message/message-types";
+import {MessageData, PromptData, BookData} from "../components/message/message-types";
 import {MessageComponent} from "../components/message/message.component";
 import {MessageModule} from "../message.module";
 

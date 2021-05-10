@@ -1,8 +1,8 @@
-import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpHeaders, HttpParams, HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {Injectable, Injector} from "@angular/core";
+import {Response} from "@app/app.common";
 import {ObjectOf} from "@lucilor/utils";
-import {Response} from "@src/app/app.common";
-import {MessageService} from "../../message/services/message.service";
+import {MessageService} from "@modules/message/services/message.service";
 
 /* eslint-disable @typescript-eslint/indent */
 export interface HttpOptions {

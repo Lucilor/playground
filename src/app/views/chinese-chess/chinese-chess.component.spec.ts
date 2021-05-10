@@ -4,9 +4,8 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatSelectModule} from "@angular/material/select";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {MessageModule} from "@src/app/modules/message/message.module";
+import {MessageModule} from "@modules/message/message.module";
 import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
-
 import {ChineseChessComponent} from "./chinese-chess.component";
 
 describe("ChineseChessComponent", () => {

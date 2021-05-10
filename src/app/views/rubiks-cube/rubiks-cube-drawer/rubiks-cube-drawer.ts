@@ -1,4 +1,4 @@
-import {DrawerConfig, Drawer} from "@src/app/components/drawer/drawer";
+import {Drawer, DrawerConfig} from "@components/drawer/drawer";
 import {AmbientLight, Vector2, Vector3, Intersection, DirectionalLight} from "three";
 import {RubiksCube, Axis} from "./rubiks-cube";
 

@@ -1,10 +1,10 @@
 import {TestBed} from "@angular/core/testing";
 import {RouterTestingModule} from "@angular/router/testing";
+import {HttpModule} from "@modules/http/http.module";
+import {MessageModule} from "@modules/message/message.module";
+import {MusicPlayerModule} from "@modules/music-player/music-player.module";
 import {NgxUiLoaderModule} from "ngx-ui-loader";
 import {AppComponent} from "./app.component";
-import {HttpModule} from "./modules/http/http.module";
-import {MessageModule} from "./modules/message/message.module";
-import {MusicPlayerModule} from "./modules/music-player/music-player.module";
 
 describe("AppComponent", () => {
     beforeEach(async () => {

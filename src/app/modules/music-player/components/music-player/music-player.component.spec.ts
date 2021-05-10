@@ -1,5 +1,5 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
-import {HttpModule} from "@src/app/modules/http/http.module";
+import {HttpModule} from "@modules/http/http.module";
 import {NgxUiLoaderModule} from "ngx-ui-loader";
 import {MusicPlayerComponent} from "./music-player.component";
 

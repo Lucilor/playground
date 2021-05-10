@@ -1,5 +1,5 @@
+import {Drawer, DrawerConfig} from "@components/drawer/drawer";
 import {Point} from "@lucilor/utils";
-import {DrawerConfig, Drawer} from "@src/app/components/drawer/drawer";
 import {
     BufferGeometry,
     LineBasicMaterial,

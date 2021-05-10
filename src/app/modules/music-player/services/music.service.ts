@@ -1,9 +1,9 @@
 import {Injectable, Injector} from "@angular/core";
 import {ObjectOf} from "@lucilor/utils";
-import {environment} from "@src/environments/environment";
+import {HttpService, headerNoCache} from "@modules/http/services/http.service";
 import md5 from "md5";
 import {BehaviorSubject} from "rxjs";
-import {headerNoCache, HttpService} from "../../http/services/http.service";
+import {environment} from "src/environments/environment";
 
 export interface Song {
     id: string;

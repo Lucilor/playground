@@ -1,7 +1,7 @@
 import {Component} from "@angular/core";
 import {NavigationEnd, Router} from "@angular/router";
-import {routesInfo as routesInfo} from "./app.common";
-import {AppStatusService} from "./services/app-status.service";
+import {AppStatusService} from "@services/app-status.service";
+import {routesInfo} from "./app.common";
 
 @Component({
     selector: "app-root",

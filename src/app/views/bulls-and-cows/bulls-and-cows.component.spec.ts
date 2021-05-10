@@ -6,9 +6,8 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatIconModule} from "@angular/material/icon";
 import {MatInputModule} from "@angular/material/input";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {MessageModule} from "@src/app/modules/message/message.module";
+import {MessageModule} from "@modules/message/message.module";
 import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
-
 import {BullsAndCowsComponent} from "./bulls-and-cows.component";
 
 describe("BullsAndCowsComponent", () => {

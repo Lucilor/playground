@@ -1,11 +1,11 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from "@angular/core";
+import {local} from "@app/app.common";
 import {timeout} from "@lucilor/utils";
-import {local} from "@src/app/app.common";
-import {AppStorage} from "@src/app/mixins/app-storage.mixin";
-import {AppStatusService} from "@src/app/services/app-status.service";
+import {AppStorage} from "@mixins/app-storage.mixin";
+import {MusicService} from "@modules/music-player/services/music.service";
+import {AppStatusService} from "@services/app-status.service";
 import cplayer from "cplayer";
 import {random} from "lodash";
-import {MusicService} from "../../services/music.service";
 
 @Component({
     selector: "app-music-player",

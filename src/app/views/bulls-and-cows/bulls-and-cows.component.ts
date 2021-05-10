@@ -1,15 +1,15 @@
 import {Component, ElementRef} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MatDialog} from "@angular/material/dialog";
-import {timeout} from "@lucilor/utils";
-import {local} from "@src/app/app.common";
+import {local} from "@app/app.common";
 import {
     BullsAndCowsDifficulty,
     difficulties,
     openBullsAndCowsDifficultyDialog
-} from "@src/app/components/dialogs/bulls-and-cows-difficulty/bulls-and-cows-difficulty.component";
-import {AppStorage} from "@src/app/mixins/app-storage.mixin";
-import {MessageService} from "@src/app/modules/message/services/message.service";
+} from "@components/dialogs/bulls-and-cows-difficulty/bulls-and-cows-difficulty.component";
+import {timeout} from "@lucilor/utils";
+import {AppStorage} from "@mixins/app-storage.mixin";
+import {MessageService} from "@modules/message/services/message.service";
 import md5 from "md5";
 import {BullsAndCows} from "./bulls-and-cows";
 

@@ -1,7 +1,7 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {FormsModule} from "@angular/forms";
-import {HttpModule} from "@src/app/modules/http/http.module";
-import {ImageModule} from "@src/app/modules/image/image.module";
+import {HttpModule} from "@modules/http/http.module";
+import {ImageModule} from "@modules/image/image.module";
 import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
 
 import {ChatComponent} from "./chat.component";

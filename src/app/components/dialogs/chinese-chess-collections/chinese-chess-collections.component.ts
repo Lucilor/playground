@@ -1,7 +1,7 @@
 import {AfterViewInit, Component} from "@angular/core";
 import {MatDialogRef} from "@angular/material/dialog";
 import {timeout} from "@lucilor/utils";
-import {HttpService} from "@src/app/modules/http/services/http.service";
+import {HttpService} from "@modules/http/services/http.service";
 import {NgxUiLoaderService} from "ngx-ui-loader";
 import {getOpenDialogFunc} from "../dialog.common";
 

@@ -6,7 +6,6 @@ import {MatInputModule} from "@angular/material/input";
 import {MatSelectModule} from "@angular/material/select";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-
 import {BullsAndCowsDifficultyComponent} from "./bulls-and-cows-difficulty.component";
 
 describe("BullsAndCowsDifficultyComponent", () => {

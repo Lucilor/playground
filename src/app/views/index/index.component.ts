@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
-import {routesInfo} from "@src/app/app.common";
-import {Subscribed} from "@src/app/mixins/subscribed.mixin";
+import {routesInfo} from "@app/app.common";
+import {Subscribed} from "@mixins/subscribed.mixin";
 import {cloneDeep} from "lodash";
 
 @Component({

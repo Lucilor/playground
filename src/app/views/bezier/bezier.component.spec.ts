@@ -7,9 +7,8 @@ import {MatInputModule} from "@angular/material/input";
 import {MatSelectModule} from "@angular/material/select";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {MenuComponent} from "@src/app/components/menu/menu.component";
+import {MenuComponent} from "@components/menu/menu.component";
 import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
-
 import {BezierComponent} from "./bezier.component";
 
 describe("BezierComponent", () => {

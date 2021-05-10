@@ -1,7 +1,7 @@
 import {Component, Inject} from "@angular/core";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormGroup, FormBuilder} from "@angular/forms";
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import {BullsAndCowsConfig} from "@src/app/views/bulls-and-cows/bulls-and-cows";
+import {BullsAndCowsConfig} from "@views/bulls-and-cows/bulls-and-cows";
 import {getOpenDialogFunc} from "../dialog.common";
 
 export interface BullsAndCowsDifficulty {

@@ -1,10 +1,9 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {MatButtonModule} from "@angular/material/button";
 import {MatDialogRef} from "@angular/material/dialog";
-import {HttpModule} from "@src/app/modules/http/http.module";
+import {HttpModule} from "@modules/http/http.module";
 import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
 import {NgxUiLoaderModule} from "ngx-ui-loader";
-
 import {ChineseChessCollectionsComponent} from "./chinese-chess-collections.component";
 
 describe("ChineseChessCollectionsComponent", () => {
