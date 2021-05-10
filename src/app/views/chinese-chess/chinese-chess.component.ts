@@ -412,8 +412,10 @@ export class ChineseChessComponent extends AppStorage() implements OnInit, OnDes
 
     async addToCollection() {
         const name = await this.message.prompt({
-            value: "棋局" + (this.collection.boards.length + 1),
-            placeholder: "棋局名字"
+            promptData: {
+                value: "棋局" + (this.collection.boards.length + 1),
+                placeholder: "棋局名字"
+            }
         });
         if (typeof name === "string") {
             this.reset(false);
@@ -445,7 +447,9 @@ export class ChineseChessComponent extends AppStorage() implements OnInit, OnDes
     }
 
     async createCollection() {
-        const name = await this.message.prompt({value: "无题", placeholder: "集合名字", hint: "新建后当前数据将消失，清注意保存"});
+        const name = await this.message.prompt({
+            promptData: {value: "无题", placeholder: "集合名字", hint: "新建后当前数据将消失，清注意保存"}
+        });
         if (typeof name === "string") {
             this.collection = {name, desc: "", boards: []};
             this.saveCollection();
@@ -453,7 +457,7 @@ export class ChineseChessComponent extends AppStorage() implements OnInit, OnDes
     }
 
     async editCollection() {
-        const result = await this.message.editor(this.collection.desc, this.collection.name);
+        const result = await this.message.editor({content: this.collection.desc, title: this.collection.name});
         if (typeof result === "string") {
             this.collection.desc = result;
             this.saveCollection();
@@ -464,7 +468,7 @@ export class ChineseChessComponent extends AppStorage() implements OnInit, OnDes
         event.stopPropagation();
         const board = this.collectionBoard;
         if (board) {
-            const result = await this.message.editor(board.desc, board.name);
+            const result = await this.message.editor({content: board.desc, title: board.name});
             if (typeof result === "string") {
                 board.desc = result;
                 this.saveCollection();
@@ -564,8 +568,8 @@ export class ChineseChessComponent extends AppStorage() implements OnInit, OnDes
 
     showInfo() {
         const getList = (content: string[]) => `<ul>${content.map((v) => `<li>${v}</li>`).join("")}</ul>`;
-        this.message.book(
-            [
+        this.message.book({
+            bookData: [
                 {title: "关于字体", content: "字体文件可能需要加载较长时间，但不影响其他功能。"},
                 {
                     title: "关于模式",
@@ -581,7 +585,7 @@ export class ChineseChessComponent extends AppStorage() implements OnInit, OnDes
                     ])
                 }
             ],
-            "说明书"
-        );
+            title: "说明书"
+        });
     }
 }

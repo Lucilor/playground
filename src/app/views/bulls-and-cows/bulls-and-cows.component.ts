@@ -69,7 +69,10 @@ export class BullsAndCowsComponent extends AppStorage() {
             const key = md5(JSON.stringify(Object.values(bc.config).sort()));
             minAttempts[key] = Math.min(minAttempts[key] || Infinity, bc.attempts.length);
             this.save("minAttempts", minAttempts);
-            this.message.alert(`用了${bc.attempts.length}步，你得到了正确答案！此难度下历史最低步数为${minAttempts[key]}`, "游戏结束");
+            this.message.alert({
+                content: `用了${bc.attempts.length}步，你得到了正确答案！此难度下历史最低步数为${minAttempts[key]}`,
+                title: "游戏结束"
+            });
         }
         const el = this.elRef.nativeElement.querySelector(".attempts perfect-scrollbar > div");
         if (el) {
@@ -85,7 +88,7 @@ export class BullsAndCowsComponent extends AppStorage() {
         if (bc.canGuess) {
             this.answer = bc.surrender();
             this.form.get("guess")?.setValue(this.answer);
-            this.message.alert("答案是： " + this.answer, "就这？");
+            this.message.alert({content: "答案是： " + this.answer, title: "就这？"});
         }
     }
 

@@ -6443,6 +6443,13 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
+"highlight.js@npm:^10.7.2":
+  version: 10.7.2
+  resolution: "highlight.js@npm:10.7.2"
+  checksum: 8208e010011298abc7be9d7f69946a408d9a9b62f88000e76672aa53cee91399d188bc6a8c33cf41323e137e0e03ff8f16ac934bdc53673747658808ea62a7ac
+  languageName: node
+  linkType: hard
+
 "hmac-drbg@npm:^1.0.0":
   version: 1.0.1
   resolution: "hmac-drbg@npm:1.0.1"
@@ -9565,6 +9572,7 @@ fsevents@~2.3.1:
     eslint-plugin-import: 2.22.1
     eslint-plugin-jsdoc: 33.1.1
     eslint-plugin-prefer-arrow: 1.2.3
+    highlight.js: ^10.7.2
     jasmine-core: ~3.7.1
     jasmine-spec-reporter: ~7.0.0
     karma: ~6.3.2

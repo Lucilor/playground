@@ -1,17 +1,63 @@
-version: 2
-jobs:
-  build:
-    working_directory: ~/playground
-    docker:
-      - image: circleci/node:10-browsers
-    steps:
-      - checkout
-      - restore_cache:
-          key: playground-{{ .Branch }}-{{ checksum "yarn.lock" }}
-      - run: yarn install
-      - save_cache:
-          key: playground-{{ .Branch }}-{{ checksum "yarn.lock" }}
-          paths:
+version: 2.1
+var_1: &cache_key playground-{{ .Branch }}-{{ checksum "yarn.lock" }}
+var_2: &cache_fallback_key playground
+var_3: &restore_cache
+    restore_cache:
+        keys:
+            - *cache_key
+            - *cache_fallback_key
+var_4: &save_cache
+    save_cache:
+        key: *cache_key
+        paths:
             - "node_modules"
-      - run: yarn test -- --no-watch --no-progress --browsers=ChromeHeadless
-      # - run: npm run e2e -- --protractor-config=e2e/protractor.conf.js
+executors:
+    playground:
+        working_directory: ~/playground
+        docker:
+            - image: circleci/node:10-browsers
+jobs:
+    build:
+        executor: playground
+        steps:
+            - checkout
+            - *restore_cache
+            - run:
+                  name: Install local dependencies
+                  command: yarn install
+            - *save_cache
+    unit-test:
+        executor: playground
+        steps:
+            - checkout
+            - *restore_cache
+            - run:
+                  name: Unit test
+                  command: yarn test --no-watch --no-progress --browsers=ChromeHeadless
+    e2e:
+        executor: playground
+        steps:
+            - checkout
+            - *restore_cache
+            - run:
+                  name: End to end
+                  command: yarn e2e --protractor-config=e2e/protractor.conf.js
+    lint:
+        executor: playground
+        steps:
+            - checkout
+            - *restore_cache
+            - run:
+                  name: Lint
+                  command: yarn lint
+workflows:
+    build-test-lint:
+        jobs:
+            - build
+            - unit-test:
+                  requires:
+                      - build
+            # - e2e:
+            #       requires:
+            #           - build
+            - lint
