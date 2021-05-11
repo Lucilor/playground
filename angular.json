@@ -30,7 +30,7 @@
                         "styles": ["./node_modules/@angular/material/prebuilt-themes/indigo-pink.css", "src/styles.scss"],
                         "scripts": [],
                         "webWorkerTsConfig": "tsconfig.worker.json",
-                        "allowedCommonJsDependencies": ["@lucilor/utils", "lodash", "highlight.js"]
+                        "allowedCommonJsDependencies": ["@lucilor/utils", "lodash", "highlight.js", "md5"]
                     },
                     "configurations": {
                         "production": {
