@@ -9,7 +9,7 @@ export class ChineseChessAIBridge {
     constructor(public ai: ChineseChessAI, public workerNum: number) {
         this._workers = [];
         for (let i = 0; i < workerNum; i++) {
-            const worker = new Worker("./chinese-chess-ai.worker", {type: "module"});
+            const worker = new Worker(new URL("./chinese-chess-ai.worker", import.meta.url), {type: "module"});
             worker.onmessage = (event) => {
                 this._event.emit("workermessage", event);
             };
