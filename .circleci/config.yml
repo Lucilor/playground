@@ -15,7 +15,7 @@ executors:
     playground:
         working_directory: ~/playground
         docker:
-            - image: circleci/node:10-browsers
+            - image: circleci/node:14-browsers
 jobs:
     build:
         executor: playground
@@ -60,4 +60,6 @@ workflows:
             # - e2e:
             #       requires:
             #           - build
-            - lint
+            - lint:
+                  requires:
+                      - build
