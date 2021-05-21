@@ -2,7 +2,7 @@
     <div class="collections">
         <ngx-ui-loader [loaderId]="loadId"></ngx-ui-loader>
         <ng-container *ngFor="let item of data">
-            <a mat-raised-button color="primary" [href]="item.url" download target="_blank">{{ item.name }}</a>
+            <a mat-raised-button color="primary" [href]="urlPrefix + item.name" download target="_blank">{{ item.name }}</a>
         </ng-container>
     </div>
 </perfect-scrollbar>

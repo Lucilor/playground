@@ -36,11 +36,11 @@ export class MusicPlayerComponent extends AppStorage() implements AfterViewInit 
         this.music.playlistId.next(this.load("playlist") || "74222476");
         this.music.playlistId.subscribe((playlistId) => {
             this.save("playlist", playlistId);
-            this.initPlayer(playlistId);
+            this.initPlayer(Number(playlistId));
         });
     }
 
-    async initPlayer(playlistId: string) {
+    async initPlayer(playlistId: number) {
         this.status.startLoader({id: "musicPlayerLoader"});
         const playlist = await this.music.getPlaylist(playlistId);
         this.status.stopLoader();

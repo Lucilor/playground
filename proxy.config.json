@@ -1,23 +1,16 @@
 {
-	"/chinese-poetry-api": {
-		"target": "https://candypurity.com/chinese-poetry-api",
-		"pathRewrite": {"^/chinese-poetry-api" : ""},
-		"secure": false,
-		"changeOrigin": true,
-		"logLevel": "debug"
-	},
-	"/netease-music-api": {
-		"target": "https://candypurity.com/netease-music-api",
-		"pathRewrite": {"^/netease-music-api" : ""},
-		"secure": false,
-		"changeOrigin": true,
-		"logLevel": "debug"
-	},
-	"/static": {
-		"target": "https://candypurity.com/static",
-		"pathRewrite": {"^/static" : ""},
-		"secure": false,
-		"changeOrigin": true,
-		"logLevel": "debug"
-	}
+    "/api": {
+        "target": "https://localhost:8000",
+        "pathRewrite": {"^/api": ""},
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    },
+    "/netease-music": {
+        "target": "https://candypurity.com/netease-music",
+        "pathRewrite": {"^/netease-music": ""},
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    }
 }

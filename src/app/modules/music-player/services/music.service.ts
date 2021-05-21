@@ -16,11 +16,15 @@ export interface Song {
     sublyric: string;
 }
 
-export interface Playlist {
+export interface PlaylistRaw {
     id: string;
     name: string;
     mode: string;
     cover: string;
+    content: string;
+}
+
+export interface Playlist extends Omit<PlaylistRaw, "content"> {
     content: Song[];
 }
 
@@ -78,22 +82,24 @@ export class MusicService extends HttpService {
 
     constructor(inejctor: Injector) {
         super(inejctor);
-        this.baseURL = `${environment.host}/netease-music-api`;
+        this.baseURL = `${environment.host}/netease-music`;
         this.userChange.subscribe((user) => (this.user = user));
         this.refreshLoginStatus();
     }
 
-    async getPlaylist(id: string) {
-        const response = await this.get<Playlist>(`${environment.host}/static/playlist/get.php`, {id});
+    async getPlaylist(net_id: number) {
+        const response = await this.get<PlaylistRaw[]>(`${environment.host}/api/playlist/${net_id}`);
         if (response?.data) {
-            this.playlist = response.data;
-            return response.data;
+            const data = response.data[0];
+            data.content = JSON.parse(data.content);
+            this.playlist = data as unknown as Playlist;
+            return this.playlist;
         }
         return null;
     }
 
-    async setPlaylist(id: string, mode = "listloop") {
-        await this.get<Playlist>(`${environment.host}/static/playlist/set.php`, {id, mode});
+    async setPlaylist(net_id: number, mode = "listloop") {
+        await this.post<Playlist>(`${environment.host}/api/playlist`, {net_id, mode});
     }
 
     async login(user: string, password: string, isEmail: boolean) {

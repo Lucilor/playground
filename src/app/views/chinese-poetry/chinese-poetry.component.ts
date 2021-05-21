@@ -67,7 +67,7 @@ export class ChinesePoetryComponent implements OnInit {
             this.setPage(this.randomPoems.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize), this.randomPoems.length);
         } else {
             this.status.startLoader();
-            const [poems, count] = await this.service.search(this.searchPoem, pageIndex + 1, pageSize);
+            const [poems, count] = await this.service.search(this.searchPoem, pageIndex * pageSize, pageSize);
             this.status.stopLoader();
             this.setPage(poems, count);
         }

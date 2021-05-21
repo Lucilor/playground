@@ -150,8 +150,8 @@ export class ChatComponent implements AfterViewInit {
             })();
         } else {
             const textPromise = new Promise<string>(async (resolve) => {
-                const result = await this.http.get<string>("static/itpk/ask.php", {question}, headerNoCache);
-                if (typeof result?.data === "string") {
+                const result = await this.http.get<string>(`itpk/${question}`, {}, headerNoCache);
+                if (result?.data) {
                     resolve(result.data);
                 } else {
                     resolve("放弃思考");

@@ -23,7 +23,7 @@ export interface Poem {
 export class ChinesePoetryService extends HttpService {
     constructor(injector: Injector) {
         super(injector);
-        this.baseURL = `${environment.host}/chinese-poetry-api`;
+        this.baseURL = `${environment.host}/api/chinese-poetry`;
     }
 
     async random(num = 1, collections: string[] | null = null) {
@@ -35,8 +35,8 @@ export class ChinesePoetryService extends HttpService {
         }
     }
 
-    async search(poem: Partial<Poem>, page?: number, limit?: number) {
-        const response = await this.post("search", {poem, page, limit});
+    async search(poem: Partial<Poem>, offset?: number, limit?: number) {
+        const response = await this.post("search", {poem, offset, limit});
         if (response) {
             return [response.data, response.count] as [Poem[], number];
         } else {

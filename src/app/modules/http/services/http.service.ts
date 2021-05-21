@@ -33,7 +33,7 @@ export class HttpService {
     loaderId = "master";
     message: MessageService;
     http: HttpClient;
-    baseURL = "";
+    baseURL = "/api";
 
     constructor(injector: Injector) {
         this.message = injector.get(MessageService);
