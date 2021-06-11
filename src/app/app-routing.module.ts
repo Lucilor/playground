@@ -1,7 +1,6 @@
 import {NgModule} from "@angular/core";
 import {Routes, RouterModule} from "@angular/router";
 import {ChatComponent} from "@modules/ai/components/chat/chat.component";
-import {NeteaseMusicComponent} from "@modules/music-player/views/netease-music/netease-music.component";
 import {PathResolveService} from "@services/path-resolve.service";
 import {BezierComponent} from "@views/bezier/bezier.component";
 import {BlogComponent} from "@views/blog/blog.component";
@@ -19,12 +18,14 @@ const routes: Routes = [
     {path: routesInfo.chinesePoetry.path, component: ChinesePoetryComponent},
     {path: routesInfo.index.path, component: IndexComponent},
     {path: routesInfo.rubiksCube.path, component: RubiksCubeComponent},
-    {path: routesInfo.neteaseMusic.path, component: NeteaseMusicComponent},
-    {path: routesInfo.neteaseMusic.path, component: NeteaseMusicComponent},
     {path: routesInfo.chat.path, component: ChatComponent},
     {path: routesInfo.bullsAndCows.path, component: BullsAndCowsComponent},
     {path: routesInfo.blog.path, component: BlogComponent},
     {path: routesInfo.chineseChess.path, component: ChineseChessComponent},
+    {
+        path: "wyyyy",
+        loadChildren: () => import("./modules/music-player/music-player-routing.module").then((m) => m.MusicPlayerRoutingModule)
+    },
     {path: "**", component: PageNotFoundComponent, resolve: {redirect: PathResolveService}}
 ];
 

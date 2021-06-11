@@ -77,13 +77,11 @@ export interface User {
 export class MusicService extends HttpService {
     playlistId = new BehaviorSubject<string>("");
     playlist: Playlist | null = null;
-    user: User | null = null;
-    userChange = new BehaviorSubject<User | null>(null);
+    user$ = new BehaviorSubject<User | null>(null);
 
     constructor(inejctor: Injector) {
         super(inejctor);
         this.baseURL = `${environment.host}/netease-music`;
-        this.userChange.subscribe((user) => (this.user = user));
         this.refreshLoginStatus();
     }
 
@@ -126,17 +124,17 @@ export class MusicService extends HttpService {
         if (uid) {
             const response2 = await this.get<User>("user/detail", {uid}, headerNoCache);
             if (response2?.data) {
-                this.userChange.next(response2.data);
+                this.user$.next(response2.data);
                 return;
             }
         }
-        this.userChange.next(null);
+        this.user$.next(null);
         this.silent = silent;
     }
 
     async logout() {
         await this.get<User>("logout", {}, headerNoCache);
-        this.userChange.next(null);
+        this.user$.next(null);
     }
 
     async getPlaylistCount() {
@@ -150,11 +148,12 @@ export class MusicService extends HttpService {
 
     // 30 items per page
     async getPlaylists(page: number) {
-        if (!this.user) {
+        const user = this.user$.value;
+        if (!user) {
             return [];
         }
         const offset = (page - 1) * 30;
-        const response = await this.get<ObjectOf<any>>("user/playlist", {uid: this.user.profile.userId, offset});
+        const response = await this.get<ObjectOf<any>>("user/playlist", {uid: user.profile.userId, offset});
         if (response?.data) {
             return response.data.playlist as ObjectOf<any>[];
         }

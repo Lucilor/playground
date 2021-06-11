@@ -6,6 +6,7 @@ import {MusicService} from "@modules/music-player/services/music.service";
 import {AppStatusService} from "@services/app-status.service";
 import cplayer from "cplayer";
 import {random} from "lodash";
+import {BehaviorSubject} from "rxjs";
 
 @Component({
     selector: "app-music-player",
@@ -13,7 +14,7 @@ import {random} from "lodash";
     styleUrls: ["./music-player.component.scss"]
 })
 export class MusicPlayerComponent extends AppStorage() implements AfterViewInit {
-    player?: cplayer;
+    player$ = new BehaviorSubject<cplayer | null>(null);
     isMini: boolean;
     @ViewChild("playerEl", {read: ElementRef}) playerEl?: ElementRef<HTMLDivElement>;
 
@@ -45,28 +46,32 @@ export class MusicPlayerComponent extends AppStorage() implements AfterViewInit 
         const playlist = await this.music.getPlaylist(playlistId);
         this.status.stopLoader();
         if (playlist && this.playerEl) {
-            this.player = new cplayer({
+            const player = new cplayer({
                 element: this.playerEl.nativeElement,
                 playlist: playlist.content,
                 zoomOutKana: true
             });
-            this.player.mode = playlist.mode;
-            if (this.player.mode === "listrandom") {
-                this.player.to(random(playlist.content.length));
+            player.mode = playlist.mode;
+            if (player.mode === "listrandom") {
+                player.to(random(playlist.content.length));
             }
-            (window as any).player = this.player;
-            this.player.on("play", () => this.startPoster());
-            this.player.on("pause", () => this.stopPoster());
-            this.player.on("started", () => this.startPoster());
-            this.player.on("ended", () => this.stopPoster());
+            player.on("play", () => this.startPoster());
+            player.on("pause", () => this.stopPoster());
+            player.on("started", () => this.startPoster());
+            player.on("ended", () => this.stopPoster());
             this.posterEl?.addEventListener("click", () => {
-                this.player?.togglePlayState();
+                player?.togglePlayState();
             });
+            this.player$.next(player);
         }
     }
 
     destroyPlayer() {
-        this.player?.destroy();
+        const player = this.player$.value;
+        if (player) {
+            player.destroy();
+            this.player$.next(null);
+        }
     }
 
     startPoster() {

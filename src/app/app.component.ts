@@ -1,5 +1,7 @@
-import {Component} from "@angular/core";
+import {AfterViewInit, Component, ViewChild} from "@angular/core";
 import {NavigationEnd, Router} from "@angular/router";
+import {Subscribed} from "@mixins/subscribed.mixin";
+import {MusicPlayerComponent} from "@modules/music-player/components/music-player/music-player.component";
 import {AppStatusService} from "@services/app-status.service";
 import {routesInfo} from "./app.common";
 
@@ -8,13 +10,15 @@ import {routesInfo} from "./app.common";
     templateUrl: "./app.component.html",
     styleUrls: ["./app.component.scss"]
 })
-export class AppComponent {
+export class AppComponent extends Subscribed() implements AfterViewInit {
     title = "playground";
     loaderText = "";
     showHomeBtn = false;
     showFooter = true;
+    @ViewChild(MusicPlayerComponent) musicPlayer!: MusicPlayerComponent;
 
     constructor(private router: Router, private status: AppStatusService) {
+        super();
         this.router.events.subscribe((event) => {
             if (event instanceof NavigationEnd) {
                 const url = event.urlAfterRedirects;
@@ -25,6 +29,12 @@ export class AppComponent {
             }
         });
         this.status.loaderText$.subscribe((text) => (this.loaderText = text));
+    }
+
+    ngAfterViewInit() {
+        this.subscribe(this.musicPlayer.player$, (cplayer) => {
+            this.status.cplayer$.next(cplayer);
+        });
     }
 
     getRandomTitle() {

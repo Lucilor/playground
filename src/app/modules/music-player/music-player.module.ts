@@ -4,6 +4,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
 import {MatCardModule} from "@angular/material/card";
 import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatIconModule} from "@angular/material/icon";
 import {MatInputModule} from "@angular/material/input";
 import {MatListModule} from "@angular/material/list";
 import {MatPaginatorIntl, MatPaginatorModule} from "@angular/material/paginator";
@@ -16,7 +17,9 @@ import {MessageModule} from "@modules/message/message.module";
 import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
 import {NgxUiLoaderModule} from "ngx-ui-loader";
 import {MusicPlayerComponent} from "./components/music-player/music-player.component";
-import {NeteaseMusicComponent} from "./views/netease-music/netease-music.component";
+import {MusicPlayerRoutingModule} from "./music-player-routing.module";
+import {HomeComponent} from "./views/home/home.component";
+import {LoginComponent} from "./views/login/login.component";
 
 @Injectable()
 export class MyMatPaginatorIntl extends MatPaginatorIntl {
@@ -33,7 +36,7 @@ export class MyMatPaginatorIntl extends MatPaginatorIntl {
 }
 
 @NgModule({
-    declarations: [MusicPlayerComponent, NeteaseMusicComponent],
+    declarations: [MusicPlayerComponent, LoginComponent, HomeComponent],
     imports: [
         BrowserAnimationsModule,
         CommonModule,
@@ -43,12 +46,14 @@ export class MyMatPaginatorIntl extends MatPaginatorIntl {
         MatButtonModule,
         MatCardModule,
         MatFormFieldModule,
+        MatIconModule,
         MatInputModule,
         MatListModule,
         MatPaginatorModule,
         MatSelectModule,
         MatTooltipModule,
         MessageModule,
+        MusicPlayerRoutingModule,
         NgxUiLoaderModule,
         PerfectScrollbarModule,
         ReactiveFormsModule

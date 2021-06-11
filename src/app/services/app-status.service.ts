@@ -1,4 +1,5 @@
 import {Injectable} from "@angular/core";
+import cplayer from "cplayer";
 import {NgxUiLoaderService} from "ngx-ui-loader";
 import {BehaviorSubject} from "rxjs";
 
@@ -8,6 +9,7 @@ import {BehaviorSubject} from "rxjs";
 export class AppStatusService {
     loaderId$ = new BehaviorSubject<string>("master");
     loaderText$ = new BehaviorSubject<string>("");
+    cplayer$ = new BehaviorSubject<cplayer | null>(null);
 
     constructor(private loaderService: NgxUiLoaderService) {}
 
