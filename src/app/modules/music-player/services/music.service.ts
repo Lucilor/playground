@@ -24,8 +24,58 @@ export interface PlaylistRaw {
     content: string;
 }
 
-export interface Playlist extends Omit<PlaylistRaw, "content"> {
+export interface Playlist2 extends Omit<PlaylistRaw, "content"> {
     content: Song[];
+}
+
+export interface Playlist {
+    adType: number;
+    anonimous: boolean;
+    artists: null;
+    backgroundCoverId: number;
+    backgroundCoverUrl: string | null;
+    cloudTrackCount: number;
+    commentThreadId: string;
+    coverImgId: number;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    coverImgId_str: string;
+    coverImgUrl: string;
+    createTime: number;
+    creator: {
+        defaultAvatar: boolean;
+        province: number;
+        authStatus: number;
+        followed: boolean;
+        avatarUrl: string;
+    };
+    description: string | null;
+    englishTitle: string | null;
+    highQuality: boolean;
+    id: number;
+    name: string;
+    newImported: boolean;
+    opRecommend: boolean;
+    ordered: boolean;
+    playCount: number;
+    privacy: number;
+    recommendInfo: null;
+    sharedUsers: null;
+    specialType: number;
+    status: number;
+    subscribed: boolean;
+    subscribedCount: number;
+    subscribers: [];
+    tags: string[];
+    titleImage: number;
+    titleImageUrl: string | null;
+    totalDuration: number;
+    trackCount: number;
+    trackNumberUpdateTime: number;
+    trackUpdateTime: number;
+    tracks: null;
+    updateFrequency: null;
+    updateTime: number;
+    userId: number;
 }
 
 export interface User {
@@ -76,7 +126,7 @@ export interface User {
 })
 export class MusicService extends HttpService {
     playlistId = new BehaviorSubject<string>("");
-    playlist: Playlist | null = null;
+    playlist: Playlist2 | null = null;
     user$ = new BehaviorSubject<User | null>(null);
 
     constructor(inejctor: Injector) {
@@ -90,14 +140,14 @@ export class MusicService extends HttpService {
         if (response?.data) {
             const data = response.data[0];
             data.content = JSON.parse(data.content);
-            this.playlist = data as unknown as Playlist;
+            this.playlist = data as unknown as Playlist2;
             return this.playlist;
         }
         return null;
     }
 
     async setPlaylist(net_id: number, mode = "listloop") {
-        await this.post<Playlist>(`${environment.host}/api/playlist`, {net_id, mode});
+        await this.post<Playlist2>(`${environment.host}/api/playlist`, {net_id, mode});
     }
 
     async login(user: string, password: string, isEmail: boolean) {
@@ -147,15 +197,18 @@ export class MusicService extends HttpService {
     }
 
     // 30 items per page
-    async getPlaylists(page: number) {
+    async getPlaylists(page: number, limit: number) {
         const user = this.user$.value;
         if (!user) {
             return [];
         }
-        const offset = (page - 1) * 30;
-        const response = await this.get<ObjectOf<any>>("user/playlist", {uid: user.profile.userId, offset});
+        const offset = (page - 1) * limit;
+        const response = await this.get<{more: boolean; playlist: Playlist[]; version: string}>("user/playlist", {
+            uid: user.profile.userId,
+            offset
+        });
         if (response?.data) {
-            return response.data.playlist as ObjectOf<any>[];
+            return response.data.playlist;
         }
         return [];
     }

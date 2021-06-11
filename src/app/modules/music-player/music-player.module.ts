@@ -9,6 +9,7 @@ import {MatInputModule} from "@angular/material/input";
 import {MatListModule} from "@angular/material/list";
 import {MatPaginatorIntl, MatPaginatorModule} from "@angular/material/paginator";
 import {MatSelectModule} from "@angular/material/select";
+import {MatTabsModule} from "@angular/material/tabs";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {HttpModule} from "@modules/http/http.module";
@@ -17,6 +18,7 @@ import {MessageModule} from "@modules/message/message.module";
 import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
 import {NgxUiLoaderModule} from "ngx-ui-loader";
 import {MusicPlayerComponent} from "./components/music-player/music-player.component";
+import {PlaylistsComponent} from "./components/playlists/playlists.component";
 import {MusicPlayerRoutingModule} from "./music-player-routing.module";
 import {HomeComponent} from "./views/home/home.component";
 import {LoginComponent} from "./views/login/login.component";
@@ -36,7 +38,7 @@ export class MyMatPaginatorIntl extends MatPaginatorIntl {
 }
 
 @NgModule({
-    declarations: [MusicPlayerComponent, LoginComponent, HomeComponent],
+    declarations: [MusicPlayerComponent, LoginComponent, HomeComponent, PlaylistsComponent],
     imports: [
         BrowserAnimationsModule,
         CommonModule,
@@ -51,6 +53,7 @@ export class MyMatPaginatorIntl extends MatPaginatorIntl {
         MatListModule,
         MatPaginatorModule,
         MatSelectModule,
+        MatTabsModule,
         MatTooltipModule,
         MessageModule,
         MusicPlayerRoutingModule,

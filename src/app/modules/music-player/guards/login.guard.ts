@@ -8,7 +8,8 @@ import {MusicService} from "../services/music.service";
 export class LoginGuard implements CanActivate {
     constructor(private music: MusicService, private router: Router) {}
 
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+        await this.music.refreshLoginStatus();
         const user = this.music.user$.value;
         if (!user) {
             const urlTree = this.router.parseUrl(state.url);

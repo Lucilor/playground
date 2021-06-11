@@ -40,9 +40,10 @@ body {
     height: 100%;
     top: 0;
     left: 0;
-    background: url("./assets/images/background.jpg") no-repeat center 100%, 100%;
+    background-image: url("./assets/images/background.jpg");
+    background-position: center;
+    background-size: cover;
     filter: blur(80px);
-    transform: scale(1.2);
 }
 
 // perfect scrollbar
