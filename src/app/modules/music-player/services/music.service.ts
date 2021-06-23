@@ -28,6 +28,80 @@ export interface Playlist2 extends Omit<PlaylistRaw, "content"> {
     content: Song[];
 }
 
+export interface TrackId {
+    alg: null;
+    at: number;
+    id: number;
+    rcmdReason: string;
+    t: number;
+    uid: number;
+    v: number;
+}
+
+export interface Album {
+    id: number;
+    name: string;
+    pic: number;
+    picUrl: string;
+    pic_str: string;
+    tns: string[];
+}
+
+export interface Artist {
+    alias: string[];
+    id: number;
+    name: string;
+    tns: string[];
+}
+
+export interface HLM {
+    br: number;
+    fid: number;
+    size: number;
+    vd: number;
+}
+
+export interface Track {
+    a: null;
+    al: Album;
+    alia: string[];
+    ar: Artist[];
+    cd: string;
+    cf: string;
+    copyright: number;
+    cp: number;
+    crbt: null;
+    djId: number;
+    dt: number;
+    fee: number;
+    ftype: number;
+    h: HLM;
+    id: number;
+    l: HLM;
+    m: HLM;
+    mark: number;
+    mst: number;
+    mv: number;
+    name: string;
+    no: number;
+    noCopyrightRcmd: null;
+    originCoverType: number;
+    originSongSimpleData: null;
+    pop: number;
+    pst: number;
+    publishTime: number;
+    rt: null;
+    rtUrl: null;
+    rtUrls: string[];
+    rtype: number;
+    rurl: null;
+    s_id: number;
+    single: number;
+    st: number;
+    t: number;
+    v: number;
+}
+
 export interface Playlist {
     adType: number;
     anonimous: boolean;
@@ -76,6 +150,53 @@ export interface Playlist {
     updateFrequency: null;
     updateTime: number;
     userId: number;
+}
+
+export interface PlaylistDetail {
+    adType: number;
+    backgroundCoverId: number;
+    backgroundCoverUrl: string | null;
+    cloudTrackCount: number;
+    commentCount: number;
+    commentThreadId: string;
+    coverImgId: number;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    coverImgId_str: string;
+    coverImgUrl: string;
+    createTime: number;
+    creator: User;
+    description: string | null;
+    englishTitle: string | null;
+    highQuality: boolean;
+    id: number;
+    name: string;
+    newImported: boolean;
+    officialPlaylistType: string | null;
+    opRecommend: boolean;
+    ordered: boolean;
+    playCount: number;
+    privacy: number;
+    remixVideo: null;
+    shareCount: number;
+    sharedUsers: null;
+    specialType: number;
+    status: number;
+    subscribed: boolean;
+    subscribedCount: number;
+    subscribers: User[];
+    tags: string[];
+    titleImage: number;
+    titleImageUrl: string | null;
+    trackCount: number;
+    trackIds: TrackId[];
+    trackNumberUpdateTime: number;
+    trackUpdateTime: number;
+    tracks: Track[];
+    updateFrequency: null;
+    updateTime: number;
+    userId: number;
+    videoIds: null;
+    videos: null;
 }
 
 export interface User {
@@ -135,7 +256,7 @@ export class MusicService extends HttpService {
         this.refreshLoginStatus();
     }
 
-    async getPlaylist(net_id: number) {
+    async getPlaylist2(net_id: number) {
         const response = await this.get<PlaylistRaw[]>(`${environment.host}/api/playlist/${net_id}`);
         if (response?.data) {
             const data = response.data[0];
@@ -146,7 +267,7 @@ export class MusicService extends HttpService {
         return null;
     }
 
-    async setPlaylist(net_id: number, mode = "listloop") {
+    async setPlaylist2(net_id: number, mode = "listloop") {
         await this.post<Playlist2>(`${environment.host}/api/playlist`, {net_id, mode});
     }
 
@@ -205,7 +326,9 @@ export class MusicService extends HttpService {
         const offset = (page - 1) * limit;
         const response = await this.get<{more: boolean; playlist: Playlist[]; version: string}>("user/playlist", {
             uid: user.profile.userId,
-            offset
+            limit,
+            offset,
+            cookie: 1
         });
         if (response?.data) {
             return response.data.playlist;
@@ -213,10 +336,10 @@ export class MusicService extends HttpService {
         return [];
     }
 
-    async getPlaylistDetail(id: string) {
-        const response = await this.get<ObjectOf<any>>("playlist/detail", {id});
+    async getPlaylistDetail(id: number) {
+        const response = await this.get<{playlist: PlaylistDetail}>("playlist/detail", {id});
         if (response?.data) {
-            return response.data.playlist as ObjectOf<any>;
+            return response.data.playlist;
         }
         return null;
     }

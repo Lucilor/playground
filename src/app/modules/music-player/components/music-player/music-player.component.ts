@@ -43,7 +43,7 @@ export class MusicPlayerComponent extends AppStorage() implements AfterViewInit 
 
     async initPlayer(playlistId: number) {
         this.status.startLoader({id: "musicPlayerLoader"});
-        const playlist = await this.music.getPlaylist(playlistId);
+        const playlist = await this.music.getPlaylist2(playlistId);
         this.status.stopLoader();
         if (playlist && this.playerEl) {
             const player = new cplayer({

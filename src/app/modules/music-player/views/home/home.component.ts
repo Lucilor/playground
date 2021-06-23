@@ -1,5 +1,7 @@
 import {Component, ElementRef, OnInit, ViewChild} from "@angular/core";
+import {session} from "@app/app.common";
 import {loadImage} from "@lucilor/utils";
+import {AppStorage} from "@mixins/app-storage.mixin";
 import {Subscribed} from "@mixins/subscribed.mixin";
 import {MusicService, User} from "@modules/music-player/services/music.service";
 import Color from "color";
@@ -10,7 +12,7 @@ import ColorThief from "colorthief";
     templateUrl: "./home.component.html",
     styleUrls: ["./home.component.scss"]
 })
-export class HomeComponent extends Subscribed() implements OnInit {
+export class HomeComponent extends AppStorage(Subscribed()) implements OnInit {
     user: User | null = null;
     get backgroundStyle(): Partial<CSSStyleDeclaration> {
         const url = this.user?.profile.backgroundUrl;
@@ -32,8 +34,20 @@ export class HomeComponent extends Subscribed() implements OnInit {
     mainColor: Color = new Color("white");
     @ViewChild("userProfileTabGroup") userProfileTabGroup!: ElementRef<HTMLDivElement>;
 
+    private _tabGroupIndex = -1;
+    get tabGroupIndex() {
+        if (!(this._tabGroupIndex >= 0)) {
+            this._tabGroupIndex = this.load("tabGroupIndex") || 0;
+        }
+        return this._tabGroupIndex;
+    }
+    set tabGroupIndex(value) {
+        this._tabGroupIndex = value;
+        this.save("tabGroupIndex", value);
+    }
+
     constructor(private music: MusicService) {
-        super();
+        super("musicPlayer/home", session);
     }
 
     ngOnInit() {
@@ -45,7 +59,7 @@ export class HomeComponent extends Subscribed() implements OnInit {
     async updateUser(user: User | null) {
         this.user = user;
         if (user) {
-            user.profile.backgroundUrl = "./assets/images/background.jpg";
+            // user.profile.backgroundUrl = "./assets/images/background.jpg";
             const image = await loadImage(user.profile.backgroundUrl, true);
             const color = new Color(new ColorThief().getColor(image));
             const colorRevert = color.negate();
@@ -56,7 +70,7 @@ export class HomeComponent extends Subscribed() implements OnInit {
                 (v) => (v.style.borderBottomColor = colorRevert.alpha(0.24).string())
             );
             this.userProfileStyle = {
-                backgroundColor: color.alpha(0.9).string(),
+                backgroundColor: color.alpha(0.5).string(),
                 color: color.isLight() ? "black" : "white"
             };
         }
