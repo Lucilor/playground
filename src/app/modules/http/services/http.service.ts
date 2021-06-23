@@ -1,8 +1,12 @@
-import {HttpHeaders, HttpParams, HttpClient, HttpErrorResponse} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Injectable, Injector} from "@angular/core";
+import {MatSnackBar} from "@angular/material/snack-bar";
 import {Response} from "@app/app.common";
 import {ObjectOf} from "@lucilor/utils";
 import {MessageService} from "@modules/message/services/message.service";
+import {environment} from "src/environments/environment";
+
+export const headerNoCache: HttpOptions = {headers: {"Cache-control": "no-cache"}};
 
 /* eslint-disable @typescript-eslint/indent */
 export interface HttpOptions {
@@ -23,8 +27,6 @@ export interface HttpOptions {
 }
 /* eslint-enable @typescript-eslint/indent */
 
-export const headerNoCache: HttpOptions = {headers: {"Cache-control": "no-cache"}};
-
 @Injectable({
     providedIn: "root"
 })
@@ -33,23 +35,26 @@ export class HttpService {
     loaderId = "master";
     message: MessageService;
     http: HttpClient;
-    baseURL = "/api";
+    snackBar: MatSnackBar;
+    baseURL = "";
+    strict = true;
 
     constructor(injector: Injector) {
         this.message = injector.get(MessageService);
         this.http = injector.get(HttpClient);
+        this.snackBar = injector.get(MatSnackBar);
     }
 
     protected alert(content: any) {
         if (!this.silent) {
-            this.message.alert(content);
+            this.message.alert({content});
             console.log(content);
         }
     }
 
-    private async request<T>(url: string, method: "GET" | "POST", data?: ObjectOf<any>, options?: HttpOptions) {
+    async request<T>(url: string, method: "GET" | "POST", data?: any, options?: HttpOptions) {
         if (!url.startsWith("http")) {
-            url = `${this.baseURL}/${url}`;
+            url = `${this.baseURL}${url}`;
         }
         try {
             let response: Response<T> | null = null;
@@ -57,41 +62,72 @@ export class HttpService {
                 if (data) {
                     const queryArr: string[] = [];
                     for (const key in data) {
-                        queryArr.push(`${key}=${data[key]}`);
+                        if (data[key] !== undefined) {
+                            queryArr.push(`${key}=${data[key]}`);
+                        }
                     }
                     if (queryArr.length) {
                         url += `?${queryArr.join("&")}`;
                     }
                 }
-                try {
-                    response = await this.http.get<Response<T>>(url, options).toPromise();
-                } catch (error) {
-                    if (error instanceof HttpErrorResponse && typeof error.error === "object") {
-                        response = error.error;
-                    } else {
-                        throw new Error(error);
-                    }
-                }
+                response = await this.http.get<Response<T>>(url, options).toPromise();
             }
             if (method === "POST") {
-                try {
-                    response = await this.http.post<Response<T>>(url, data, options).toPromise();
-                } catch (error) {
-                    if (error instanceof HttpErrorResponse && typeof error.error === "object") {
-                        response = error.error;
-                    } else {
-                        throw new Error(error);
+                let files: File[] = [];
+                for (const key in data) {
+                    const value = data[key];
+                    if (value instanceof FileList) {
+                        files = Array.from(value);
+                        delete data[key];
+                    }
+                    if (value instanceof File) {
+                        files = [value];
+                        delete data[key];
                     }
                 }
+                const formData = new FormData();
+                if (typeof data === "string") {
+                    formData.append("data", data);
+                } else {
+                    formData.append("data", JSON.stringify(data));
+                }
+                files.forEach((v, i) => formData.append("file" + i, v));
+                response = await this.http.post<Response<T>>(url, formData, options).toPromise();
             }
             if (!response) {
                 throw new Error("请求错误");
             }
-            if (typeof response.msg === "string" && response.msg && !this.silent) {
-                this.message.snack(response.msg);
+            if (this.strict) {
+                const code = response.code;
+                if (code === 0) {
+                    if (typeof response.msg === "string" && response.msg) {
+                        this.message.snack(response.msg);
+                    }
+                    return response;
+                } else if (code === 2) {
+                    if (typeof response.msg === "string" && response.msg) {
+                        const data2 = response.data as any;
+                        let msg = response.msg;
+                        if (typeof data2?.name === "string") {
+                            msg += "<br>" + data2.name;
+                        }
+                        this.message.alert(msg);
+                    }
+                    return null;
+                } else if (code === -2) {
+                    const baseURL = environment.production ? this.baseURL : "https://localhost/n/kgs/index/";
+                    location.href = `${baseURL}signUp/index#${encodeURIComponent(location.href)}`;
+                    throw new Error("code:-2");
+                } else {
+                    throw new Error(response.msg);
+                }
+            } else {
+                return response;
             }
-            return response;
         } catch (error) {
+            if (error instanceof Error && error.message === "code:-2") {
+                throw new Error("请重新登录");
+            }
             this.alert(error);
             return null;
         }

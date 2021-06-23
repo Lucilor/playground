@@ -1,5 +1,10 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
-
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatIconModule} from "@angular/material/icon";
+import {MatInputModule} from "@angular/material/input";
+import {HttpModule} from "@modules/http/http.module";
+import {MessageModule} from "@modules/message/message.module";
 import {LoginComponent} from "./login.component";
 
 describe("LoginComponent", () => {
@@ -8,7 +13,8 @@ describe("LoginComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [LoginComponent]
+            declarations: [LoginComponent],
+            imports: [FormsModule, HttpModule, MatFormFieldModule, MatIconModule, MatInputModule, MessageModule, ReactiveFormsModule]
         }).compileComponents();
     });
 
