@@ -3,7 +3,8 @@ import {session} from "@app/app.common";
 import {loadImage} from "@lucilor/utils";
 import {AppStorage} from "@mixins/app-storage.mixin";
 import {Subscribed} from "@mixins/subscribed.mixin";
-import {MusicService, User} from "@modules/music-player/services/music.service";
+import {MusicService} from "@modules/music-player/services/music.service";
+import {User} from "@modules/music-player/services/netease-music.types";
 import Color from "color";
 import ColorThief from "colorthief";
 

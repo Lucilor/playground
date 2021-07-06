@@ -1,6 +1,7 @@
 import {ChangeDetectorRef, Component, Input, OnInit} from "@angular/core";
 import {MatSelectionListChange} from "@angular/material/list";
-import {MusicService, Playlist, PlaylistDetail, Track} from "@modules/music-player/services/music.service";
+import {MusicService} from "@modules/music-player/services/music.service";
+import {Playlist, PlaylistDetail, Track} from "@modules/music-player/services/netease-music.types";
 import {AppStatusService} from "@services/app-status.service";
 import Color from "color";
 
@@ -48,11 +49,16 @@ export class PlaylistsComponent implements OnInit {
         this.status.startLoader({id: this.loaderId});
         this.playlist = await this.music.getPlaylistDetail(id);
         this.status.stopLoader();
-        console.log(this.playlist);
     }
 
     getTrackSubtitle(track: Track) {
         const ar = track.ar.map((v) => v.name).join(", ");
         return `${ar} - ${track.al.name}`;
+    }
+
+    async selectTrack(event: MatSelectionListChange) {
+        const id: Track["id"] = event.options[0].value;
+        const track = await this.music.getTrack(id);
+        console.log(track);
     }
 }
