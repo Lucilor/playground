@@ -1,5 +1,6 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {MatCardModule} from "@angular/material/card";
+import {MatMenuModule} from "@angular/material/menu";
 import {MatTabsModule} from "@angular/material/tabs";
 import {HttpModule} from "@modules/http/http.module";
 import {MessageModule} from "@modules/message/message.module";
@@ -12,7 +13,7 @@ describe("HomeComponent", () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [HomeComponent],
-            imports: [HttpModule, MatCardModule, MatTabsModule, MessageModule]
+            imports: [HttpModule, MatCardModule, MatMenuModule, MatTabsModule, MessageModule]
         }).compileComponents();
     });
 
