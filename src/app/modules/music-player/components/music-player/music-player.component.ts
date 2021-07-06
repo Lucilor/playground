@@ -5,7 +5,6 @@ import {AppStorage} from "@mixins/app-storage.mixin";
 import {MusicService} from "@modules/music-player/services/music.service";
 import {AppStatusService} from "@services/app-status.service";
 import cplayer from "cplayer";
-import {random} from "lodash";
 import {BehaviorSubject} from "rxjs";
 
 @Component({
@@ -42,28 +41,28 @@ export class MusicPlayerComponent extends AppStorage() implements AfterViewInit 
     }
 
     async initPlayer(playlistId: number) {
-        this.status.startLoader({id: "musicPlayerLoader"});
-        const playlist = await this.music.getPlaylist2(playlistId);
-        this.status.stopLoader();
-        if (playlist && this.playerEl) {
-            const player = new cplayer({
-                element: this.playerEl.nativeElement,
-                playlist: playlist.content,
-                zoomOutKana: true
-            });
-            player.mode = playlist.mode;
-            if (player.mode === "listrandom") {
-                player.to(random(playlist.content.length));
-            }
-            player.on("play", () => this.startPoster());
-            player.on("pause", () => this.stopPoster());
-            player.on("started", () => this.startPoster());
-            player.on("ended", () => this.stopPoster());
-            this.posterEl?.addEventListener("click", () => {
-                player?.togglePlayState();
-            });
-            this.player$.next(player);
-        }
+        // this.status.startLoader({id: "musicPlayerLoader"});
+        // const playlist = await this.music.getPlaylist2(playlistId);
+        // this.status.stopLoader();
+        // if (playlist && this.playerEl) {
+        //     const player = new cplayer({
+        //         element: this.playerEl.nativeElement,
+        //         playlist: playlist.content,
+        //         zoomOutKana: true
+        //     });
+        //     player.mode = playlist.mode;
+        //     if (player.mode === "listrandom") {
+        //         player.to(random(playlist.content.length));
+        //     }
+        //     player.on("play", () => this.startPoster());
+        //     player.on("pause", () => this.stopPoster());
+        //     player.on("started", () => this.startPoster());
+        //     player.on("ended", () => this.stopPoster());
+        //     this.posterEl?.addEventListener("click", () => {
+        //         player?.togglePlayState();
+        //     });
+        //     this.player$.next(player);
+        // }
     }
 
     destroyPlayer() {

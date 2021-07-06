@@ -1,7 +1,10 @@
 <div class="bg" [style]="backgroundStyle"></div>
 <mat-card class="user-profile" [style]="userProfileStyle">
     <mat-card-header>
-        <div mat-card-avatar [style]="avatarStyle"></div>
+        <button mat-icon-button mat-card-avatar [style]="avatarStyle" [matMenuTriggerFor]="userMenu"></button>
+        <mat-menu #userMenu="matMenu">
+            <button mat-menu-item (click)="logout()">退出登录</button>
+        </mat-menu>
         <mat-card-title>{{ user?.profile?.nickname || "" }}</mat-card-title>
         <mat-card-subtitle>{{ user?.profile?.signature || "" }}</mat-card-subtitle>
     </mat-card-header>
@@ -10,9 +13,7 @@
             <mat-tab-group [selectedIndex]="tabGroupIndex" (selectedIndexChange)="tabGroupIndex = $event">
                 <mat-tab label="正在播放"></mat-tab>
                 <mat-tab label="我的歌单">
-                    <ng-template matTabContent>
-                        <app-playlists [mainColor]="mainColor"></app-playlists>
-                    </ng-template>
+                    <app-playlists [mainColor]="mainColor"></app-playlists>
                 </mat-tab>
             </mat-tab-group>
         </div>

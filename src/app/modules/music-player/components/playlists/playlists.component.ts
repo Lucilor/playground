@@ -25,7 +25,6 @@ export class PlaylistsComponent implements OnInit {
     async ngOnInit() {
         this.maxPage = Math.ceil((await this.music.getPlaylistCount()) / this.limit);
         await this.nextPage();
-        console.log(this);
     }
 
     async nextPage() {
@@ -57,8 +56,12 @@ export class PlaylistsComponent implements OnInit {
     }
 
     async selectTrack(event: MatSelectionListChange) {
-        const id: Track["id"] = event.options[0].value;
-        const track = await this.music.getTrack(id);
-        console.log(track);
+        const id: Track["id"] | null = event.options[0].value;
+        if (id === null) {
+            this.playlist = null;
+            return;
+        }
+        const tracks = await this.music.getTracks([id]);
+        console.log(tracks);
     }
 }

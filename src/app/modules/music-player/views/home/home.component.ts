@@ -76,4 +76,9 @@ export class HomeComponent extends AppStorage(Subscribed()) implements OnInit {
             };
         }
     }
+
+    async logout() {
+        await this.music.logout();
+        location.reload();
+    }
 }

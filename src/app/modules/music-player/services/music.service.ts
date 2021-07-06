@@ -1,10 +1,10 @@
 import {Injectable, Injector} from "@angular/core";
 import {ObjectOf} from "@lucilor/utils";
-import {HttpService, headerNoCache} from "@modules/http/services/http.service";
+import {HttpService} from "@modules/http/services/http.service";
 import md5 from "md5";
 import {BehaviorSubject} from "rxjs";
 import {environment} from "src/environments/environment";
-import {Playlist, PlaylistDetail, User} from "./netease-music.types";
+import {Playlist, PlaylistDetail, Track, User} from "./netease-music.types";
 
 export interface Song {
     id: string;
@@ -39,8 +39,12 @@ export class MusicService extends HttpService {
 
     constructor(inejctor: Injector) {
         super(inejctor);
-        this.baseURL = `${environment.host}/netease-music`;
-        this.refreshLoginStatus();
+        this.baseURL = `${environment.host}/netease-music/`;
+    }
+
+    private _addTimestamp(obj: ObjectOf<any>) {
+        obj.timestamp = new Date().getTime();
+        return obj;
     }
 
     async getPlaylist2(net_id: number) {
@@ -68,19 +72,19 @@ export class MusicService extends HttpService {
             url = "login/cellphone";
             data.phone = user;
         }
-        const response = await this.post<User>(url, data);
+        const response = await this.get<User>(url, this._addTimestamp(data));
         if (response?.data) {
-            this.refreshLoginStatus();
+            this.user$.next(response.data);
         }
     }
 
     async refreshLoginStatus() {
         const silent = this.silent;
         this.silent = true;
-        const response = await this.get<User>("login/status", {}, headerNoCache);
+        const response = await this.get<User>("login/status", this._addTimestamp({}));
         const uid = response?.data?.profile?.userId;
         if (uid) {
-            const response2 = await this.get<User>("user/detail", {uid}, headerNoCache);
+            const response2 = await this.get<User>("user/detail", this._addTimestamp({uid}));
             if (response2?.data) {
                 this.user$.next(response2.data);
                 return;
@@ -91,7 +95,7 @@ export class MusicService extends HttpService {
     }
 
     async logout() {
-        await this.get<User>("logout", {}, headerNoCache);
+        await this.get<User>("logout", {});
         this.user$.next(null);
     }
 
@@ -131,5 +135,11 @@ export class MusicService extends HttpService {
         return null;
     }
 
-    async getTrack(id: number) {}
+    async getTracks(ids: number[]) {
+        const response = await this.get<{songs: Track[]}>("song/detail", {ids: ids.join(",")});
+        if (response?.data) {
+            return response.data.songs;
+        }
+        return null;
+    }
 }

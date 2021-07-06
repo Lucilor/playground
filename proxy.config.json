@@ -1,6 +1,6 @@
 {
     "/api": {
-        "target": "https://localhost:8000",
+        "target": "https://candypurity.com/api",
         "pathRewrite": {"^/api": ""},
         "secure": false,
         "changeOrigin": true,
