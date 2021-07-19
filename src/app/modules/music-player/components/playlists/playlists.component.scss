@@ -1,3 +1,26 @@
+@import "utils";
+
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.toolbar {
+    margin: 0;
+
+    & > * {
+        transition: 0.3s;
+        &:hover {
+            transform: scale(1.5);
+        }
+    }
+
+    .mat-icon {
+        @include mat-icon-size(30px);
+    }
+}
+
 ::ng-deep {
     .mat-list-item {
         color: inherit !important;

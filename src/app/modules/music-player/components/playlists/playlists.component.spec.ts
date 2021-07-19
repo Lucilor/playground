@@ -1,4 +1,5 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
+import {MatIconModule} from "@angular/material/icon";
 import {MatListModule} from "@angular/material/list";
 import {MatSelectModule} from "@angular/material/select";
 import {HttpModule} from "@modules/http/http.module";
@@ -14,7 +15,7 @@ describe("PlaylistsComponent", () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [PlaylistsComponent],
-            imports: [HttpModule, MatListModule, MatSelectModule, MessageModule, NgxUiLoaderModule, PerfectScrollbarModule]
+            imports: [HttpModule, MatIconModule, MatListModule, MatSelectModule, MessageModule, NgxUiLoaderModule, PerfectScrollbarModule]
         }).compileComponents();
     });
 

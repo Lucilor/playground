@@ -19,6 +19,9 @@ export class PlaylistsComponent implements OnInit {
     playlist: PlaylistDetail | null = null;
     loaderId = "music-player-playlists";
     loading = false;
+    get btnStyle(): Partial<CSSStyleDeclaration> {
+        return {color: this.mainColor.negate().string()};
+    }
 
     constructor(private music: MusicService, private status: AppStatusService, private cd: ChangeDetectorRef) {}
 

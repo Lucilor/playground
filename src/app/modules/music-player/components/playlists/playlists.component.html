@@ -1,11 +1,13 @@
+<div class="btn-group toolbar" [ngStyle]="btnStyle">
+    <button mat-icon-button class="toolbar">
+        <mat-icon>arrow_back</mat-icon>
+    </button>
+</div>
 <perfect-scrollbar (psYReachEnd)="onPsYReachEnd()">
     <ngx-ui-loader [loaderId]="'playlistLoader'"></ngx-ui-loader>
 
     <div *ngIf="playlist; else playlistsT">
         <mat-selection-list (selectionChange)="selectTrack($event)" [multiple]="false">
-            <mat-list-option [value]="null">
-                <div><mat-icon>arrow_back</mat-icon></div>
-            </mat-list-option>
             <mat-list-option *ngFor="let track of playlist.tracks" [value]="track.id">
                 <app-image mat-list-avatar [src]="track.al.picUrl"></app-image>
                 <div mat-line>{{ track.name }}</div>
