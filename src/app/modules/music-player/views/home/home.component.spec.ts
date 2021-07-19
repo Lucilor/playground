@@ -1,9 +1,13 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {MatCardModule} from "@angular/material/card";
+import {MatListModule} from "@angular/material/list";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatTabsModule} from "@angular/material/tabs";
 import {HttpModule} from "@modules/http/http.module";
 import {MessageModule} from "@modules/message/message.module";
+import {PlaylistsComponent} from "@modules/music-player/components/playlists/playlists.component";
+import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
+import {NgxUiLoaderModule} from "ngx-ui-loader";
 import {HomeComponent} from "./home.component";
 
 describe("HomeComponent", () => {
@@ -12,8 +16,17 @@ describe("HomeComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [HomeComponent],
-            imports: [HttpModule, MatCardModule, MatMenuModule, MatTabsModule, MessageModule]
+            declarations: [HomeComponent, PlaylistsComponent],
+            imports: [
+                HttpModule,
+                MatListModule,
+                MatCardModule,
+                MatMenuModule,
+                MatTabsModule,
+                MessageModule,
+                NgxUiLoaderModule,
+                PerfectScrollbarModule
+            ]
         }).compileComponents();
     });
 
