@@ -1,23 +1,59 @@
 @import "utils";
 
-:host {
+.container {
     display: flex;
     flex-direction: column;
     height: 100%;
 }
 
-.toolbar {
-    margin: 0;
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
 
-    & > * {
-        transition: 0.3s;
-        &:hover {
-            transform: scale(1.5);
+    .toolbar {
+        margin: 0 !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+
+        & > * {
+            transition: 0.3s;
+            &:hover {
+                transform: scale(1.5);
+            }
+        }
+
+        .mat-icon {
+            @include mat-icon-size(30px);
         }
     }
 
-    .mat-icon {
-        @include mat-icon-size(30px);
+    .title {
+        font-size: 1.2em;
+        font-weight: bold;
+        padding: 10px;
+    }
+}
+
+.sections {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+
+    .section {
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        .mat-selection-list {
+            padding-top: 0;
+
+            .mat-list-item {
+                height: 60px;
+            }
+        }
     }
 }
 

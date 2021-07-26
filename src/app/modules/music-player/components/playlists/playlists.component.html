@@ -1,30 +1,43 @@
-<div class="btn-group toolbar" [ngStyle]="btnStyle">
-    <button mat-icon-button class="toolbar">
-        <mat-icon>arrow_back</mat-icon>
-    </button>
-</div>
-<perfect-scrollbar (psYReachEnd)="onPsYReachEnd()">
-    <ngx-ui-loader [loaderId]="'playlistLoader'"></ngx-ui-loader>
-
-    <div *ngIf="playlist; else playlistsT">
-        <mat-selection-list (selectionChange)="selectTrack($event)" [multiple]="false">
-            <mat-list-option *ngFor="let track of playlist.tracks" [value]="track.id">
-                <app-image mat-list-avatar [src]="track.al.picUrl"></app-image>
-                <div mat-line>{{ track.name }}</div>
-                <div mat-line>{{ getTrackSubtitle(track) }}</div>
-            </mat-list-option>
-        </mat-selection-list>
+<div class="container" [ngStyle]="btnStyle">
+    <div class="header">
+        <div class="btn-group toolbar">
+            <button mat-icon-button class="toolbar" *ngIf="level > 0" (click)="back()">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+        </div>
+        <div class="title" [ngSwitch]="level">
+            <span *ngSwitchCase="0">歌单列表</span>
+            <span *ngSwitchCase="1">{{ playlist?.name }}</span>
+        </div>
     </div>
+    <ngx-ui-loader [loaderId]="'playlistLoader'"></ngx-ui-loader>
+    <div class="sections" [ngSwitch]="level">
+        <perfect-scrollbar *ngSwitchCase="0" class="section" (psYReachEnd)="onPsYReachEnd()" [@enter] [@leave]>
+            <mat-selection-list (selectionChange)="selectPlaylist($event)" [multiple]="false">
+                <mat-list-option *ngFor="let playlist of playlists" [value]="playlist.id" [matTooltip]="playlist.description || ''">
+                    <img mat-list-avatar [src]="playlist.coverImgUrl" />
+                    <div mat-line>{{ playlist.name }}</div>
+                    <div mat-line>{{ playlist.trackCount }}首歌曲</div>
+                </mat-list-option>
+                <mat-list-option *ngIf="loading"> 正在加载... </mat-list-option>
+                <ngx-ui-loader [loaderId]="loaderId"></ngx-ui-loader>
+            </mat-selection-list>
+        </perfect-scrollbar>
 
-    <ng-template #playlistsT>
-        <mat-selection-list (selectionChange)="selectPlaylist($event)" [multiple]="false">
-            <mat-list-option *ngFor="let playlist of playlists" [value]="playlist.id" [matTooltip]="playlist.description || ''">
-                <app-image mat-list-avatar [src]="playlist.coverImgUrl"></app-image>
-                <div mat-line>{{ playlist.name }}</div>
-                <div mat-line>{{ playlist.trackCount }}首歌曲</div>
-            </mat-list-option>
-            <mat-list-option *ngIf="loading"> 正在加载... </mat-list-option>
-            <ngx-ui-loader [loaderId]="loaderId"></ngx-ui-loader>
-        </mat-selection-list>
-    </ng-template>
-</perfect-scrollbar>
+        <perfect-scrollbar *ngSwitchCase="1" class="section" (psYReachEnd)="onPsYReachEnd()" [@enter] [@leave]>
+            <mat-selection-list *ngIf="playlist" (selectionChange)="selectTrack($event)" [multiple]="false">
+                <mat-list-option *ngFor="let track of playlist.tracks" [value]="track.id">
+                    <img mat-list-avatar [src]="track.al.picUrl" />
+                    <div mat-line>{{ track.name }}</div>
+                    <div mat-line>{{ getTrackSubtitle(track) }}</div>
+                </mat-list-option>
+            </mat-selection-list>
+        </perfect-scrollbar>
+
+        <perfect-scrollbar *ngSwitchCase="2" class="section" [@enter] [@leave]>
+            <div *ngIf="track">
+                {{ track.name }}
+            </div>
+        </perfect-scrollbar>
+    </div>
+</div>
