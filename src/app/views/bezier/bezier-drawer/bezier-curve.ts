@@ -57,7 +57,7 @@ export class BezierCurve {
         let currPoints = this.ctrlPoints;
         let nextPoints: Point[];
         const result: Point[][] = [currPoints];
-        while (true) {
+        for (;;) {
             nextPoints = [];
             for (let i = 0; i < currPoints.length - 1; i++) {
                 const p1 = currPoints[i];

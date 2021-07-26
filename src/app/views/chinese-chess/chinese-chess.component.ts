@@ -553,7 +553,7 @@ export class ChineseChessComponent extends AppStorage() implements OnInit, OnDes
         let result = "";
         this.board.getHistoryDesc().forEach((desc, i) => {
             if (i % 2) {
-                result += `      ${desc}<br/>`;
+                result += `      ${desc}<br/>`;
             } else {
                 result += desc;
             }

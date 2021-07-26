@@ -149,14 +149,14 @@ export class ChatComponent implements AfterViewInit {
                 this.messageManager.pushText("经过漫长的岁月，上面的部分接口可能已经失效。", this.moli.name);
             })();
         } else {
-            const textPromise = new Promise<string>(async (resolve) => {
+            const textPromise = (async () => {
                 const result = await this.http.get<string>(`itpk/${question}`, {}, headerNoCache);
                 if (result?.data) {
-                    resolve(result.data);
+                    return result.data;
                 } else {
-                    resolve("放弃思考");
+                    return "放弃思考";
                 }
-            });
+            })();
             this.messageManager.pushText(textPromise, this.moli.name);
         }
         this.input = "";
