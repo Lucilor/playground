@@ -31,7 +31,8 @@ export class LoginComponent implements OnInit {
 
     constructor(private status: AppStatusService, private music: MusicService, private router: Router, private route: ActivatedRoute) {}
 
-    ngOnInit() {
+    async ngOnInit() {
+        await this.music.refreshLoginStatus();
         this.goHome();
     }
 

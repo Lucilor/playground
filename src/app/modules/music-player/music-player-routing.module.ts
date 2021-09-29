@@ -9,11 +9,11 @@ const routes: Routes = [
         path: "",
         children: [
             {path: "", pathMatch: "full", redirectTo: "home"},
-            {path: "login", component: LoginComponent},
             {path: "home", component: HomeComponent}
         ],
         canActivate: [LoginGuard]
-    }
+    },
+    {path: "login", component: LoginComponent}
 ];
 
 @NgModule({
