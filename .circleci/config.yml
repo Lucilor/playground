@@ -1,5 +1,5 @@
 version: 2.1
-var_1: &cache_key playground-{{ .Branch }}-{{ checksum "yarn.lock" }}
+var_1: &cache_key playground-{{ .Branch }}-{{ checksum "pnpm-lock.yaml" }}
 var_2: &cache_fallback_key playground
 var_3: &restore_cache
     restore_cache:
@@ -15,20 +15,22 @@ executors:
     playground:
         working_directory: ~/playground
         docker:
-            - image: circleci/node:14-browsers
+            - image: circleci/node:latest-browsers
 jobs:
     build:
         executor: playground
         steps:
+            - run: npm install --prefix=$HOME/.local -g pnpm
             - checkout
             - *restore_cache
             - run:
                   name: Install local dependencies
-                  command: yarn install
+                  command: pnpm install
             - *save_cache
     unit-test:
         executor: playground
         steps:
+            - run: npm install --prefix=$HOME/.local -g pnpm
             - checkout
             - *restore_cache
             - run:
@@ -37,6 +39,7 @@ jobs:
     e2e:
         executor: playground
         steps:
+            - run: npm install --prefix=$HOME/.local -g pnpm
             - checkout
             - *restore_cache
             - run:
@@ -45,6 +48,7 @@ jobs:
     lint:
         executor: playground
         steps:
+            - run: npm install --prefix=$HOME/.local -g pnpm
             - checkout
             - *restore_cache
             - run:
