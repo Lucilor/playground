@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
 import {MatSnackBar, MatSnackBarConfig} from "@angular/material/snack-bar";
+import {lastValueFrom} from "rxjs";
 import {
     MessageData,
     MessageDataMap,
@@ -24,7 +25,7 @@ export class MessageService {
 
     async open(config: MatDialogConfig<MessageData>) {
         const ref = this.dialog.open<MessageComponent, MessageData, boolean | string>(MessageComponent, config);
-        return await ref.afterClosed().toPromise();
+        return await lastValueFrom(ref.afterClosed());
     }
 
     private _getData<T extends MessageData, K extends MessageData["type"]>(
@@ -34,7 +35,7 @@ export class MessageService {
         if (typeof data === "string") {
             data = {content: data} as MessageDataParams<T>;
         }
-        return ({...data, type} as MessageData) as MessageDataMap[K];
+        return {...data, type} as MessageData as MessageDataMap[K];
     }
 
     async alert(data: string | MessageDataParams<AlertMessageData>) {

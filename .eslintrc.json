@@ -1,5 +1,8 @@
 {
     "root": true,
+    "env": {
+        "es6": true
+    },
     "overrides": [
         {
             "files": ["*.ts"],
@@ -34,13 +37,13 @@
                         "style": "kebab-case"
                     }
                 ],
-                "@typescript-eslint/indent": [
-                    "error",
-                    4,
-                    {
-                        "SwitchCase": 1
-                    }
-                ],
+                // "@typescript-eslint/indent": [
+                //     "error",
+                //     4,
+                //     {
+                //         "SwitchCase": 1
+                //     }
+                // ],
                 "@typescript-eslint/naming-convention": [
                     "error",
                     {
@@ -66,7 +69,11 @@
                 "@typescript-eslint/explicit-module-boundary-types": "off",
                 "guard-for-in": "off",
                 "no-underscore-dangle": "off",
-                "no-console": "off"
+                "no-console": "off",
+                "object-curly-spacing": ["error", "never"],
+                "array-bracket-spacing": ["error", "never"],
+                "no-shadow": "off",
+                "@typescript-eslint/no-shadow": ["error"]
             }
         },
         {

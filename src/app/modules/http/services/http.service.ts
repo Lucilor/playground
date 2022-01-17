@@ -4,6 +4,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {Response} from "@app/app.common";
 import {ObjectOf} from "@lucilor/utils";
 import {MessageService} from "@modules/message/services/message.service";
+import {lastValueFrom} from "rxjs";
 import {environment} from "src/environments/environment";
 
 export const headerNoCache: HttpOptions = {headers: {"Cache-control": "no-cache"}};
@@ -69,7 +70,7 @@ export class HttpService {
                         url += `?${queryArr.join("&")}`;
                     }
                 }
-                response = await this.http.get<Response<T>>(url, options).toPromise();
+                response = await lastValueFrom(this.http.get<Response<T>>(url, options));
             }
             if (method === "POST") {
                 let files: File[] = [];
@@ -91,7 +92,7 @@ export class HttpService {
                     formData.append("data", JSON.stringify(data));
                 }
                 files.forEach((v, i) => formData.append("file" + i, v));
-                response = await this.http.post<Response<T>>(url, formData, options).toPromise();
+                response = await lastValueFrom(this.http.post<Response<T>>(url, formData, options));
             }
             if (!response) {
                 throw new Error("请求错误");
