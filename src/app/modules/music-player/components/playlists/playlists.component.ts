@@ -52,7 +52,6 @@ export class PlaylistsComponent implements OnInit {
         this.playlistsPage++;
         const {limit, playlistsPage} = this;
         this.loading = true;
-        console.log(playlistsPage);
         const playlists = await this.music.getPlaylists(playlistsPage, limit);
         playlists.forEach((playlist) => this.playlists.push(playlist));
         this.loading = false;

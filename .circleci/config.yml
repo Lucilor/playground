@@ -1,5 +1,5 @@
 version: 2.1
-var_1: &cache_key playground-{{ .Branch }}-{{ checksum "pnpm-lock.yaml" }}
+var_1: &cache_key playground-{{ .Branch }}-{{ checksum "package-lock.json" }}
 var_2: &cache_fallback_key playground
 var_3: &restore_cache
     restore_cache:
@@ -15,52 +15,48 @@ executors:
     playground:
         working_directory: ~/playground
         docker:
-            - image: circleci/node:latest-browsers
+            - image: circleci/node:16-browsers
 jobs:
     build:
         executor: playground
         steps:
-            - run: npm install --prefix=$HOME/.local -g pnpm
             - checkout
             - *restore_cache
             - run:
                   name: Install local dependencies
-                  command: pnpm install
+                  command: npm install
             - *save_cache
     unit-test:
         executor: playground
         steps:
-            - run: npm install --prefix=$HOME/.local -g pnpm
             - checkout
             - *restore_cache
             - run:
                   name: Unit test
-                  command: pnpm run test -- --no-watch --no-progress --browsers=ChromeHeadless
+                  command: npm run test:ci
     e2e:
         executor: playground
         steps:
-            - run: npm install --prefix=$HOME/.local -g pnpm
             - checkout
             - *restore_cache
             - run:
                   name: End to end
-                  command: pnpm run e2e -- --protractor-config=e2e/protractor.conf.js
+                  command: npm run e2e -- --protractor-config=e2e/protractor.conf.js
     lint:
         executor: playground
         steps:
-            - run: npm install --prefix=$HOME/.local -g pnpm
             - checkout
             - *restore_cache
             - run:
                   name: Lint
-                  command: pnpm run lint
+                  command: npm run lint
 workflows:
     build-test-lint:
         jobs:
             - build
-            # - unit-test:
-            #       requires:
-            #           - build
+            - unit-test:
+                  requires:
+                      - build
             # - e2e:
             #       requires:
             #           - build

@@ -493,7 +493,7 @@ export class ChineseChessComponent extends AppStorage() implements OnInit, OnDes
     }
 
     async exportCollection() {
-        downloadByString(JSON.stringify(this.collection), this.collection.name + ".json");
+        downloadByString(JSON.stringify(this.collection), {filename: this.collection.name + ".json"});
     }
 
     async importCollection(event: Event) {
