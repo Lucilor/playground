@@ -8,6 +8,7 @@ import zip from "gulp-zip";
 import {jsonc} from "jsonc";
 import minimist from "minimist";
 import path from "path";
+import urljoin from "url-join";
 
 const configPath = "./gulp.config.json";
 if (!fs.existsSync(configPath)) {
@@ -51,10 +52,7 @@ gulp.task("zip", () => {
 });
 
 gulp.task("upload", async () => {
-    const url = host + "/playground/upload";
-    if (url.includes("localhost")) {
-        process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-    }
+    const url = urljoin(host, "playground/upload");
     const data: ObjectOf<any> = {token, file: fs.createReadStream(path.join(tmpDir, zipName))};
     const response = await postFormData(url, data);
     console.log(response.data);
