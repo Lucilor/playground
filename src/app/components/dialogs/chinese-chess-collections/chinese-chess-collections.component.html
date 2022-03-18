@@ -1,11 +1,11 @@
-<perfect-scrollbar>
+<ng-scrollbar>
     <div class="collections">
-        <ngx-ui-loader [loaderId]="loadId"></ngx-ui-loader>
+        <app-spinner [id]="loadId"></app-spinner>
         <ng-container *ngFor="let item of data">
-            <a mat-raised-button color="primary" [href]="urlPrefix + item.name" download target="_blank">{{ item.name }}</a>
+            <a mat-raised-button color="primary" [href]="getDownloadURL(item.name)" download target="_blank">{{ item.name }}</a>
         </ng-container>
     </div>
-</perfect-scrollbar>
+</ng-scrollbar>
 <div class="btn-group" style="text-align: center">
     <button mat-raised-button color="primary" (click)="dialogRef.close()">关闭</button>
 </div>

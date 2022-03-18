@@ -1,5 +1,6 @@
 import {Injectable, Injector} from "@angular/core";
-import {environment} from "src/environments/environment";
+import {environment} from "@env";
+import urljoin from "url-join";
 import {HttpService} from "./http.service";
 
 export interface Poem {
@@ -23,11 +24,11 @@ export interface Poem {
 export class ChinesePoetryService extends HttpService {
     constructor(injector: Injector) {
         super(injector);
-        this.baseURL = `${environment.host}/api/chinese-poetry`;
+        this.baseURL = urljoin(environment.host, "api/chinese-poetry");
     }
 
-    async random(num = 1, collections: string[] | null = null) {
-        const response = await this.get("random", {num, collections});
+    async random(num = 10) {
+        const response = await this.get("random", {num});
         if (response) {
             return response.data as Poem[];
         } else {
@@ -35,8 +36,8 @@ export class ChinesePoetryService extends HttpService {
         }
     }
 
-    async search(poem: Partial<Poem>, offset?: number, limit?: number) {
-        const response = await this.post("search", {poem, offset, limit});
+    async search(poem: Partial<Poem>, skip?: number, take?: number) {
+        const response = await this.post("search", {poem, skip, take});
         if (response) {
             return [response.data, response.count] as [Poem[], number];
         } else {

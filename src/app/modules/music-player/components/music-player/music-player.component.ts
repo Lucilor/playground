@@ -2,9 +2,11 @@ import {AfterViewInit, Component, ElementRef, ViewChild} from "@angular/core";
 import {local} from "@app/app.common";
 import {timeout} from "@lucilor/utils";
 import {AppStorage} from "@mixins/app-storage.mixin";
+import {Subscribed} from "@mixins/subscribed.mixin";
 import {MusicService} from "@modules/music-player/services/music.service";
-import {AppStatusService} from "@services/app-status.service";
+import {SpinnerService} from "@modules/spinner/services/spinner.service";
 import cplayer from "cplayer";
+import {random} from "lodash";
 import {BehaviorSubject} from "rxjs";
 
 @Component({
@@ -12,7 +14,7 @@ import {BehaviorSubject} from "rxjs";
     templateUrl: "./music-player.component.html",
     styleUrls: ["./music-player.component.scss"]
 })
-export class MusicPlayerComponent extends AppStorage() implements AfterViewInit {
+export class MusicPlayerComponent extends Subscribed(AppStorage()) implements AfterViewInit {
     player$ = new BehaviorSubject<cplayer | null>(null);
     isMini: boolean;
     @ViewChild("playerEl", {read: ElementRef}) playerEl?: ElementRef<HTMLDivElement>;
@@ -21,7 +23,7 @@ export class MusicPlayerComponent extends AppStorage() implements AfterViewInit 
         return this.playerEl?.nativeElement.querySelector(".cp-poster") as HTMLDivElement;
     }
 
-    constructor(private music: MusicService, private status: AppStatusService) {
+    constructor(private music: MusicService, private spinner: SpinnerService) {
         super("musicPlayer", local);
         const isMini = this.load("isMini");
         if (typeof isMini === "boolean") {
@@ -34,35 +36,35 @@ export class MusicPlayerComponent extends AppStorage() implements AfterViewInit 
     async ngAfterViewInit() {
         await timeout();
         this.music.playlistId.next(this.load("playlist") || "74222476");
-        this.music.playlistId.subscribe((playlistId) => {
+        this.subscribe(this.music.playlistId, (playlistId) => {
             this.save("playlist", playlistId);
-            this.initPlayer(Number(playlistId));
+            this.initPlayer(playlistId);
         });
     }
 
-    async initPlayer(playlistId: number) {
-        // this.status.startLoader({id: "musicPlayerLoader"});
-        // const playlist = await this.music.getPlaylist2(playlistId);
-        // this.status.stopLoader();
-        // if (playlist && this.playerEl) {
-        //     const player = new cplayer({
-        //         element: this.playerEl.nativeElement,
-        //         playlist: playlist.content,
-        //         zoomOutKana: true
-        //     });
-        //     player.mode = playlist.mode;
-        //     if (player.mode === "listrandom") {
-        //         player.to(random(playlist.content.length));
-        //     }
-        //     player.on("play", () => this.startPoster());
-        //     player.on("pause", () => this.stopPoster());
-        //     player.on("started", () => this.startPoster());
-        //     player.on("ended", () => this.stopPoster());
-        //     this.posterEl?.addEventListener("click", () => {
-        //         player?.togglePlayState();
-        //     });
-        //     this.player$.next(player);
-        // }
+    async initPlayer(playlistId: string) {
+        this.spinner.show("musicPlayerLoader");
+        const playlist = await this.music.getPlaylistRaw(playlistId);
+        this.spinner.hide("musicPlayerLoader");
+        if (playlist && this.playerEl) {
+            const player = new cplayer({
+                element: this.playerEl.nativeElement,
+                playlist: playlist.content,
+                zoomOutKana: true
+            });
+            player.mode = playlist.mode;
+            if (player.mode === "listrandom") {
+                player.to(random(playlist.content.length));
+            }
+            player.on("play", () => this.startPoster());
+            player.on("pause", () => this.stopPoster());
+            player.on("started", () => this.startPoster());
+            player.on("ended", () => this.stopPoster());
+            this.posterEl?.addEventListener("click", () => {
+                player?.togglePlayState();
+            });
+            this.player$.next(player);
+        }
     }
 
     destroyPlayer() {

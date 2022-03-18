@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {AbstractControl, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MusicService} from "@modules/music-player/services/music.service";
-import {AppStatusService} from "@services/app-status.service";
+import {SpinnerService} from "@modules/spinner/services/spinner.service";
 import {typedFormControl, TypedFormGroup, typedFormGroup} from "ngx-forms-typed";
 
 interface LoginForm {
@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
         password: typedFormControl("")
     }) as TypedFormGroup<LoginForm>;
 
-    constructor(private status: AppStatusService, private music: MusicService, private router: Router, private route: ActivatedRoute) {}
+    constructor(private spinner: SpinnerService, private music: MusicService, private router: Router, private route: ActivatedRoute) {}
 
     async ngOnInit() {
         await this.music.refreshLoginStatus();
@@ -43,9 +43,9 @@ export class LoginComponent implements OnInit {
         }
         if (form.valid) {
             const {user, password} = form.value;
-            this.status.startLoader({text: "正在登录..."});
+            this.spinner.show(this.spinner.defaultLoaderId, {text: "正在登录..."});
             await this.music.login(user, password, !Validators.email(form.get("user") as AbstractControl));
-            this.status.stopLoader();
+            this.spinner.hide(this.spinner.defaultLoaderId);
             this.goHome();
         }
     }

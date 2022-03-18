@@ -5,7 +5,7 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MessageModule} from "@modules/message/message.module";
-import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
+import {NgScrollbarModule} from "ngx-scrollbar";
 import {ChineseChessComponent} from "./chinese-chess.component";
 
 describe("ChineseChessComponent", () => {
@@ -22,7 +22,7 @@ describe("ChineseChessComponent", () => {
                 MatSelectModule,
                 MatSlideToggleModule,
                 MessageModule,
-                PerfectScrollbarModule
+                NgScrollbarModule
             ]
         }).compileComponents();
     });

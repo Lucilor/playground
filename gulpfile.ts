@@ -9,14 +9,6 @@ import {jsonc} from "jsonc";
 import minimist from "minimist";
 import path from "path";
 
-const postFormData = (url: string, data: ObjectOf<any>, file?: fs.ReadStream) => {
-    const formData = new FormData();
-    if (file) {
-        formData.append("file", file);
-    }
-    return axios.post(url, formData, {headers: formData.getHeaders(), maxBodyLength: Infinity});
-};
-
 const configPath = "./gulp.config.json";
 if (!fs.existsSync(configPath)) {
     fs.writeFileSync(
@@ -24,35 +16,47 @@ if (!fs.existsSync(configPath)) {
         jsonc.stringify(
             {
                 $schema: "./.schemas/gulp.config.schema.json",
-                host: "https://candypurity.com",
-                token: ""
+                host: "",
+                token: "",
+                targetDir: ""
             },
             {space: 4}
         )
     );
 }
-const {host, token} = jsonc.parse(fs.readFileSync("./gulp.config.json").toString());
+const {host, token, targetDir} = jsonc.parse(fs.readFileSync("./gulp.config.json").toString());
+
+const postFormData = (url: string, data: ObjectOf<any>) => {
+    const formData = new FormData();
+    for (const key in data) {
+        formData.append(key, data[key]);
+    }
+    return axios.post(url, formData, {
+        headers: {...formData.getHeaders(), Cookie: `token=${token}`},
+        maxBodyLength: Infinity,
+        withCredentials: true
+    });
+};
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const args = minimist(process.argv.slice(2));
-const distDir = "./dist";
 const tmpDir = "./.tmp";
 const zipName = "upload.zip";
 
 gulp.task("build", () => child_process.exec("npm run build"));
 
 gulp.task("zip", () => {
-    const globs = ["**/*"];
-    return gulp.src(globs, {dot: true, cwd: distDir, base: distDir}).pipe(zip(zipName)).pipe(gulp.dest(tmpDir));
+    const globs = ["./dist/**/*"];
+    return gulp.src(globs, {dot: true, cwd: targetDir, base: targetDir}).pipe(zip(zipName)).pipe(gulp.dest(tmpDir));
 });
 
 gulp.task("upload", async () => {
-    const url = host + "/update-playground.php";
+    const url = host + "/playground/upload";
     if (url.includes("localhost")) {
         process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
     }
-    const data = {token};
-    const response = await postFormData(url, data, fs.createReadStream(path.join(tmpDir, zipName)));
+    const data: ObjectOf<any> = {token, file: fs.createReadStream(path.join(tmpDir, zipName))};
+    const response = await postFormData(url, data);
     console.log(response.data);
 });
 

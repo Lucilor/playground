@@ -4,7 +4,7 @@ import {MatListModule} from "@angular/material/list";
 import {MatSelectModule} from "@angular/material/select";
 import {HttpModule} from "@modules/http/http.module";
 import {MessageModule} from "@modules/message/message.module";
-import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
+import {NgScrollbarModule} from "ngx-scrollbar";
 import {NgxUiLoaderModule} from "ngx-ui-loader";
 import {PlaylistsComponent} from "./playlists.component";
 
@@ -15,7 +15,7 @@ describe("PlaylistsComponent", () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [PlaylistsComponent],
-            imports: [HttpModule, MatIconModule, MatListModule, MatSelectModule, MessageModule, NgxUiLoaderModule, PerfectScrollbarModule]
+            imports: [HttpModule, MatIconModule, MatListModule, MatSelectModule, MessageModule, NgScrollbarModule, NgxUiLoaderModule]
         }).compileComponents();
     });
 

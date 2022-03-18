@@ -15,6 +15,7 @@ import {MatPaginatorIntl, MatPaginatorModule} from "@angular/material/paginator"
 import {MatSelectModule} from "@angular/material/select";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatTabsModule} from "@angular/material/tabs";
+import {MatTooltipModule} from "@angular/material/tooltip";
 import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {BullsAndCowsDifficultyComponent} from "@components/dialogs/bulls-and-cows-difficulty/bulls-and-cows-difficulty.component";
@@ -26,6 +27,7 @@ import {HttpModule} from "@modules/http/http.module";
 import {MessageModule} from "@modules/message/message.module";
 import {MusicPlayerRoutingModule} from "@modules/music-player/music-player-routing.module";
 import {MusicPlayerModule} from "@modules/music-player/music-player.module";
+import {SpinnerModule} from "@modules/spinner/spinner.module";
 import {BezierComponent} from "@views/bezier/bezier.component";
 import {BlogComponent} from "@views/blog/blog.component";
 import {BullsAndCowsComponent} from "@views/bulls-and-cows/bulls-and-cows.component";
@@ -35,8 +37,7 @@ import {IndexComponent} from "@views/index/index.component";
 import {PageNotFoundComponent} from "@views/page-not-found/page-not-found.component";
 import {RubiksCubeComponent} from "@views/rubiks-cube/rubiks-cube.component";
 import {ColorChromeModule} from "ngx-color/chrome";
-import {PerfectScrollbarConfigInterface, PerfectScrollbarModule, PERFECT_SCROLLBAR_CONFIG} from "ngx-perfect-scrollbar";
-import {NgxUiLoaderModule, SPINNER} from "ngx-ui-loader";
+import {NgScrollbarModule} from "ngx-scrollbar";
 import {AppRoutingModule} from "./app-routing.module";
 import {AppComponent} from "./app.component";
 
@@ -53,10 +54,6 @@ export class MyMatPaginatorIntl extends MatPaginatorIntl {
         return `第${page + 1}页，共${totalPage}页`;
     };
 }
-
-const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
-    wheelPropagation: true
-};
 
 @NgModule({
     declarations: [
@@ -97,23 +94,15 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         MatSelectModule,
         MatSlideToggleModule,
         MatTabsModule,
+        MatTooltipModule,
         MessageModule,
         MusicPlayerModule,
         MusicPlayerRoutingModule,
-        NgxUiLoaderModule.forRoot({
-            fgsColor: "#2196f3",
-            bgsColor: "#2196f3",
-            pbColor: "#2196f3",
-            fgsType: SPINNER.threeStrings,
-            bgsType: SPINNER.ballScaleMultiple
-        }),
-        PerfectScrollbarModule,
-        ReactiveFormsModule
+        NgScrollbarModule,
+        ReactiveFormsModule,
+        SpinnerModule
     ],
-    providers: [
-        {provide: MatPaginatorIntl, useClass: MyMatPaginatorIntl},
-        {provide: PERFECT_SCROLLBAR_CONFIG, useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG}
-    ],
+    providers: [{provide: MatPaginatorIntl, useClass: MyMatPaginatorIntl}],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

@@ -8,7 +8,7 @@ import {MatMenuModule} from "@angular/material/menu";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MenuComponent} from "@components/menu/menu.component";
 import {ColorChromeModule} from "ngx-color/chrome";
-import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
+import {NgScrollbarModule} from "ngx-scrollbar";
 import {RubiksCubeComponent} from "./rubiks-cube.component";
 
 describe("RubiksCubeComponent", () => {
@@ -27,7 +27,7 @@ describe("RubiksCubeComponent", () => {
                 MatIconModule,
                 MatInputModule,
                 MatMenuModule,
-                PerfectScrollbarModule,
+                NgScrollbarModule,
                 ReactiveFormsModule
             ]
         }).compileComponents();

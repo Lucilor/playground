@@ -2,10 +2,11 @@ import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Injectable, Injector} from "@angular/core";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Response} from "@app/app.common";
+import {environment} from "@env";
 import {ObjectOf} from "@lucilor/utils";
 import {MessageService} from "@modules/message/services/message.service";
 import {lastValueFrom} from "rxjs";
-import {environment} from "src/environments/environment";
+import urljoin from "url-join";
 
 export const headerNoCache: HttpOptions = {headers: {"Cache-control": "no-cache"}};
 
@@ -37,7 +38,7 @@ export class HttpService {
     message: MessageService;
     http: HttpClient;
     snackBar: MatSnackBar;
-    baseURL = "";
+    baseURL = environment.host;
     strict = true;
 
     constructor(injector: Injector) {
@@ -54,7 +55,7 @@ export class HttpService {
 
     async request<T>(url: string, method: "GET" | "POST", data?: any, options?: HttpOptions) {
         if (!url.startsWith("http")) {
-            url = `${this.baseURL}${url}`;
+            url = urljoin(this.baseURL, url);
         }
         try {
             let response: Response<T> | null = null;
@@ -73,26 +74,19 @@ export class HttpService {
                 response = await lastValueFrom(this.http.get<Response<T>>(url, options));
             }
             if (method === "POST") {
-                let files: File[] = [];
-                for (const key in data) {
-                    const value = data[key];
-                    if (value instanceof FileList) {
-                        files = Array.from(value);
-                        delete data[key];
+                if (Object.values(data).some((v) => v instanceof File)) {
+                    const formData = new FormData();
+                    for (const key in data) {
+                        const value = data[key];
+                        if (typeof value === "string") {
+                            formData.append(key, value);
+                        } else {
+                            formData.append(key, JSON.stringify(value));
+                        }
                     }
-                    if (value instanceof File) {
-                        files = [value];
-                        delete data[key];
-                    }
+                    data = formData;
                 }
-                const formData = new FormData();
-                if (typeof data === "string") {
-                    formData.append("data", data);
-                } else {
-                    formData.append("data", JSON.stringify(data));
-                }
-                files.forEach((v, i) => formData.append("file" + i, v));
-                response = await lastValueFrom(this.http.post<Response<T>>(url, formData, options));
+                response = await lastValueFrom(this.http.post<Response<T>>(url, data, options));
             }
             if (!response) {
                 throw new Error("请求错误");
@@ -104,20 +98,6 @@ export class HttpService {
                         this.message.snack(response.msg);
                     }
                     return response;
-                } else if (code === 2) {
-                    if (typeof response.msg === "string" && response.msg) {
-                        const data2 = response.data as any;
-                        let msg = response.msg;
-                        if (typeof data2?.name === "string") {
-                            msg += "<br>" + data2.name;
-                        }
-                        this.message.alert(msg);
-                    }
-                    return null;
-                } else if (code === -2) {
-                    const baseURL = environment.production ? this.baseURL : "https://localhost/n/kgs/index/";
-                    location.href = `${baseURL}signUp/index#${encodeURIComponent(location.href)}`;
-                    throw new Error("code:-2");
                 } else {
                     throw new Error(response.msg);
                 }
@@ -125,9 +105,6 @@ export class HttpService {
                 return response;
             }
         } catch (error) {
-            if (error instanceof Error && error.message === "code:-2") {
-                throw new Error("请重新登录");
-            }
             this.alert(error);
             return null;
         }

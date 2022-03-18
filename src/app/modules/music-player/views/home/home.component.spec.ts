@@ -7,7 +7,7 @@ import {MatTabsModule} from "@angular/material/tabs";
 import {HttpModule} from "@modules/http/http.module";
 import {MessageModule} from "@modules/message/message.module";
 import {PlaylistsComponent} from "@modules/music-player/components/playlists/playlists.component";
-import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
+import {NgScrollbarModule} from "ngx-scrollbar";
 import {NgxUiLoaderModule} from "ngx-ui-loader";
 import {HomeComponent} from "./home.component";
 
@@ -26,8 +26,8 @@ describe("HomeComponent", () => {
                 MatMenuModule,
                 MatTabsModule,
                 MessageModule,
-                NgxUiLoaderModule,
-                PerfectScrollbarModule
+                NgScrollbarModule,
+                NgxUiLoaderModule
             ]
         }).compileComponents();
     });

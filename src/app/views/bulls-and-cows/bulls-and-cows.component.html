@@ -3,11 +3,11 @@
     <div class="title">
         <h2>猜数字</h2>
         <div class="hint">
-            不知道规则?
-            <a mat-icon-button href="https://zh.wikipedia.org/zh-hans/猜数字" target="_blank">
+            不知道规则？
+            <a mat-icon-button href="https://zh.wikipedia.org/zh-hans/猜数字" target="_blank" matTooltip="维基百科">
                 <mat-icon>open_in_new</mat-icon>
             </a>
-            <a mat-icon-button href="https://baike.baidu.com/item/猜数字/83200" target="_blank">
+            <a mat-icon-button href="https://baike.baidu.com/item/猜数字/83200" target="_blank" matTooltip="百度百科">
                 <mat-icon>open_in_new</mat-icon>
             </a>
         </div>
@@ -58,8 +58,8 @@
             历史记录<span *ngIf="bc.attempts.length">({{ bc.attempts.length }})</span>
         </div>
         <mat-divider></mat-divider>
-        <perfect-scrollbar>
+        <ng-scrollbar>
             <div class="attempt" *ngFor="let attempt of bc.attempts">{{ attempt.answer }} - {{ attempt.result }}</div>
-        </perfect-scrollbar>
+        </ng-scrollbar>
     </mat-card>
 </div>

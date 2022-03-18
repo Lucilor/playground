@@ -1,13 +1,13 @@
 import {CommonModule} from "@angular/common";
 import {NgModule} from "@angular/core";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MatButtonModule} from "@angular/material/button";
 import {MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS} from "@angular/material/dialog";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from "@angular/material/snack-bar";
-import * as hljs from "highlight.js";
-import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
+import hljs from "highlight.js";
 import {QuillModule} from "ngx-quill";
 import {MessageComponent} from "./components/message/message.component";
 
@@ -18,12 +18,12 @@ import {MessageComponent} from "./components/message/message.component";
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
+        MatAutocompleteModule,
         MatButtonModule,
         MatFormFieldModule,
         MatDialogModule,
         MatInputModule,
         MatSnackBarModule,
-        PerfectScrollbarModule,
         QuillModule.forRoot({
             format: "json",
             modules: {
@@ -56,7 +56,7 @@ import {MessageComponent} from "./components/message/message.component";
         {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {maxWidth: "unset"}},
         {
             provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
-            useValue: {duration: 3000, verticalPosition: "top", panelClass: ["mat-toolbar", "mat-primary"]}
+            useValue: {duration: 1000, verticalPosition: "top", panelClass: ["mat-toolbar", "mat-primary"]}
         }
     ]
 })

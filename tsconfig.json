@@ -15,8 +15,8 @@
         "moduleResolution": "node",
         "importHelpers": true,
         "target": "es2015",
-        "module": "es2020",
-        "lib": ["es2020", "dom"],
+        "module": "esnext",
+        "lib": ["esnext", "dom"],
         "paths": {
             "@components/*": ["src/app/components/*"],
             "@directives/*": ["src/app/directives/*"],
@@ -25,10 +25,12 @@
             "@modules/*": ["src/app/modules/*"],
             "@services/*": ["src/app/services/*"],
             "@views/*": ["src/app/views/*"],
-            "@app/*": ["src/app/*"]
+            "@app/*": ["src/app/*"],
+            "@env": ["src/environments/environment.ts"]
         },
         "allowJs": true,
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true
     },
     "angularCompilerOptions": {
         "strictInjectionParameters": true,

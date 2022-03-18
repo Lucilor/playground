@@ -2,7 +2,7 @@ import {AfterViewInit, Component, ViewChild} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {timeout} from "@lucilor/utils";
 import {headerNoCache, HttpService} from "@modules/http/services/http.service";
-import {PerfectScrollbarComponent} from "ngx-perfect-scrollbar";
+import {NgScrollbar} from "ngx-scrollbar";
 
 export interface User {
     name: string;
@@ -31,7 +31,7 @@ export type Message = MessageText | MessageImage;
 export class MessageManager {
     messages: Message[] = [];
 
-    constructor(public dom: HTMLElement | null) {}
+    constructor(public scrollbar?: NgScrollbar) {}
 
     private _formatTime(time = new Date()) {
         const hr = time.getHours().toString().padStart(2, "0");
@@ -47,6 +47,14 @@ export class MessageManager {
         return message;
     }
 
+    private async _updateScrollbar() {
+        if (this.scrollbar) {
+            await timeout();
+            this.scrollbar.scrollTo({bottom: 0});
+            this.scrollbar.update();
+        }
+    }
+
     clear() {
         this.messages.length = 0;
         return this;
@@ -57,15 +65,12 @@ export class MessageManager {
             newVal.timestamp = this._formatTime();
         }
         Object.assign(oldVal, newVal);
-        if (this.dom) {
-            await timeout();
-            this.dom.scrollTop = this.dom.scrollHeight;
-        }
+        await this._updateScrollbar();
     }
 
-    pushMessage(message: Message) {
+    async pushMessage(message: Message) {
         this.messages.push(message);
-        this.updateMessage(message);
+        await this.updateMessage(message);
     }
 
     async pushText(text: string | Promise<string>, user?: string) {
@@ -78,6 +83,7 @@ export class MessageManager {
         }
         if (text instanceof Promise) {
             message.isLoading = true;
+            await this._updateScrollbar();
             text = await text;
         }
         await this.updateMessage(message, {text: text.replace(/\n/g, "<br />")});
@@ -108,9 +114,9 @@ export class MessageManager {
 })
 export class ChatComponent implements AfterViewInit {
     moli: User = {name: "茉莉", avatar: "https://candypurity.com/static/images/users/untitled.png", description: "人见人爱，花见花开"};
-    messageManager = new MessageManager(null);
+    messageManager = new MessageManager();
     input = "";
-    @ViewChild(PerfectScrollbarComponent) scrollbar?: PerfectScrollbarComponent;
+    @ViewChild(NgScrollbar) scrollbar!: NgScrollbar;
 
     get messages() {
         // ? type check
@@ -121,7 +127,7 @@ export class ChatComponent implements AfterViewInit {
 
     async ngAfterViewInit() {
         const params = this.route.snapshot.queryParams;
-        this.messageManager.dom = document.querySelector(".messages-content perfect-scrollbar > div");
+        this.messageManager.scrollbar = this.scrollbar;
         if (params.sayHello !== undefined) {
             this.sayHello();
         } else {
@@ -137,12 +143,14 @@ export class ChatComponent implements AfterViewInit {
         }
     }
 
-    send() {
+    async send() {
         if (!this.input) {
             return;
         }
         const question = this.input;
-        this.messageManager.pushText(question);
+        await this.messageManager.pushText(question);
+        this.input = "";
+        await timeout();
         if (question.match(/^help|\?|帮助$/i)) {
             (async () => {
                 await this.messageManager.pushImage("https://candypurity.com/static/images/itpk.png", this.moli.name);
@@ -157,9 +165,8 @@ export class ChatComponent implements AfterViewInit {
                     return "放弃思考";
                 }
             })();
-            this.messageManager.pushText(textPromise, this.moli.name);
+            await this.messageManager.pushText(textPromise, this.moli.name);
         }
-        this.input = "";
     }
 
     async sayHello() {

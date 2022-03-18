@@ -7,7 +7,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatInputModule} from "@angular/material/input";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MessageModule} from "@modules/message/message.module";
-import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
+import {NgScrollbarModule} from "ngx-scrollbar";
 import {BullsAndCowsComponent} from "./bulls-and-cows.component";
 
 describe("BullsAndCowsComponent", () => {
@@ -26,7 +26,7 @@ describe("BullsAndCowsComponent", () => {
                 MatIconModule,
                 MatInputModule,
                 MessageModule,
-                PerfectScrollbarModule,
+                NgScrollbarModule,
                 ReactiveFormsModule
             ]
         }).compileComponents();

@@ -5,7 +5,7 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MessageModule} from "@modules/message/message.module";
-import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
+import {NgScrollbarModule} from "ngx-scrollbar";
 
 import {ChinesePoetrySearchComponent} from "./chinese-poetry-search.component";
 
@@ -16,7 +16,7 @@ describe("ChinesePoetrySearchComponent", () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [ChinesePoetrySearchComponent],
-            imports: [BrowserAnimationsModule, FormsModule, MatFormFieldModule, MatInputModule, MessageModule, PerfectScrollbarModule],
+            imports: [BrowserAnimationsModule, FormsModule, MatFormFieldModule, MatInputModule, MessageModule, NgScrollbarModule],
             providers: [
                 {provide: MatDialogRef, useValue: {}},
                 {provide: MAT_DIALOG_DATA, useValue: {}}

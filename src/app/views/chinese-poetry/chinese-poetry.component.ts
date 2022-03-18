@@ -3,7 +3,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {PageEvent} from "@angular/material/paginator";
 import {openChinesePoetrySearchDialog} from "@components/dialogs/chinese-poetry-search/chinese-poetry-search.component";
 import {Poem, ChinesePoetryService} from "@modules/http/services/chinese-poetry.service";
-import {AppStatusService} from "@services/app-status.service";
+import {SpinnerService} from "@modules/spinner/services/spinner.service";
 
 @Component({
     selector: "app-chinese-poetry",
@@ -13,7 +13,12 @@ import {AppStatusService} from "@services/app-status.service";
 export class ChinesePoetryComponent implements OnInit {
     randomPoems: Poem[] = [];
     searchPoem: Partial<Poem> = {};
-    page: {poems: Poem[]; paragraphs: string[][]; tags: string[][]} = {poems: [], paragraphs: [], tags: []};
+    page: {poems: Poem[]; paragraphs: string[][]; content: string[][]; tags: string[][]} = {
+        poems: [],
+        paragraphs: [],
+        content: [],
+        tags: []
+    };
     pageInfo = {
         length: 0,
         pageSize: 10,
@@ -23,7 +28,7 @@ export class ChinesePoetryComponent implements OnInit {
     isRandom = true;
     loaderId = "chinese-poetry";
 
-    constructor(private service: ChinesePoetryService, private dialog: MatDialog, private status: AppStatusService) {
+    constructor(private service: ChinesePoetryService, private dialog: MatDialog, private spinner: SpinnerService) {
         this.setPage([], 0);
     }
 
@@ -33,9 +38,9 @@ export class ChinesePoetryComponent implements OnInit {
     }
 
     async random() {
-        this.status.startLoader();
+        this.spinner.show(this.spinner.defaultLoaderId);
         const poems = await this.service.random(10);
-        this.status.stopLoader();
+        this.spinner.hide(this.spinner.defaultLoaderId);
         this.randomPoems = poems;
         this.setPage(poems, poems.length);
     }
@@ -56,6 +61,7 @@ export class ChinesePoetryComponent implements OnInit {
         this.page = {
             poems,
             paragraphs: parsePoem(poems, "paragraphs"),
+            content: parsePoem(poems, "content"),
             tags: parsePoem(poems, "tags")
         };
         this.pageInfo.length = length;
@@ -66,9 +72,9 @@ export class ChinesePoetryComponent implements OnInit {
         if (this.isRandom) {
             this.setPage(this.randomPoems.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize), this.randomPoems.length);
         } else {
-            this.status.startLoader();
+            this.spinner.show(this.spinner.defaultLoaderId);
             const [poems, count] = await this.service.search(this.searchPoem, pageIndex * pageSize, pageSize);
-            this.status.stopLoader();
+            this.spinner.hide(this.spinner.defaultLoaderId);
             this.setPage(poems, count);
         }
         this.pageInfo.pageIndex = pageIndex;

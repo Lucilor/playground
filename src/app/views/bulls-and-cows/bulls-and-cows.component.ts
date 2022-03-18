@@ -1,4 +1,4 @@
-import {Component, ElementRef} from "@angular/core";
+import {Component, ViewChild} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MatDialog} from "@angular/material/dialog";
 import {local} from "@app/app.common";
@@ -11,6 +11,7 @@ import {timeout} from "@lucilor/utils";
 import {AppStorage} from "@mixins/app-storage.mixin";
 import {MessageService} from "@modules/message/services/message.service";
 import md5 from "md5";
+import {NgScrollbar} from "ngx-scrollbar";
 import {BullsAndCows} from "./bulls-and-cows";
 
 @Component({
@@ -30,13 +31,9 @@ export class BullsAndCowsComponent extends AppStorage() {
     get canGuess() {
         return this.guessInput && this.bc.canGuess && this.form.valid;
     }
+    @ViewChild(NgScrollbar) scrollbar!: NgScrollbar;
 
-    constructor(
-        private message: MessageService,
-        private dialog: MatDialog,
-        private elRef: ElementRef<HTMLElement>,
-        private formBuilder: FormBuilder
-    ) {
+    constructor(private message: MessageService, private dialog: MatDialog, private formBuilder: FormBuilder) {
         super("bullsAndCows", local);
         this.difficulty = this.load("difficulty") || difficulties[1];
         this.bc = new BullsAndCows(this.difficulty.config);
@@ -74,13 +71,10 @@ export class BullsAndCowsComponent extends AppStorage() {
                 title: "游戏结束"
             });
         }
-        const el = this.elRef.nativeElement.querySelector(".attempts perfect-scrollbar > div");
-        if (el) {
-            (async () => {
-                await timeout(0);
-                el.scrollTop = el.scrollHeight;
-            })();
-        }
+        (async () => {
+            await timeout(0);
+            this.scrollbar.scrollTo({bottom: 0});
+        })();
     }
 
     surrender() {

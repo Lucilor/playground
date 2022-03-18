@@ -10,10 +10,10 @@ form {
     display: flex;
     flex-direction: column;
 
-    > :not(perfect-scrollbar) {
+    > :not(.ng-scrollbar) {
         flex: 0 0 0;
     }
-    > perfect-scrollbar {
+    > .ng-scrollbar {
         flex: 1 1 0;
     }
 }

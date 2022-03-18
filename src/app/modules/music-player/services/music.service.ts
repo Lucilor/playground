@@ -1,9 +1,10 @@
 import {Injectable, Injector} from "@angular/core";
+import {environment} from "@env";
 import {ObjectOf} from "@lucilor/utils";
 import {HttpService} from "@modules/http/services/http.service";
 import md5 from "md5";
 import {BehaviorSubject} from "rxjs";
-import {environment} from "src/environments/environment";
+import urljoin from "url-join";
 import {Playlist, PlaylistDetail, Track, User} from "./netease-music.types";
 
 export interface Song {
@@ -22,10 +23,6 @@ export interface PlaylistRaw {
     name: string;
     mode: string;
     cover: string;
-    content: string;
-}
-
-export interface Playlist2 extends Omit<PlaylistRaw, "content"> {
     content: Song[];
 }
 
@@ -34,12 +31,12 @@ export interface Playlist2 extends Omit<PlaylistRaw, "content"> {
 })
 export class MusicService extends HttpService {
     playlistId = new BehaviorSubject<string>("");
-    playlist: Playlist2 | null = null;
+    playlist: PlaylistRaw | null = null;
     user$ = new BehaviorSubject<User | null>(null);
+    baseURL = urljoin(environment.host, "netease-music");
 
     constructor(inejctor: Injector) {
         super(inejctor);
-        this.baseURL = `${environment.host}/netease-music/`;
     }
 
     private _addTimestamp(obj: ObjectOf<any>) {
@@ -47,19 +44,18 @@ export class MusicService extends HttpService {
         return obj;
     }
 
-    async getPlaylist2(net_id: number) {
-        const response = await this.get<PlaylistRaw[]>(`${environment.host}/api/playlist/${net_id}`);
+    async getPlaylistRaw(id: string) {
+        const response = await this.get<PlaylistRaw>(`${environment.host}/api/playlist/${id}`);
         if (response?.data) {
-            const data = response.data[0];
-            data.content = JSON.parse(data.content);
-            this.playlist = data as unknown as Playlist2;
+            this.playlist = response.data;
             return this.playlist;
         }
         return null;
     }
 
-    async setPlaylist2(net_id: number, mode = "listloop") {
-        await this.post<Playlist2>(`${environment.host}/api/playlist`, {net_id, mode});
+    async setPlaylistRaw(id: string, mode: string) {
+        const response = await this.post<PlaylistRaw>(`${environment.host}/api/playlist`, {id, mode});
+        return response?.code === 0;
     }
 
     async login(user: string, password: string, isEmail: boolean) {
@@ -83,14 +79,14 @@ export class MusicService extends HttpService {
         this.silent = true;
         const response = await this.get<User>("login/status", this._addTimestamp({}));
         const uid = response?.data?.profile?.userId;
+        let user: User | null = null;
         if (uid) {
             const response2 = await this.get<User>("user/detail", this._addTimestamp({uid}));
             if (response2?.data) {
-                this.user$.next(response2.data);
-                return;
+                user = response2.data;
             }
         }
-        this.user$.next(null);
+        this.user$.next(user);
         this.silent = silent;
     }
 
@@ -108,7 +104,6 @@ export class MusicService extends HttpService {
         return NaN;
     }
 
-    // 30 items per page
     async getPlaylists(page: number, limit: number) {
         const user = this.user$.value;
         if (!user) {

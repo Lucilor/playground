@@ -42,8 +42,8 @@ Mixins
 }
 
 /*--------------------
-  Chat
-  --------------------*/
+Chat
+--------------------*/
 .chat {
     @include center;
     min-width: 300px;
@@ -61,8 +61,8 @@ Mixins
 }
 
 /*--------------------
-  Chat Title
-  --------------------*/
+Chat Title
+--------------------*/
 .chat-title {
     flex: 0 1 45px;
     position: relative;
@@ -102,8 +102,8 @@ Mixins
 }
 
 /*--------------------
-  Messages
-  --------------------*/
+Messages
+--------------------*/
 .messages {
     flex: 1 1 auto;
     color: rgba(255, 255, 255, 0.5);
@@ -112,12 +112,10 @@ Mixins
     width: 100%;
 
     & .messages-content {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 101%;
+        position: relative;
+        height: 100%;
         width: 100%;
-        padding: 0 10px;
+        padding: 10px;
     }
 
     .message {
@@ -221,8 +219,8 @@ Mixins
 }
 
 /*--------------------
-  Message Box
-  --------------------*/
+Message Box
+--------------------*/
 .message-box {
     flex: 0 1 40px;
     width: 100%;
@@ -257,8 +255,8 @@ Mixins
 }
 
 /*--------------------
-  Custom Srollbar
-  --------------------*/
+Custom Srollbar
+--------------------*/
 .mCSB_scrollTools {
     margin: 1px -3px 1px 0;
     opacity: 0;
@@ -274,8 +272,8 @@ Mixins
 }
 
 /*--------------------
-  Bounce
-  --------------------*/
+Bounce
+--------------------*/
 @keyframes bounce {
     0% {
         transform: matrix3d(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);

@@ -22,7 +22,6 @@ import {AppStorage} from "@mixins/app-storage.mixin";
 import {MessageService} from "@modules/message/services/message.service";
 import {debounce} from "lodash";
 import {BehaviorSubject} from "rxjs";
-import {environment} from "src/environments/environment";
 
 type Mode = "下棋" | "摆棋";
 const allPositions: number[][] = [];
@@ -163,10 +162,6 @@ export class ChineseChessComponent extends AppStorage() implements OnInit, OnDes
 
     ngOnInit() {
         const board = this.board;
-        if (!environment.production) {
-            (window as any).cc = this;
-            document.title = "test";
-        }
         this.calcBoardSize();
         this.loadBoardInfo();
         board.on("forward", async (move) => {

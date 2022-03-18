@@ -1,11 +1,7 @@
-<!-- <div class="player-container" [class.mini]="isMini">
+<div class="player-container" [class.mini]="isMini">
     <div class="show-toggle" (click)="toggleMini()">
         <div class="arrow" [class]="{left: isMini, right: !isMini}"><div class="inner"></div></div>
     </div>
     <div #playerEl class="cplayer"></div>
-    <ngx-ui-loader [loaderId]="'musicPlayerLoader'" [hasProgressBar]="false"></ngx-ui-loader>
-</div> -->
-
-<div class="music-player">
-    
+    <app-spinner id="musicPlayerLoader" [config]="{hasProgressBar: false}"></app-spinner>
 </div>

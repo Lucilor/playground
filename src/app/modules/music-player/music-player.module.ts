@@ -16,8 +16,9 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {HttpModule} from "@modules/http/http.module";
 import {ImageModule} from "@modules/image/image.module";
 import {MessageModule} from "@modules/message/message.module";
-import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
-import {NgxUiLoaderModule} from "ngx-ui-loader";
+import {SpinnerModule} from "@modules/spinner/spinner.module";
+import {InfiniteScrollModule} from "ngx-infinite-scroll";
+import {NgScrollbarModule} from "ngx-scrollbar";
 import {MusicPlayerComponent} from "./components/music-player/music-player.component";
 import {PlaylistsComponent} from "./components/playlists/playlists.component";
 import {MusicPlayerRoutingModule} from "./music-player-routing.module";
@@ -46,6 +47,7 @@ export class MyMatPaginatorIntl extends MatPaginatorIntl {
         FormsModule,
         HttpModule,
         ImageModule,
+        InfiniteScrollModule,
         MatButtonModule,
         MatCardModule,
         MatFormFieldModule,
@@ -59,9 +61,9 @@ export class MyMatPaginatorIntl extends MatPaginatorIntl {
         MatTooltipModule,
         MessageModule,
         MusicPlayerRoutingModule,
-        NgxUiLoaderModule,
-        PerfectScrollbarModule,
-        ReactiveFormsModule
+        NgScrollbarModule,
+        ReactiveFormsModule,
+        SpinnerModule
     ],
     exports: [MusicPlayerComponent],
     providers: [{provide: MatPaginatorIntl, useClass: MyMatPaginatorIntl}]

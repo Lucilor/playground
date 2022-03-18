@@ -5,6 +5,8 @@ export interface BaseMessageData {
     title?: string;
     content?: any;
     cancelable?: boolean;
+    titleClass?: string;
+    contentClass?: string;
 }
 
 export interface AlertMessageData extends BaseMessageData {
@@ -29,6 +31,7 @@ export interface PromptData {
     placeholder?: string;
     validators?: ValidatorFn | ValidatorFn[] | null;
     errorText?: ObjectOf<string> | string;
+    options?: {value: string; label?: string}[];
 }
 
 export interface PromptMessageData extends BaseMessageData {
@@ -52,7 +55,7 @@ export interface BookMessageData extends BaseMessageData {
 
 export interface EditorMessageData extends BaseMessageData {
     type: "editor";
-    editable: boolean;
+    editable?: boolean;
     btnTexts?: {submit?: string; cancle?: string};
 }
 

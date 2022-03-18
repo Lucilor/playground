@@ -1,18 +1,40 @@
-<h2 mat-dialog-title *ngIf="titleHTML" [innerHTML]="titleHTML"></h2>
+<h2 mat-dialog-title *ngIf="titleHTML" [innerHTML]="titleHTML" [ngClass]="titleClass"></h2>
 <h3 mat-dialog-title *ngIf="subTitleHTML" [innerHTML]="subTitleHTML"></h3>
 <div mat-dialog-content>
     <ng-container *ngIf="data.type === 'editor'; else notEditor">
         <quill-editor [(ngModel)]="data.content" [preserveWhitespace]="true"> </quill-editor>
     </ng-container>
     <ng-template #notEditor>
-        <perfect-scrollbar>
-            <div [innerHTML]="contentHTML"></div>
-            <mat-form-field *ngIf="data.type === 'prompt'">
-                <input matInput [formControl]="input" [type]="promptData.type || ''" [placeholder]="promptData.placeholder || ''" />
-                <mat-hint>{{ promptData.hint || "" }}</mat-hint>
-                <mat-error *ngIf="this.input.invalid">{{ getErrorText() }}</mat-error>
-            </mat-form-field>
-        </perfect-scrollbar>
+        <div [innerHTML]="contentHTML"></div>
+        <mat-form-field *ngIf="data.type === 'prompt'" [ngSwitch]="promptData.type">
+            <textarea
+                matInput
+                #contentInput
+                *ngSwitchCase="'textarea'"
+                cdkTextareaAutosize
+                [formControl]="input"
+                [type]="promptData.type || ''"
+                [placeholder]="promptData.placeholder || ''"
+                [matAutocomplete]="auto"
+            ></textarea>
+            <input
+                matInput
+                #contentInput
+                *ngSwitchDefault
+                [formControl]="input"
+                [type]="promptData.type || ''"
+                [placeholder]="promptData.placeholder || ''"
+                (keydown)="onKeyDown($event)"
+                [matAutocomplete]="auto"
+            />
+            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                <mat-option *ngFor="let option of autoCompleteOptions | async" [value]="option.value">
+                    {{ option.value }}<span *ngIf="option.label">({{ option.label }})</span>
+                </mat-option>
+            </mat-autocomplete>
+            <mat-hint>{{ promptData.hint || "" }}</mat-hint>
+            <mat-error *ngIf="this.input.invalid">{{ getErrorText() }}</mat-error>
+        </mat-form-field>
     </ng-template>
 </div>
 <div mat-dialog-actions style="justify-content: center" [ngSwitch]="data.type">

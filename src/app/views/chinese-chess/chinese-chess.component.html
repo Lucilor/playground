@@ -28,7 +28,7 @@
     </div>
     <div class="menu" [style.height.px]="sizes.battleField[1] + 60" [ngSwitch]="mode$.value">
         <div class="help"><mat-icon color="primary" (click)="showInfo()">help</mat-icon></div>
-        <perfect-scrollbar>
+        <ng-scrollbar>
             <ng-container *ngSwitchCase="'下棋'">
                 <ng-template *ngTemplateOutlet="subMenu; context: {$implicit: 'black'}"></ng-template>
                 <div class="sub-menu divider">
@@ -66,7 +66,7 @@
                     </div>
                 </div>
             </ng-container>
-        </perfect-scrollbar>
+        </ng-scrollbar>
     </div>
 </div>
 

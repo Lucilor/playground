@@ -2,7 +2,7 @@ import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {MatButtonModule} from "@angular/material/button";
 import {MatDialogRef} from "@angular/material/dialog";
 import {HttpModule} from "@modules/http/http.module";
-import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
+import {NgScrollbarModule} from "ngx-scrollbar";
 import {NgxUiLoaderModule} from "ngx-ui-loader";
 import {ChineseChessCollectionsComponent} from "./chinese-chess-collections.component";
 
@@ -13,7 +13,7 @@ describe("ChineseChessCollectionsComponent", () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [ChineseChessCollectionsComponent],
-            imports: [HttpModule, MatButtonModule, NgxUiLoaderModule, PerfectScrollbarModule],
+            imports: [HttpModule, MatButtonModule, NgScrollbarModule, NgxUiLoaderModule],
             providers: [{provide: MatDialogRef, useValue: {}}]
         }).compileComponents();
     });

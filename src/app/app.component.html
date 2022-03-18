@@ -1,10 +1,10 @@
 <router-outlet></router-outlet>
-<ngx-ui-loader [loaderId]="'master'" [text]="loaderText"></ngx-ui-loader>
+<app-spinner [text]="loaderText"></app-spinner>
 <app-music-player></app-music-player>
 <button *ngIf="showHomeBtn" class="home-btn" mat-mini-fab color="primary" [routerLink]="'/index'">
     <mat-icon>home</mat-icon>
 </button>
 <div class="footer" *ngIf="showFooter">
     <!-- <div>备案号：粤ICP备18015215号</div> -->
-    <div>Copyright © 2021 Lucilor</div>
+    <div>Copyright © 2022 Lucilor</div>
 </div>
