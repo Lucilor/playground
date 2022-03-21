@@ -3,6 +3,7 @@ import {NavigationEnd, Router} from "@angular/router";
 import {Subscribed} from "@mixins/subscribed.mixin";
 import {MusicPlayerComponent} from "@modules/music-player/components/music-player/music-player.component";
 import {AppStatusService} from "@services/app-status.service";
+import {DateTime} from "luxon";
 import {routesInfo} from "./app.common";
 
 @Component({
@@ -16,6 +17,7 @@ export class AppComponent extends Subscribed() implements AfterViewInit {
     showHomeBtn = false;
     showFooter = true;
     @ViewChild(MusicPlayerComponent) musicPlayer!: MusicPlayerComponent;
+    lastUpdateStr = "";
 
     constructor(private router: Router, private status: AppStatusService) {
         super();
@@ -29,6 +31,14 @@ export class AppComponent extends Subscribed() implements AfterViewInit {
             }
         });
         this.status.loaderText$.subscribe((text) => (this.loaderText = text));
+        this.status.info$.subscribe((info) => {
+            const lastUpdate = info?.lastUpdate;
+            if (typeof lastUpdate === "number" && lastUpdate > 0) {
+                this.lastUpdateStr = "最后更新：" + DateTime.fromMillis(lastUpdate).toFormat("yyyy-MM-dd HH:mm:ss");
+            } else {
+                this.lastUpdateStr = "";
+            }
+        });
     }
 
     ngAfterViewInit() {
