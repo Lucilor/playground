@@ -1,5 +1,5 @@
 import {Component, ViewChild} from "@angular/core";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Validators} from "@angular/forms";
 import {MatDialog} from "@angular/material/dialog";
 import {local} from "@app/app.common";
 import {
@@ -11,8 +11,13 @@ import {timeout} from "@lucilor/utils";
 import {AppStorage} from "@mixins/app-storage.mixin";
 import {MessageService} from "@modules/message/services/message.service";
 import md5 from "md5";
+import {typedFormControl, typedFormGroup, TypedFormGroup} from "ngx-forms-typed";
 import {NgScrollbar} from "ngx-scrollbar";
 import {BullsAndCows} from "./bulls-and-cows";
+
+export interface BullsAndCowsForm {
+    guess: string;
+}
 
 @Component({
     selector: "app-bulls-and-cows",
@@ -24,7 +29,7 @@ export class BullsAndCowsComponent extends AppStorage() {
     difficulty: BullsAndCowsDifficulty;
     answerPrompt = "点击重来按钮生成数字";
     answer = "";
-    form: FormGroup;
+    form: TypedFormGroup<BullsAndCowsForm>;
     get guessInput() {
         return this.form.value.guess;
     }
@@ -33,12 +38,12 @@ export class BullsAndCowsComponent extends AppStorage() {
     }
     @ViewChild(NgScrollbar) scrollbar!: NgScrollbar;
 
-    constructor(private message: MessageService, private dialog: MatDialog, private formBuilder: FormBuilder) {
+    constructor(private message: MessageService, private dialog: MatDialog) {
         super("bullsAndCows", local);
         this.difficulty = this.load("difficulty") || difficulties[1];
         this.bc = new BullsAndCows(this.difficulty.config);
-        this.form = this.formBuilder.group({
-            guess: ["", Validators.pattern(new RegExp(`^[${this.bc.config.chars}]*$`))]
+        this.form = typedFormGroup({
+            guess: typedFormControl("", Validators.pattern(new RegExp(`^[${this.bc.config.chars}]*$`)))
         });
         this.form.markAllAsTouched();
         this.start();

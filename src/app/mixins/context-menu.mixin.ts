@@ -15,7 +15,6 @@ export const ContextMenu = <T extends Constructor>(base: T = class {} as T) =>
                 const parent = placeholder.parentElement;
                 if (parent) {
                     const rect = parent.getBoundingClientRect();
-                    console.log(rect, parent);
                     dx -= rect.left;
                     dy -= rect.top;
                 }

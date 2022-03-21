@@ -1,7 +1,7 @@
 import {Component, Inject} from "@angular/core";
-import {FormGroup, FormBuilder} from "@angular/forms";
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {BullsAndCowsConfig} from "@views/bulls-and-cows/bulls-and-cows";
+import {typedFormControl, TypedFormGroup, typedFormGroup} from "ngx-forms-typed";
 import {getOpenDialogFunc} from "../dialog.common";
 
 export interface BullsAndCowsDifficulty {
@@ -29,7 +29,7 @@ export const difficulties: BullsAndCowsDifficulty[] = [
     styleUrls: ["./bulls-and-cows-difficulty.component.scss"]
 })
 export class BullsAndCowsDifficultyComponent {
-    form: FormGroup;
+    form: TypedFormGroup<BullsAndCowsConfig>;
     difficulties = difficulties;
     difficultyIdx = 1;
 
@@ -39,14 +39,13 @@ export class BullsAndCowsDifficultyComponent {
 
     constructor(
         public dialogRef: MatDialogRef<BullsAndCowsDifficultyComponent, BullsAndCowsDifficulty>,
-        @Inject(MAT_DIALOG_DATA) public data: BullsAndCowsDifficulty,
-        private formBuilder: FormBuilder
+        @Inject(MAT_DIALOG_DATA) public data: BullsAndCowsDifficulty
     ) {
         this.difficultyIdx = difficulties.findIndex((v) => v.name === data.name);
-        this.form = this.formBuilder.group({
-            chars: data.config.chars,
-            digits: data.config.digits,
-            uniqueChars: data.config.uniqueChars
+        this.form = typedFormGroup({
+            chars: typedFormControl(data.config.chars),
+            digits: typedFormControl(data.config.digits),
+            uniqueChars: typedFormControl(data.config.uniqueChars)
         });
     }
 
