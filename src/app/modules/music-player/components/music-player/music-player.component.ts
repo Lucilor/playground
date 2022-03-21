@@ -6,6 +6,7 @@ import {Subscribed} from "@mixins/subscribed.mixin";
 import {MusicService} from "@modules/music-player/services/music.service";
 import {SpinnerService} from "@modules/spinner/services/spinner.service";
 import cplayer from "cplayer";
+import {Lyric} from "cplayer/lib/lyric";
 import {random} from "lodash";
 import {BehaviorSubject} from "rxjs";
 
@@ -18,6 +19,8 @@ export class MusicPlayerComponent extends Subscribed(AppStorage()) implements Af
     player$ = new BehaviorSubject<cplayer | null>(null);
     isMini: boolean;
     @ViewChild("playerEl", {read: ElementRef}) playerEl?: ElementRef<HTMLDivElement>;
+    lyric: Lyric | null = null;
+    tlyric: Lyric | null = null;
 
     get posterEl() {
         return this.playerEl?.nativeElement.querySelector(".cp-poster") as HTMLDivElement;
@@ -35,8 +38,8 @@ export class MusicPlayerComponent extends Subscribed(AppStorage()) implements Af
 
     async ngAfterViewInit() {
         await timeout();
-        this.music.playlistId.next(this.load("playlist") || "74222476");
-        this.subscribe(this.music.playlistId, (playlistId) => {
+        this.music.playlistId$.next(this.load("playlist") || "74222476");
+        this.subscribe(this.music.playlistId$, (playlistId) => {
             this.save("playlist", playlistId);
             this.initPlayer(playlistId);
         });

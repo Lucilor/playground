@@ -5,7 +5,7 @@ import {HttpService} from "@modules/http/services/http.service";
 import md5 from "md5";
 import {BehaviorSubject} from "rxjs";
 import urljoin from "url-join";
-import {Playlist, PlaylistDetail, Track, User} from "./netease-music.types";
+import {Lyric, Playlist, PlaylistDetail, Track, User} from "./netease-music.types";
 
 export interface Song {
     id: string;
@@ -26,12 +26,20 @@ export interface PlaylistRaw {
     content: Song[];
 }
 
+export type PlaylistMode = "listloop" | "singlecycle" | "listrandom";
+
+export const playlistModeNames: Record<PlaylistMode, string> = {
+    listloop: "列表循环",
+    singlecycle: "单曲循环",
+    listrandom: "列表随机"
+};
+
 @Injectable({
     providedIn: "root"
 })
 export class MusicService extends HttpService {
-    playlistId = new BehaviorSubject<string>("");
-    playlist: PlaylistRaw | null = null;
+    playlistId$ = new BehaviorSubject<string>("");
+    playlist$ = new BehaviorSubject<PlaylistRaw | null>(null);
     user$ = new BehaviorSubject<User | null>(null);
     baseURL = urljoin(environment.host, "netease-music");
 
@@ -47,8 +55,8 @@ export class MusicService extends HttpService {
     async getPlaylistRaw(id: string) {
         const response = await this.get<PlaylistRaw>(`${environment.host}/api/playlist/${id}`);
         if (response?.data) {
-            this.playlist = response.data;
-            return this.playlist;
+            this.playlist$.next(response.data);
+            return this.playlist$.value;
         }
         return null;
     }
@@ -134,6 +142,14 @@ export class MusicService extends HttpService {
         const response = await this.get<{songs: Track[]}>("song/detail", {ids: ids.join(",")});
         if (response?.data) {
             return response.data.songs;
+        }
+        return null;
+    }
+
+    async getLyric(id: number) {
+        const response = await this.get<Lyric>("lyric", {id});
+        if (response?.data) {
+            return response.data;
         }
         return null;
     }

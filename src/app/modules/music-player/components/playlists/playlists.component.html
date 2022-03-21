@@ -1,18 +1,19 @@
-<div class="container" [ngStyle]="btnStyle">
+<div class="container" [ngStyle]="containerStyle">
     <div class="header">
         <div class="btn-group toolbar">
-            <button mat-icon-button class="toolbar" *ngIf="level > 0" (click)="back()">
+            <button mat-icon-button class="toolbar" *ngIf="level$.value > 0" (click)="back()">
                 <mat-icon>arrow_back</mat-icon>
             </button>
         </div>
-        <div class="title" [ngSwitch]="level">
+        <div class="title" [ngSwitch]="level$.value">
             <span *ngSwitchCase="0">歌单列表</span>
             <span *ngSwitchCase="1">{{ playlist?.name }}</span>
+            <span *ngSwitchCase="2">{{ track?.name }}</span>
         </div>
     </div>
     <app-spinner id="playlistLoader"></app-spinner>
-    <div class="sections" [ngSwitch]="level">
-        <ng-scrollbar *ngSwitchCase="0" class="section" [@enter] [@leave]>
+    <div class="sections" [ngSwitch]="level$.value">
+        <ng-scrollbar *ngSwitchCase="0" class="section">
             <div infiniteScroll [scrollWindow]="false" scrollViewport (scrolled)="onScroll()">
                 <mat-selection-list (selectionChange)="selectPlaylist($event)" [multiple]="false">
                     <mat-list-option
@@ -31,7 +32,7 @@
             </div>
         </ng-scrollbar>
 
-        <ng-scrollbar *ngSwitchCase="1" class="section" [@enter] [@leave]>
+        <ng-scrollbar *ngSwitchCase="1" class="section">
             <div infiniteScroll [scrollWindow]="false" scrollViewport (scrolled)="onScroll()">
                 <mat-selection-list *ngIf="playlist" (selectionChange)="selectTrack($event)" [multiple]="false">
                     <mat-list-option *ngFor="let track of playlist.tracks" [value]="track.id">
@@ -43,11 +44,19 @@
             </div>
         </ng-scrollbar>
 
-        <ng-scrollbar *ngSwitchCase="2" class="section" [@enter] [@leave]>
-            <div *ngIf="track">
-                {{ track.name }}
+        <div *ngSwitchCase="2" class="section" style="height: 100%">
+            <div *ngIf="track" class="track">
+                <div class="title">{{ getTrackSubtitle(track) }}</div>
+                <ng-scrollbar>
+                    <div *ngIf="lyric" class="lyric">
+                        <div *ngFor="let item of lyric.items; let i = index" class="item">
+                            <div>{{ item.word }}</div>
+                            <div *ngIf="tlyric && tlyric.items[i].word">{{ tlyric.items[i].word }}</div>
+                        </div>
+                    </div>
+                </ng-scrollbar>
             </div>
-        </ng-scrollbar>
+        </div>
     </div>
 </div>
 

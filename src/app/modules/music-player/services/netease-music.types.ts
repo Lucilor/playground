@@ -213,3 +213,28 @@ export interface PlaylistDetail {
     videoIds: null;
     videos: null;
 }
+
+export interface LyricContent {
+    version: number;
+    lyric: string;
+}
+
+export interface LyricUser {
+    demand: number;
+    id: number;
+    nickname: string;
+    status: number;
+    uptime: number;
+    userid: number;
+}
+
+export interface Lyric {
+    lrc?: LyricContent;
+    klyric?: LyricContent;
+    tlyric?: LyricContent;
+    lyricUser?: LyricUser;
+    transUser?: LyricUser;
+    qfy: boolean;
+    sfy: boolean;
+    sgc: boolean;
+}

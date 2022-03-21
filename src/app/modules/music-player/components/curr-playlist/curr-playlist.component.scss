@@ -1,0 +1,49 @@
+.container {
+    height: 100%;
+}
+
+$font-size: 1.2em;
+
+.playlist {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+.item {
+    display: flex;
+    width: 100%;
+    font-size: $font-size;
+    line-height: $font-size;
+    &:not(:last-child) {
+        margin-bottom: 10px;
+    }
+
+    .label {
+        width: 80px;
+        padding-right: 10px;
+        text-align: right;
+    }
+
+    .value {
+        flex: 1 1 0;
+
+        .mat-icon-button {
+            width: auto;
+            height: auto;
+            line-height: $font-size;
+            color: inherit !important;
+            padding: 0 5px;
+        }
+    }
+
+    &.tracks {
+        flex: 1 1 0;
+
+        .track:not(:last-child) {
+            margin-bottom: 10px;
+        }
+    }
+}

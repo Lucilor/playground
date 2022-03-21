@@ -1,39 +1,39 @@
 import {Component, Input, OnInit, ViewChild} from "@angular/core";
 import {MatSelectionListChange} from "@angular/material/list";
 import {MatMenuTrigger} from "@angular/material/menu";
-import {timeout} from "@lucilor/utils";
+import {keysOf, timeout} from "@lucilor/utils";
 import {ContextMenu} from "@mixins/context-menu.mixin";
 import {MessageService} from "@modules/message/services/message.service";
-import {MusicService} from "@modules/music-player/services/music.service";
+import {MusicService, playlistModeNames} from "@modules/music-player/services/music.service";
 import {Playlist, PlaylistDetail, Track} from "@modules/music-player/services/netease-music.types";
 import {SpinnerService} from "@modules/spinner/services/spinner.service";
-import {fadeInUpOnEnterAnimation, fadeOutDownOnLeaveAnimation} from "angular-animations";
 import Color from "color";
+import {decodeLyricStr, Lyric} from "cplayer/lib/lyric";
+import {Properties} from "csstype";
+import {BehaviorSubject} from "rxjs";
 
 @Component({
     selector: "app-playlists",
     templateUrl: "./playlists.component.html",
-    styleUrls: ["./playlists.component.scss"],
-    animations: [
-        fadeInUpOnEnterAnimation({anchor: "enter", duration: 500, delay: 100}),
-        fadeOutDownOnLeaveAnimation({anchor: "leave", duration: 500, delay: 100})
-    ]
+    styleUrls: ["./playlists.component.scss"]
 })
 export class PlaylistsComponent extends ContextMenu() implements OnInit {
     @Input() mainColor = new Color("white");
     limit = 10;
     playlistsPage = 0;
-    playlistsMaxPage = 0;
+    playlistsMaxPage = -1;
     tracksPage = 0;
     tracksMaxPage = 0;
     playlists: Playlist[] = [];
     playlist: PlaylistDetail | null = null;
     allTracks: Track[] = [];
     track: Track | null = null;
+    lyric: Lyric | null = null;
+    tlyric: Lyric | null = null;
     loaderId = "music-player-playlists";
     loading = false;
-    level = 0;
-    get btnStyle(): Partial<CSSStyleDeclaration> {
+    level$ = new BehaviorSubject<number>(0);
+    get containerStyle(): Partial<Properties> {
         return {color: this.mainColor.isLight() ? "black" : "white"};
     }
     @ViewChild(MatMenuTrigger) contextMenu!: MatMenuTrigger;
@@ -44,8 +44,23 @@ export class PlaylistsComponent extends ContextMenu() implements OnInit {
     }
 
     async ngOnInit() {
-        this.playlistsMaxPage = this._getMaxPage(await this.music.getPlaylistCount());
-        await this.playlistsNextPage();
+        this.level$.subscribe(async (level) => {
+            if (level === 0) {
+                if (this.playlistsMaxPage < 0) {
+                    this.playlistsMaxPage = this._getMaxPage(await this.music.getPlaylistCount());
+                    this.playlistsPage = 0;
+                    await this.playlistsNextPage();
+                }
+            } else if (level === 1) {
+                if (!this.playlist) {
+                    this.level$.next(0);
+                }
+            } else if (level === 2) {
+                if (!this.track) {
+                    this.level$.next(1);
+                }
+            }
+        });
     }
 
     private _getMaxPage(total: number) {
@@ -74,7 +89,7 @@ export class PlaylistsComponent extends ContextMenu() implements OnInit {
     }
 
     async onScroll() {
-        switch (this.level) {
+        switch (this.level$.value) {
             case 0:
                 await this.playlistsNextPage();
                 break;
@@ -86,14 +101,22 @@ export class PlaylistsComponent extends ContextMenu() implements OnInit {
         }
     }
 
-    async selectPlaylist(event: MatSelectionListChange) {
-        const id: Playlist["id"] = event.options[0].value;
+    async selectPlaylist(event: MatSelectionListChange | Playlist["id"]) {
+        let id: Playlist["id"] | null;
+        if (event instanceof MatSelectionListChange) {
+            id = event.options[0].value;
+        } else {
+            id = event;
+        }
+        if (id === null) {
+            return;
+        }
         this.spinner.show(this.loaderId);
         const playlist = await this.music.getPlaylistDetail(id);
         this.playlist = playlist;
         this.spinner.hide(this.loaderId);
         await timeout(0);
-        this.level++;
+        this.level$.next(1);
         this.allTracks = playlist ? playlist.tracks : [];
         this.tracksMaxPage = this._getMaxPage(this.allTracks.length);
         this.tracksPage = 0;
@@ -105,22 +128,41 @@ export class PlaylistsComponent extends ContextMenu() implements OnInit {
         return `${ar} - ${track.al.name}`;
     }
 
-    async selectTrack(event: MatSelectionListChange) {
-        const id: Track["id"] | null = event.options[0].value;
+    async selectTrack(event: MatSelectionListChange | Track["id"]) {
+        let id: Track["id"] | null;
+        if (event instanceof MatSelectionListChange) {
+            id = event.options[0].value;
+        } else {
+            id = event;
+        }
         if (id === null) {
-            this.playlist = null;
             return;
         }
+        this.spinner.show(this.loaderId);
         const tracks = await this.music.getTracks([id]);
         if (tracks) {
             this.track = tracks[0];
+            const lyric = await this.music.getLyric(id);
+            if (lyric) {
+                if (lyric.lrc) {
+                    this.lyric = decodeLyricStr(lyric.lrc.lyric);
+                } else {
+                    this.lyric = null;
+                }
+                if (lyric.tlyric) {
+                    this.tlyric = decodeLyricStr(lyric.tlyric.lyric);
+                } else {
+                    this.tlyric = null;
+                }
+            }
         }
+        this.spinner.hide(this.loaderId);
         await timeout(0);
-        this.level++;
+        this.level$.next(2);
     }
 
     back() {
-        this.level--;
+        this.level$.next(this.level$.value - 1);
     }
 
     onContextMenu(event: MouseEvent, ...args: any[]): void {
@@ -133,12 +175,8 @@ export class PlaylistsComponent extends ContextMenu() implements OnInit {
             title: "输入播放模式",
             promptData: {
                 placeholder: "请输入播放模式",
-                value: this.music.playlist?.mode,
-                options: [
-                    {value: "listloop", label: "列表循环"},
-                    {value: "singlecycle", label: "单曲循环"},
-                    {value: "listrandom", label: "列表随机播放"}
-                ]
+                value: this.music.playlist$.value?.mode,
+                options: keysOf(playlistModeNames).map((v) => ({value: v, label: playlistModeNames[v]}))
             }
         });
         if (typeof mode !== "string") {
@@ -149,7 +187,7 @@ export class PlaylistsComponent extends ContextMenu() implements OnInit {
         const success = await this.music.setPlaylistRaw(id, mode);
         this.spinner.hide(this.loaderId);
         if (success) {
-            this.music.playlistId.next(id);
+            this.music.playlistId$.next(id);
         }
     }
 }

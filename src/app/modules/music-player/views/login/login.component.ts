@@ -3,7 +3,7 @@ import {AbstractControl, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MusicService} from "@modules/music-player/services/music.service";
 import {SpinnerService} from "@modules/spinner/services/spinner.service";
-import {typedFormControl, TypedFormGroup, typedFormGroup} from "ngx-forms-typed";
+import {typedFormControl, typedFormGroup} from "ngx-forms-typed";
 
 interface LoginForm {
     user: string;
@@ -16,7 +16,7 @@ interface LoginForm {
     styleUrls: ["./login.component.scss"]
 })
 export class LoginComponent implements OnInit {
-    form = typedFormGroup({
+    form = typedFormGroup<LoginForm>({
         user: typedFormControl("", {
             validators: [
                 (control: AbstractControl) => {
@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
             ]
         }),
         password: typedFormControl("")
-    }) as TypedFormGroup<LoginForm>;
+    });
 
     constructor(private spinner: SpinnerService, private music: MusicService, private router: Router, private route: ActivatedRoute) {}
 

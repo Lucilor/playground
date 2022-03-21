@@ -11,7 +11,9 @@
     <mat-card-content>
         <div #userProfileTabGroup style="height: 100%">
             <mat-tab-group [selectedIndex]="tabGroupIndex" (selectedIndexChange)="tabGroupIndex = $event">
-                <mat-tab label="正在播放"></mat-tab>
+                <mat-tab label="当前歌单">
+                    <app-curr-playlist [mainColor]="mainColor"></app-curr-playlist>
+                </mat-tab>
                 <mat-tab label="我的歌单">
                     <app-playlists [mainColor]="mainColor"></app-playlists>
                 </mat-tab>

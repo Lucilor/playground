@@ -19,6 +19,7 @@ import {MessageModule} from "@modules/message/message.module";
 import {SpinnerModule} from "@modules/spinner/spinner.module";
 import {InfiniteScrollModule} from "ngx-infinite-scroll";
 import {NgScrollbarModule} from "ngx-scrollbar";
+import {CurrPlaylistComponent} from "./components/curr-playlist/curr-playlist.component";
 import {MusicPlayerComponent} from "./components/music-player/music-player.component";
 import {PlaylistsComponent} from "./components/playlists/playlists.component";
 import {MusicPlayerRoutingModule} from "./music-player-routing.module";
@@ -40,7 +41,7 @@ export class MyMatPaginatorIntl extends MatPaginatorIntl {
 }
 
 @NgModule({
-    declarations: [MusicPlayerComponent, LoginComponent, HomeComponent, PlaylistsComponent],
+    declarations: [MusicPlayerComponent, LoginComponent, HomeComponent, PlaylistsComponent, CurrPlaylistComponent],
     imports: [
         BrowserAnimationsModule,
         CommonModule,
