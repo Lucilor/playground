@@ -1,5 +1,6 @@
 import {AfterViewInit, Component, ViewChild} from "@angular/core";
 import {NavigationEnd, Router} from "@angular/router";
+import {ListRandom} from "@lucilor/utils";
 import {Subscribed} from "@mixins/subscribed.mixin";
 import {MusicPlayerComponent} from "@modules/music-player/components/music-player/music-player.component";
 import {AppStatusService} from "@services/app-status.service";
@@ -13,6 +14,7 @@ import {routesInfo} from "./app.common";
 })
 export class AppComponent extends Subscribed() implements AfterViewInit {
     title = "playground";
+    titleList = new ListRandom(["想peach", "不存在的", "Are you kidding me?", "不要乱搞"]);
     loaderText = "";
     showHomeBtn = false;
     showFooter = true;
@@ -27,7 +29,7 @@ export class AppComponent extends Subscribed() implements AfterViewInit {
                 const routeInfo = Object.values(routesInfo).find((v) => url.startsWith("/" + v.path));
                 this.showHomeBtn = routeInfo?.path !== "index";
                 this.showFooter = routeInfo?.path !== "blog";
-                document.title = routeInfo?.title || this.getRandomTitle();
+                document.title = routeInfo?.title || this.titleList.next();
             }
         });
         this.status.loaderText$.subscribe((text) => (this.loaderText = text));
@@ -45,11 +47,5 @@ export class AppComponent extends Subscribed() implements AfterViewInit {
         this.subscribe(this.musicPlayer.player$, (cplayer) => {
             this.status.cplayer$.next(cplayer);
         });
-    }
-
-    getRandomTitle() {
-        const list = ["想peach", "不存在的", "Are you kidding me?", "不要乱搞"];
-        const index = Math.floor(Math.random() * list.length);
-        return list[index];
     }
 }
