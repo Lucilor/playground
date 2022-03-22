@@ -21,7 +21,6 @@ export class AppStatusService {
             const response = await this.http.get<AppInfo>("api/playground/info");
             if (response?.data) {
                 this.info$.next(response.data);
-                console.log(response.data);
             } else {
                 this.info$.next(null);
             }

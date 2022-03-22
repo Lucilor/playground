@@ -1,0 +1,13 @@
+<div class="container">
+    <div class="thuum" [ngStyle]="thuumStyle" [attr.thuum]="thuum.name">
+        <div class="thuum-chars">
+            <ng-container *ngFor="let char of thuumChars">
+                <span class="thuum-char" [ngStyle]="char.charStyle">
+                    <span>{{ char.content }}</span>
+                    <div class="thuum-layer" [ngStyle]="char.layerStyle"></div>
+                </span>
+            </ng-container>
+        </div>
+    </div>
+    <button mat-raised-button (click)="showDetails()">?</button>
+</div>

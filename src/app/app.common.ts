@@ -17,7 +17,8 @@ export const routesInfo = {
     bullsAndCows: {path: "bulls-and-cows", title: "猜数字"},
     blog: {path: "blog", title: "博客"},
     chineseChess: {path: "chinese-chess", title: "中国象棋", beta: true},
-    neteaseMusic: {path: "wyyyy", title: "网易云音乐", beta: true}
+    neteaseMusic: {path: "wyyyy", title: "网易云音乐", beta: true},
+    thuum: {path: "thuum", title: "Thuum"},
 };
 
 export const session = new SessionStorage("playground");

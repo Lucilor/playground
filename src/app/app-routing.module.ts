@@ -10,6 +10,7 @@ import {ChinesePoetryComponent} from "@views/chinese-poetry/chinese-poetry.compo
 import {IndexComponent} from "@views/index/index.component";
 import {PageNotFoundComponent} from "@views/page-not-found/page-not-found.component";
 import {RubiksCubeComponent} from "@views/rubiks-cube/rubiks-cube.component";
+import {ThuumComponent} from "@views/thuum/thuum.component";
 import {routesInfo} from "./app.common";
 
 const routes: Routes = [
@@ -22,6 +23,7 @@ const routes: Routes = [
     {path: routesInfo.bullsAndCows.path, component: BullsAndCowsComponent},
     {path: routesInfo.blog.path, component: BlogComponent},
     {path: routesInfo.chineseChess.path, component: ChineseChessComponent},
+    {path: routesInfo.thuum.path, component: ThuumComponent},
     {
         path: "wyyyy",
         loadChildren: () => import("./modules/music-player/music-player-routing.module").then((m) => m.MusicPlayerRoutingModule)

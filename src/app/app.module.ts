@@ -36,6 +36,7 @@ import {ChinesePoetryComponent} from "@views/chinese-poetry/chinese-poetry.compo
 import {IndexComponent} from "@views/index/index.component";
 import {PageNotFoundComponent} from "@views/page-not-found/page-not-found.component";
 import {RubiksCubeComponent} from "@views/rubiks-cube/rubiks-cube.component";
+import {ThuumComponent} from "@views/thuum/thuum.component";
 import {ColorChromeModule} from "ngx-color/chrome";
 import {NgScrollbarModule} from "ngx-scrollbar";
 import {AppRoutingModule} from "./app-routing.module";
@@ -69,7 +70,8 @@ export class MyMatPaginatorIntl extends MatPaginatorIntl {
         BlogComponent,
         PageNotFoundComponent,
         ChineseChessComponent,
-        ChineseChessCollectionsComponent
+        ChineseChessCollectionsComponent,
+        ThuumComponent
     ],
     imports: [
         AIModule,
