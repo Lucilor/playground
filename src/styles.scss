@@ -35,15 +35,31 @@ body {
 }
 
 .bg {
-    position: absolute !important;
+    position: absolute;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
-    background-image: url("https://candypurity.com/static/images/backgrounds/01.jpg");
     background-position: center;
     background-size: cover;
-    filter: blur(80px);
+    z-index: -1;
+}
+
+@keyframes bg-in {
+    0% {
+        filter: blur(80px);
+    }
+    100% {
+        filter: none;
+    }
+}
+@keyframes bg-out {
+    0% {
+        filter: none;
+    }
+    100% {
+        filter: blur(80px);
+    }
 }
 
 // ngx scrollbar

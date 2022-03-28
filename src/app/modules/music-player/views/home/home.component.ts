@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from "@angular/core";
 import {session} from "@app/app.common";
 import {loadImage, timeout} from "@lucilor/utils";
 import {AppStorage} from "@mixins/app-storage.mixin";
@@ -6,6 +6,7 @@ import {Subscribed} from "@mixins/subscribed.mixin";
 import {PlaylistsComponent} from "@modules/music-player/components/playlists/playlists.component";
 import {MusicService} from "@modules/music-player/services/music.service";
 import {User} from "@modules/music-player/services/netease-music.types";
+import {AppStatusService} from "@services/app-status.service";
 import Color from "color";
 import ColorThief from "colorthief";
 import {Properties} from "csstype";
@@ -16,17 +17,9 @@ import {BehaviorSubject} from "rxjs";
     templateUrl: "./home.component.html",
     styleUrls: ["./home.component.scss"]
 })
-export class HomeComponent extends AppStorage(Subscribed()) implements AfterViewInit {
+export class HomeComponent extends AppStorage(Subscribed()) implements AfterViewInit, OnDestroy {
     user: User | null = null;
     backgroundUrl$ = new BehaviorSubject<string | null | undefined>(null);
-    get backgroundStyle(): Partial<Properties> {
-        const url = this.backgroundUrl$.value;
-        if (url) {
-            return {backgroundImage: `url(${url})`, filter: "unset"};
-        } else {
-            return {};
-        }
-    }
     userProfileStyle: Partial<Properties> = {};
     get avatarStyle(): Partial<Properties> {
         const url = this.user?.profile.avatarUrl;
@@ -52,7 +45,7 @@ export class HomeComponent extends AppStorage(Subscribed()) implements AfterView
         this.save("tabGroupIndex", value);
     }
 
-    constructor(private music: MusicService) {
+    constructor(private music: MusicService, private status: AppStatusService) {
         super("musicPlayer/home", session);
     }
 
@@ -70,7 +63,7 @@ export class HomeComponent extends AppStorage(Subscribed()) implements AfterView
         this.subscribe(this.music.user$, (user) => {
             this.updateUser(user);
         });
-        this.backgroundUrl$.subscribe(async (url) => {
+        this.subscribe(this.backgroundUrl$, async (url) => {
             if (!url) {
                 if (this.user?.profile.backgroundUrl) {
                     this.backgroundUrl$.next(this.user.profile.backgroundUrl);
@@ -86,6 +79,7 @@ export class HomeComponent extends AppStorage(Subscribed()) implements AfterView
             if (!image) {
                 return;
             }
+            this.status.bgNext(url);
             const color = new Color(new ColorThief().getColor(image));
             const colorRevert = color.negate();
             this.mainColor = color;
@@ -99,6 +93,11 @@ export class HomeComponent extends AppStorage(Subscribed()) implements AfterView
                 color: color.isLight() ? "black" : "white"
             };
         });
+    }
+
+    ngOnDestroy() {
+        super.ngOnDestroy();
+        this.status.bgNext();
     }
 
     async updateUser(user: User | null) {

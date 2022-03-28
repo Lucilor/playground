@@ -1,48 +1,53 @@
 .container {
-	width: 100%;
+    width: 100%;
     height: 100%;
-	display: flex;
-	flex-direction: column;
+    display: flex;
+    flex-direction: column;
 
-	> :not(.poems) {
-		flex: 0 0 0;
-	}
+    > :not(.poems) {
+        flex: 0 0 0;
+    }
 
-	.toolbar {
-		padding: 10px;
-	}
+    .toolbar {
+        padding: 10px;
+    }
 
-	.poems {
-		flex: 1 1 0;
-		position: relative;
-		height: 0;
+    .poems {
+        flex: 1 1 0;
+        position: relative;
+        height: 0;
 
-		.poem {
-			.title {
-				font-weight: bold;
-				justify-content: flex-start;
-			}
-			.dynasty-author {
-				justify-content: flex-end;
-			}
-			.paragraphs {
-				line-height: 1.8rem;
-			}
-			.tags {
-				display: flex;
-				justify-content: flex-end;
-				color: gray;
+        .poem {
+            .title {
+                font-weight: bold;
+                justify-content: flex-start;
+            }
+            .dynasty-author {
+                justify-content: flex-end;
+            }
+            .paragraphs {
+                line-height: 1.8rem;
+            }
+            .tags {
+                display: flex;
+                justify-content: flex-end;
+                color: gray;
 
-				.tag {
-					padding: 0 5px;
-				}
-			}
-		}
-	}
+                .tag {
+                    padding: 0 5px;
+                }
+            }
+        }
+    }
 }
 
 .mat-accordion {
-	width: 100%;
-	height: 100%;
-	display: block;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.mat-paginator {
+    position: relative;
+    background-color: white;
 }

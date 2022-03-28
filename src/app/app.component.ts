@@ -17,9 +17,9 @@ export class AppComponent extends Subscribed() implements AfterViewInit {
     titleList = new ListRandom(["想peach", "不存在的", "Are you kidding me?", "不要乱搞"]);
     loaderText = "";
     showHomeBtn = false;
-    showFooter = true;
     @ViewChild(MusicPlayerComponent) musicPlayer!: MusicPlayerComponent;
     lastUpdateStr = "";
+    bgStyle$ = this.status.bgStyle$;
 
     constructor(private router: Router, private status: AppStatusService) {
         super();

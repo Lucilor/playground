@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from "@angular/core";
 import {environment} from "@env";
 import {ListRandom, timeout} from "@lucilor/utils";
 import {MessageService} from "@modules/message/services/message.service";
+import {AppStatusService} from "@services/app-status.service";
 import CSS from "csstype";
 import originThuums from "./thuums.json";
 
@@ -22,8 +23,7 @@ interface ThuumChar {
     templateUrl: "./thuum.component.html",
     styleUrls: ["./thuum.component.scss"]
 })
-export class ThuumComponent implements OnInit, OnDestroy {
-    private _intervalId = -1;
+export class ThuumComponent implements OnInit,OnDestroy {
     thuumRandom = new ListRandom(originThuums);
     thuum: Thuum = this.thuumRandom.list[0];
     thuumChars: ThuumChar[] = [];
@@ -32,14 +32,15 @@ export class ThuumComponent implements OnInit, OnDestroy {
     thuumStyle: CSS.Properties = {};
     isProd = environment.production;
 
-    constructor(private message: MessageService) {}
+    constructor(private message: MessageService, private status: AppStatusService) {}
 
     ngOnInit() {
         this.loop();
+        this.status.bgConfig.url = "";
     }
 
     ngOnDestroy() {
-        window.clearInterval(this._intervalId);
+        this.status.bgConfig.url = null;
     }
 
     async loop() {

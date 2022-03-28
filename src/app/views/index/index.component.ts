@@ -1,6 +1,7 @@
 import {Component} from "@angular/core";
 import {routesInfo} from "@app/app.common";
 import {Subscribed} from "@mixins/subscribed.mixin";
+import {AppStatusService} from "@services/app-status.service";
 import {cloneDeep} from "lodash";
 
 @Component({
@@ -14,8 +15,9 @@ export class IndexComponent extends Subscribed() {
         title: string;
         beta?: boolean | undefined;
     }[];
+    bgConfig = this.status.bgConfig;
 
-    constructor() {
+    constructor(private status: AppStatusService) {
         super();
         this.routesInfo = [];
         for (const v of Object.values(cloneDeep(routesInfo))) {
