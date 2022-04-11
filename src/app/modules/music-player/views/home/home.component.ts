@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from "@angular/core";
 import {session} from "@app/app.common";
-import {loadImage, timeout} from "@lucilor/utils";
+import {timeout} from "@lucilor/utils";
 import {AppStorage} from "@mixins/app-storage.mixin";
 import {Subscribed} from "@mixins/subscribed.mixin";
 import {PlaylistsComponent} from "@modules/music-player/components/playlists/playlists.component";
@@ -8,7 +8,6 @@ import {MusicService} from "@modules/music-player/services/music.service";
 import {User} from "@modules/music-player/services/netease-music.types";
 import {AppStatusService} from "@services/app-status.service";
 import Color from "color";
-import ColorThief from "colorthief";
 import {Properties} from "csstype";
 import {BehaviorSubject} from "rxjs";
 
@@ -70,17 +69,9 @@ export class HomeComponent extends AppStorage(Subscribed()) implements AfterView
                 }
                 return;
             }
-            let image: HTMLImageElement | undefined;
-            try {
-                image = await loadImage(url, true);
-            } catch (error) {
-                console.warn("failed to load image: " + url);
-            }
-            if (!image) {
-                return;
-            }
-            this.status.bgNext(url);
-            const color = new Color(new ColorThief().getColor(image));
+            this.status.setFixedBgUrl(url);
+        });
+        this.subscribe(this.status.bgColor$, (color) => {
             const colorRevert = color.negate();
             this.mainColor = color;
             const el = this.userProfileTabGroup.nativeElement;
@@ -97,7 +88,7 @@ export class HomeComponent extends AppStorage(Subscribed()) implements AfterView
 
     ngOnDestroy() {
         super.ngOnDestroy();
-        this.status.bgNext();
+        this.status.setFixedBgUrl(null);
     }
 
     async updateUser(user: User | null) {

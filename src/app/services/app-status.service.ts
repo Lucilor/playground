@@ -1,6 +1,8 @@
 import {Injectable} from "@angular/core";
-import {ListRandom, timeout} from "@lucilor/utils";
+import {ListRandom, loadImage, timeout} from "@lucilor/utils";
 import {HttpService} from "@modules/http/services/http.service";
+import Color from "color";
+import ColorThief from "colorthief";
 import cplayer from "cplayer";
 import {Properties} from "csstype";
 import {BehaviorSubject} from "rxjs";
@@ -24,9 +26,11 @@ export class AppStatusService {
         randomInterval: 60000,
         list: new ListRandom<string>([]),
         base: "",
-        url: null as string | null
+        url: null as string | null,
+        fixedUrl: null as string | null
     };
     bgStyle$ = new BehaviorSubject<Partial<Properties>>({});
+    bgColor$ = new BehaviorSubject<Color>(new Color(0xffffff));
 
     constructor(private http: HttpService) {
         (async () => {
@@ -41,29 +45,31 @@ export class AppStatusService {
             if (bgResponse?.data) {
                 this.bgConfig.base = bgResponse.data.base;
                 this.bgConfig.list = new ListRandom(bgResponse.data.images);
-                this.bgConfig.url = `${this.bgConfig.base}/${this.bgConfig.list.next()}`;
+                this._bgNext();
             }
         })();
         this._bgRandomLoop();
         this._bgLoop();
     }
 
-    bgNext(url?: string) {
-        const {base, list} = this.bgConfig;
-        if (url) {
-            this.bgConfig.url = url;
+    private _bgNext(url?: string | null) {
+        const config = this.bgConfig;
+        if (typeof config.fixedUrl === "string") {
+            config.url = config.fixedUrl;
+        } else if (typeof url === "string") {
+            config.url = url;
         } else {
-            if (list.list.length > 0) {
-                this.bgConfig.url = `${base}/${list.next()}`;
+            if (config.list.list.length > 0) {
+                config.url = `${config.base}/${config.list.next()}`;
             } else {
-                this.bgConfig.url = null;
+                config.url = null;
             }
         }
     }
 
     async _bgRandomLoop() {
         const {randomInterval} = this.bgConfig;
-        this.bgNext();
+        this._bgNext();
         await timeout(randomInterval);
         await this._bgRandomLoop();
     }
@@ -80,6 +86,18 @@ export class AppStatusService {
                 style.backgroundImage = `url(${url})`;
                 style.animation = `bg-in ${inDuration}ms`;
                 this.bgStyle$.next(style);
+
+                let image: HTMLImageElement | undefined;
+                try {
+                    image = await loadImage(url, true);
+                } catch (error) {
+                    console.warn("failed to load image: " + url);
+                }
+                if (image) {
+                    const color = new Color(new ColorThief().getColor(image));
+                    this.bgColor$.next(color);
+                }
+
                 await timeout(inDuration + interval);
             } else {
                 await timeout(interval);
@@ -89,5 +107,10 @@ export class AppStatusService {
             await timeout(interval);
         }
         await this._bgLoop();
+    }
+
+    async setFixedBgUrl(url: string | null) {
+        this.bgConfig.fixedUrl = url;
+        this._bgNext();
     }
 }

@@ -8,7 +8,8 @@ import zip from "gulp-zip";
 import {jsonc} from "jsonc";
 import minimist from "minimist";
 import path from "path";
-import urljoin from "url-join";
+// import urljoin from "url-join";
+const urljoin = (...aaa: string[]) => aaa.join("/");
 
 const configPath = "./gulp.config.json";
 if (!fs.existsSync(configPath)) {

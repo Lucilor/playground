@@ -1,4 +1,4 @@
-<form class="login-form" [formGroup]="form">
+<form class="login-form" [formGroup]="form" (ngSubmit)="submit()">
     <div class="title">登录网易云音乐</div>
     <mat-form-field>
         <mat-label>手机号/邮箱</mat-label>
@@ -14,7 +14,7 @@
         <mat-error *ngIf="form.get('password')?.errors">请输入密码</mat-error>
     </mat-form-field>
     <div class="btn-group action">
-        <button mat-raised-button color="primary" (click)="submit()">登录</button>
+        <button mat-raised-button color="primary" type="submit" (click)="submit()">登录</button>
     </div>
     <div class="help-info">
         登录遇到问题？前往官网

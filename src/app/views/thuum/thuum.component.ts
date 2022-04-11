@@ -23,7 +23,7 @@ interface ThuumChar {
     templateUrl: "./thuum.component.html",
     styleUrls: ["./thuum.component.scss"]
 })
-export class ThuumComponent implements OnInit,OnDestroy {
+export class ThuumComponent implements OnInit, OnDestroy {
     thuumRandom = new ListRandom(originThuums);
     thuum: Thuum = this.thuumRandom.list[0];
     thuumChars: ThuumChar[] = [];
@@ -36,11 +36,11 @@ export class ThuumComponent implements OnInit,OnDestroy {
 
     ngOnInit() {
         this.loop();
-        this.status.bgConfig.url = "";
+        this.status.setFixedBgUrl("");
     }
 
     ngOnDestroy() {
-        this.status.bgConfig.url = null;
+        this.status.setFixedBgUrl(null);
     }
 
     async loop() {
