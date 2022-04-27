@@ -5,6 +5,8 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatInputModule} from "@angular/material/input";
 import {HttpModule} from "@modules/http/http.module";
 import {MessageModule} from "@modules/message/message.module";
+import {SpinnerModule} from "@modules/spinner/spinner.module";
+import {NgScrollbarModule} from "ngx-scrollbar";
 import {LoginComponent} from "./login.component";
 
 describe("LoginComponent", () => {
@@ -14,7 +16,17 @@ describe("LoginComponent", () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [LoginComponent],
-            imports: [FormsModule, HttpModule, MatFormFieldModule, MatIconModule, MatInputModule, MessageModule, ReactiveFormsModule]
+            imports: [
+                FormsModule,
+                HttpModule,
+                MatFormFieldModule,
+                MatIconModule,
+                MatInputModule,
+                MessageModule,
+                ReactiveFormsModule,
+                NgScrollbarModule,
+                SpinnerModule
+            ]
         }).compileComponents();
     });
 

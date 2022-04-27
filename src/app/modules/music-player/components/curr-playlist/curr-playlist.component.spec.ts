@@ -1,5 +1,6 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
-
+import {HttpModule} from "@modules/http/http.module";
+import {MessageModule} from "@modules/message/message.module";
 import {CurrPlaylistComponent} from "./curr-playlist.component";
 
 describe("CurrPlaylistComponent", () => {
@@ -8,7 +9,8 @@ describe("CurrPlaylistComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [CurrPlaylistComponent]
+            declarations: [CurrPlaylistComponent],
+            imports: [HttpModule, MessageModule]
         }).compileComponents();
     });
 

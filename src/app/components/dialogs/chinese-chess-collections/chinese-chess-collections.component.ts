@@ -24,7 +24,6 @@ export class ChineseChessCollectionsComponent implements AfterViewInit {
     ) {}
 
     async ngAfterViewInit() {
-        console.log(this);
         await timeout(0);
         this.spinner.show(this.loadId);
         const response = await this.http.get<Collections>("api/chinese-chess/collections");

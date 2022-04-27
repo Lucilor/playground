@@ -12,6 +12,11 @@
     "prepare": "husky install"
   },
   "private": true,
+  "main": "index.js",
+  "repository": "https://github.com/Lucilor/playground",
+  "author": "Lucilor <lucilor@me.com>",
+  "license": "MIT",
+  "packageManager": "yarn@3.2.0",
   "dependencies": {
     "@angular/animations": "~13.3.2",
     "@angular/cdk": "^13.3.2",

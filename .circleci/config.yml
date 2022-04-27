@@ -1,5 +1,5 @@
 version: 2.1
-var_1: &cache_key playground-{{ .Branch }}-{{ checksum "package-lock.json" }}
+var_1: &cache_key playground-{{ .Branch }}-{{ checksum "yarn.lock" }}
 var_2: &cache_fallback_key playground
 var_3: &restore_cache
     restore_cache:
@@ -15,7 +15,9 @@ executors:
     playground:
         working_directory: ~/playground
         docker:
-            - image: circleci/node:16-browsers
+            - image: cimg/node:lts-browsers
+orbs: 
+    browser-tools: circleci/browser-tools@1.3.0
 jobs:
     build:
         executor: playground
@@ -23,43 +25,45 @@ jobs:
             - checkout
             - *restore_cache
             - run:
-                  name: Install local dependencies
-                  command: npm install
+                name: Install local dependencies
+                command: yarn
             - *save_cache
     unit-test:
         executor: playground
         steps:
             - checkout
             - *restore_cache
+            - browser-tools/install-chrome
+            - browser-tools/install-chromedriver
             - run:
-                  name: Unit test
-                  command: npm run test:ci
-    e2e:
-        executor: playground
-        steps:
-            - checkout
-            - *restore_cache
-            - run:
-                  name: End to end
-                  command: npm run e2e -- --protractor-config=e2e/protractor.conf.js
+                name: Unit test
+                command: yarn test:ci
+    # e2e:
+    #     executor: playground
+    #     steps:
+    #         - checkout
+    #         - *restore_cache
+    #         - run:
+    #             name: End to end
+    #             command: yarn e2e -- --protractor-config=e2e/protractor.conf.js
     lint:
         executor: playground
         steps:
             - checkout
             - *restore_cache
             - run:
-                  name: Lint
-                  command: npm run lint
+                name: Lint
+                command: yarn lint
 workflows:
     build-test-lint:
         jobs:
             - build
-            # - unit-test:
-            #       requires:
-            #           - build
+            - unit-test:
+                requires:
+                    - build
             # - e2e:
             #       requires:
             #           - build
             - lint:
-                  requires:
-                      - build
+                requires:
+                    - build
