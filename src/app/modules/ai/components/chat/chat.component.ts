@@ -1,8 +1,9 @@
 import {AfterViewInit, Component, ViewChild} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {timeout} from "@lucilor/utils";
-import {headerNoCache, HttpService} from "@modules/http/services/http.service";
+import {ItpkResponse, ItpkService} from "@modules/ai/services/itpk.service";
 import {NgScrollbar} from "ngx-scrollbar";
+import urlJoin from "url-join";
 
 export interface User {
     name: string;
@@ -105,6 +106,37 @@ export class MessageManager {
         this.updateMessage(message, {type: "image", url});
         message.isLoading = false;
     }
+
+    async pushItpkResponse(itpkResponse: ItpkResponse, user?: string) {
+        if (itpkResponse.code !== "00000") {
+            await this.pushText(itpkResponse.message, user);
+        }
+        const {data, baseUrl} = itpkResponse;
+        for (const {typed,content} of data) {
+            switch (typed) {
+                case 1:
+                    await this.pushText(content, user);
+                    break;
+                case 2:
+                    await this.pushImage(urlJoin(baseUrl, content), user);
+                    break;
+                case 3:
+                    await this.pushText("暂不支持的消息类型：文档", user);
+                    break;
+                case 4:
+                    await this.pushText("暂不支持的消息类型：音频", user);
+                    break;
+                case 8:
+                    await this.pushText(content, user);
+                    break;
+                case 9:
+                    await this.pushText("暂不支持的消息类型：其它文件", user);
+                    break;
+                default:
+                    await this.pushText("暂不支持的消息类型：" + typed, user);
+            }
+        }
+    }
 }
 
 @Component({
@@ -123,7 +155,7 @@ export class ChatComponent implements AfterViewInit {
         return this.messageManager.messages as any[];
     }
 
-    constructor(private http: HttpService, private route: ActivatedRoute) {}
+    constructor(private itpk: ItpkService, private route: ActivatedRoute) {}
 
     async ngAfterViewInit() {
         const params = this.route.snapshot.queryParams;
@@ -132,7 +164,7 @@ export class ChatComponent implements AfterViewInit {
             this.sayHello();
         } else {
             await this.messageManager.pushText("人类，是世界上最有趣的生物。", this.moli.name);
-            this.messageManager.pushText("对我说“帮助”可以查看指令。", this.moli.name);
+            this.messageManager.pushText("对我说“帮助”可以查看帮助文档。", this.moli.name);
         }
     }
 
@@ -151,21 +183,11 @@ export class ChatComponent implements AfterViewInit {
         await this.messageManager.pushText(question);
         this.input = "";
         await timeout();
-        if (question.match(/^help|\?|帮助$/i)) {
-            (async () => {
-                await this.messageManager.pushImage("https://candypurity.com/static/images/itpk.png", this.moli.name);
-                this.messageManager.pushText("经过漫长的岁月，上面的部分接口可能已经失效。", this.moli.name);
-            })();
+        const itpkResponse = await this.itpk.ask(question);
+        if (itpkResponse) {
+            await this.messageManager.pushItpkResponse(itpkResponse, this.moli.name);
         } else {
-            const textPromise = (async () => {
-                const result = await this.http.get<string>(`itpk/${question}`, {}, headerNoCache);
-                if (result?.data) {
-                    return result.data;
-                } else {
-                    return "放弃思考";
-                }
-            })();
-            await this.messageManager.pushText(textPromise, this.moli.name);
+            await this.messageManager.pushText("放弃思考", this.moli.name);
         }
     }
 

@@ -5,7 +5,7 @@ import {HttpService} from "@modules/http/services/http.service";
 import md5 from "md5";
 import {BehaviorSubject} from "rxjs";
 import urljoin from "url-join";
-import {Lyric, Playlist, PlaylistDetail, Track, User} from "./netease-music.types";
+import {User, Playlist, PlaylistDetail, Track, Lyric} from "./netease-music.types";
 
 export interface Song {
     id: string;
