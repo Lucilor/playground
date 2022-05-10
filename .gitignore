@@ -53,5 +53,4 @@ Thumbs.db
 !.yarn/sdks
 !.yarn/versions
 
-/gulp.config.json
 .tmp
