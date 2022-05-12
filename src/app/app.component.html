@@ -4,10 +4,8 @@
 <button *ngIf="showHomeBtn" class="home-btn" mat-mini-fab color="primary" [routerLink]="'/index'">
     <mat-icon>home</mat-icon>
 </button>
-<div class="footer" *ngIf="showFooter" [matTooltip]="lastUpdateStr">
-    <div>
-        <a href="https://beian.miit.gov.cn/" target="_blank">粤ICP备18015215号-1</a>
-        <span>&nbsp;&nbsp;</span>
-        <span>Copyright © 2022 Lucilor</span>
-    </div>
+<div class="footer" [matTooltip]="lastUpdateStr">
+    <a href="https://beian.miit.gov.cn/" target="_blank">粤ICP备18015215号-1</a>
+    <span>&nbsp;&nbsp;</span>
+    <span>Copyright © 2022 Lucilor</span>
 </div>
