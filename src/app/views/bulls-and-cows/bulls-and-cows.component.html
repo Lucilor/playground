@@ -26,6 +26,7 @@
                 [maxlength]="bc.config.digits"
                 [minlength]="bc.config.digits"
                 (keydown)="onKeyDown($event)"
+                autocomplete="off"
             />
             <button matSuffix type="submit" color="primary" mat-raised-button (click)="guess()" [disabled]="!canGuess">
                 确定
