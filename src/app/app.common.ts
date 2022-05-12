@@ -1,3 +1,4 @@
+import {Router} from "@angular/router";
 import {LocalStorage, SessionStorage} from "@lucilor/utils";
 
 export interface Response<T> {
@@ -27,6 +28,14 @@ export const routesInfo = {
     chineseChess: {path: "chinese-chess", title: "中国象棋", beta: true} as RouteInfo,
     thuum: {path: "thuum", title: "Thuum"} as RouteInfo,
     kod: {path: "https://candypurity.com/kod", title: "网盘", isOuter: true} as RouteInfo
+};
+
+export const navigate = (router: Router, routeInfo: RouteInfo) => {
+    if (routeInfo.isOuter) {
+        window.open(routeInfo.path);
+    } else {
+        router.navigate([routeInfo.path], {queryParamsHandling: "merge"});
+    }
 };
 
 export const session = new SessionStorage("playground");

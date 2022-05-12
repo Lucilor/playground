@@ -1,8 +1,6 @@
-import {AfterViewInit, Component, ViewChild} from "@angular/core";
+import {Component} from "@angular/core";
 import {NavigationEnd, Router} from "@angular/router";
-import {ListRandom} from "@lucilor/utils";
 import {Subscribed} from "@mixins/subscribed.mixin";
-import {MusicPlayerComponent} from "@modules/music-player/components/music-player/music-player.component";
 import {AppStatusService} from "@services/app-status.service";
 import {DateTime} from "luxon";
 import {routesInfo} from "./app.common";
@@ -12,12 +10,10 @@ import {routesInfo} from "./app.common";
     templateUrl: "./app.component.html",
     styleUrls: ["./app.component.scss"]
 })
-export class AppComponent extends Subscribed() implements AfterViewInit {
+export class AppComponent extends Subscribed() {
     title = "playground";
-    titleList = new ListRandom(["想peach", "不存在的", "Are you kidding me?", "不要乱搞"]);
     loaderText = "";
     showHomeBtn = false;
-    @ViewChild(MusicPlayerComponent) musicPlayer!: MusicPlayerComponent;
     lastUpdateStr = "";
     bgStyle$ = this.status.bgStyle$;
 
@@ -28,8 +24,7 @@ export class AppComponent extends Subscribed() implements AfterViewInit {
                 const url = event.urlAfterRedirects;
                 const routeInfo = Object.values(routesInfo).find((v) => url.startsWith("/" + v.path));
                 this.showHomeBtn = routeInfo?.path !== "index";
-                this.showFooter = routeInfo?.path !== "blog";
-                document.title = routeInfo?.title || this.titleList.next();
+                document.title = routeInfo?.title || "404 Not Found";
             }
         });
         this.status.loaderText$.subscribe((text) => (this.loaderText = text));
@@ -40,12 +35,6 @@ export class AppComponent extends Subscribed() implements AfterViewInit {
             } else {
                 this.lastUpdateStr = "";
             }
-        });
-    }
-
-    ngAfterViewInit() {
-        this.subscribe(this.musicPlayer.player$, (cplayer) => {
-            this.status.cplayer$.next(cplayer);
         });
     }
 }

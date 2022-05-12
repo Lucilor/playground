@@ -1,11 +1,12 @@
 import {Injectable} from "@angular/core";
-import {Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Params} from "@angular/router";
-import {routesInfo} from "@app/app.common";
+import {Resolve, ActivatedRouteSnapshot, RouterStateSnapshot} from "@angular/router";
+import {RouteInfo, routesInfo} from "@app/app.common";
+import {ObjectOf} from "@lucilor/utils";
 
 @Injectable({
     providedIn: "root"
 })
-export class PathResolveService implements Resolve<{path: string; queryParams: Params}> {
+export class PathResolveService implements Resolve<RouteInfo | null> {
     constructor() {}
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
@@ -19,17 +20,15 @@ export class PathResolveService implements Resolve<{path: string; queryParams: P
         }
         const typoPath = url.slice(0, index);
         const threshold = this.getThreshold(typoPath);
-        const dictionary = Object.values(routesInfo)
-            .filter((routeInfo) => Math.abs(routeInfo.path.length - typoPath.length) < threshold)
-            .map((v) => v.path);
+        const routesInfo2 = Object.values(routesInfo).filter((routeInfo) => Math.abs(routeInfo.path.length - typoPath.length) < threshold);
 
-        if (!dictionary.length) {
-            return {path: "", queryParams: route.queryParams};
+        if (!routesInfo2.length) {
+            return null;
         }
 
-        this.sortByDistances(typoPath, dictionary);
+        this.sortByDistances(typoPath, routesInfo2);
 
-        return {path: `/${dictionary[0]}`, queryParams: route.queryParams};
+        return routesInfo2[0];
     }
 
     getThreshold(path: string): number {
@@ -39,18 +38,18 @@ export class PathResolveService implements Resolve<{path: string; queryParams: P
         return 5;
     }
 
-    sortByDistances(typoPath: string, dictionary: string[]) {
-        const pathsDistance = {} as {[name: string]: number};
+    sortByDistances(typoPath: string, routesInfo2: RouteInfo[]) {
+        const pathsDistance: ObjectOf<number> = {};
 
-        dictionary.sort((a, b) => {
-            if (!(a in pathsDistance)) {
-                pathsDistance[a] = this.levenshtein(a, typoPath);
+        routesInfo2.sort(({path: path1}, {path: path2}) => {
+            if (!(path1 in pathsDistance)) {
+                pathsDistance[path1] = this.levenshtein(path1, typoPath);
             }
-            if (!(b in pathsDistance)) {
-                pathsDistance[b] = this.levenshtein(b, typoPath);
+            if (!(path2 in pathsDistance)) {
+                pathsDistance[path2] = this.levenshtein(path2, typoPath);
             }
 
-            return pathsDistance[a] - pathsDistance[b];
+            return pathsDistance[path1] - pathsDistance[path2];
         });
     }
 

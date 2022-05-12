@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 import {Router} from "@angular/router";
-import {RouteInfo, routesInfo} from "@app/app.common";
+import {navigate, RouteInfo, routesInfo} from "@app/app.common";
 import {Subscribed} from "@mixins/subscribed.mixin";
 import {AppStatusService} from "@services/app-status.service";
 import {cloneDeep} from "lodash";
@@ -26,10 +26,6 @@ export class IndexComponent extends Subscribed() {
     }
 
     onLinkClick(routeInfo: RouteInfo) {
-        if (routeInfo.isOuter) {
-            window.open(routeInfo.path);
-        } else {
-            this.router.navigate([routeInfo.path], {queryParamsHandling: "merge"});
-        }
+        navigate(this.router, routeInfo);
     }
 }
