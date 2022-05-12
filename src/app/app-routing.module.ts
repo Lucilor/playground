@@ -3,7 +3,6 @@ import {Routes, RouterModule} from "@angular/router";
 import {ChatComponent} from "@modules/ai/components/chat/chat.component";
 import {PathResolveService} from "@services/path-resolve.service";
 import {BezierComponent} from "@views/bezier/bezier.component";
-import {BlogComponent} from "@views/blog/blog.component";
 import {BullsAndCowsComponent} from "@views/bulls-and-cows/bulls-and-cows.component";
 import {ChineseChessComponent} from "@views/chinese-chess/chinese-chess.component";
 import {ChinesePoetryComponent} from "@views/chinese-poetry/chinese-poetry.component";
@@ -21,7 +20,6 @@ const routes: Routes = [
     {path: routesInfo.rubiksCube.path, component: RubiksCubeComponent},
     {path: routesInfo.chat.path, component: ChatComponent},
     {path: routesInfo.bullsAndCows.path, component: BullsAndCowsComponent},
-    {path: routesInfo.blog.path, component: BlogComponent},
     {path: routesInfo.chineseChess.path, component: ChineseChessComponent},
     {path: routesInfo.thuum.path, component: ThuumComponent},
     {path: "**", component: PageNotFoundComponent, resolve: {redirect: PathResolveService}}

@@ -28,7 +28,6 @@ import {MessageModule} from "@modules/message/message.module";
 import {MusicPlayerModule} from "@modules/music-player/music-player.module";
 import {SpinnerModule} from "@modules/spinner/spinner.module";
 import {BezierComponent} from "@views/bezier/bezier.component";
-import {BlogComponent} from "@views/blog/blog.component";
 import {BullsAndCowsComponent} from "@views/bulls-and-cows/bulls-and-cows.component";
 import {ChineseChessComponent} from "@views/chinese-chess/chinese-chess.component";
 import {ChinesePoetryComponent} from "@views/chinese-poetry/chinese-poetry.component";
@@ -66,7 +65,6 @@ export class MyMatPaginatorIntl extends MatPaginatorIntl {
         RubiksCubeComponent,
         BullsAndCowsComponent,
         BullsAndCowsDifficultyComponent,
-        BlogComponent,
         PageNotFoundComponent,
         ChineseChessComponent,
         ChineseChessCollectionsComponent,

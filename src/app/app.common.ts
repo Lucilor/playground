@@ -24,9 +24,9 @@ export const routesInfo = {
     chinesePoetry: {path: "chinese-poetry", title: "古诗词"} as RouteInfo,
     chat: {path: "chat", title: "机器人茉莉"} as RouteInfo,
     bullsAndCows: {path: "bulls-and-cows", title: "猜数字"} as RouteInfo,
-    blog: {path: "blog", title: "博客"} as RouteInfo,
     chineseChess: {path: "chinese-chess", title: "中国象棋", beta: true} as RouteInfo,
     thuum: {path: "thuum", title: "Thuum"} as RouteInfo,
+    blog: {path: "https://candypurity.com/wordpress", title: "博客", isOuter: true} as RouteInfo,
     kod: {path: "https://candypurity.com/kod", title: "网盘", isOuter: true} as RouteInfo
 };
 
