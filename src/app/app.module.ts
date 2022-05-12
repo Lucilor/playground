@@ -25,7 +25,6 @@ import {MenuComponent} from "@components/menu/menu.component";
 import {AIModule} from "@modules/ai/ai.module";
 import {HttpModule} from "@modules/http/http.module";
 import {MessageModule} from "@modules/message/message.module";
-import {MusicPlayerRoutingModule} from "@modules/music-player/music-player-routing.module";
 import {MusicPlayerModule} from "@modules/music-player/music-player.module";
 import {SpinnerModule} from "@modules/spinner/spinner.module";
 import {BezierComponent} from "@views/bezier/bezier.component";
@@ -99,7 +98,6 @@ export class MyMatPaginatorIntl extends MatPaginatorIntl {
         MatTooltipModule,
         MessageModule,
         MusicPlayerModule,
-        MusicPlayerRoutingModule,
         NgScrollbarModule,
         ReactiveFormsModule,
         SpinnerModule

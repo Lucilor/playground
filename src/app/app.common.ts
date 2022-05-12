@@ -8,17 +8,25 @@ export interface Response<T> {
     importance?: number;
 }
 
+export interface RouteInfo {
+    path: string;
+    title: string;
+    hiddinInIndex?: boolean;
+    beta?: boolean;
+    isOuter?: boolean;
+}
+
 export const routesInfo = {
-    index: {path: "index", title: "首页"},
-    bezier: {path: "bezier", title: "贝塞尔曲线"},
-    rubiksCube: {path: "rubiks-cube", title: "魔方"},
-    chinesePoetry: {path: "chinese-poetry", title: "古诗词"},
-    chat: {path: "chat", title: "机器人茉莉"},
-    bullsAndCows: {path: "bulls-and-cows", title: "猜数字"},
-    blog: {path: "blog", title: "博客"},
-    chineseChess: {path: "chinese-chess", title: "中国象棋", beta: true},
-    neteaseMusic: {path: "wyyyy", title: "网易云音乐", beta: true},
-    thuum: {path: "thuum", title: "Thuum"},
+    index: {path: "index", title: "首页", hiddinInIndex: true} as RouteInfo,
+    bezier: {path: "bezier", title: "贝塞尔曲线"} as RouteInfo,
+    rubiksCube: {path: "rubiks-cube", title: "魔方"} as RouteInfo,
+    chinesePoetry: {path: "chinese-poetry", title: "古诗词"} as RouteInfo,
+    chat: {path: "chat", title: "机器人茉莉"} as RouteInfo,
+    bullsAndCows: {path: "bulls-and-cows", title: "猜数字"} as RouteInfo,
+    blog: {path: "blog", title: "博客"} as RouteInfo,
+    chineseChess: {path: "chinese-chess", title: "中国象棋", beta: true} as RouteInfo,
+    thuum: {path: "thuum", title: "Thuum"} as RouteInfo,
+    kod: {path: "https://candypurity.com/kod", title: "网盘", isOuter: true} as RouteInfo
 };
 
 export const session = new SessionStorage("playground");

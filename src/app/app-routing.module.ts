@@ -24,10 +24,6 @@ const routes: Routes = [
     {path: routesInfo.blog.path, component: BlogComponent},
     {path: routesInfo.chineseChess.path, component: ChineseChessComponent},
     {path: routesInfo.thuum.path, component: ThuumComponent},
-    {
-        path: "wyyyy",
-        loadChildren: () => import("./modules/music-player/music-player-routing.module").then((m) => m.MusicPlayerRoutingModule)
-    },
     {path: "**", component: PageNotFoundComponent, resolve: {redirect: PathResolveService}}
 ];
 
