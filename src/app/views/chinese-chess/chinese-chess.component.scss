@@ -305,6 +305,8 @@ $tile-size: 58.88px;
     }
 }
 
+$ripple-size: 6px;
+$ripple-offset: 6px;
 $ripple-color: white;
 .ripple::after,
 .ripple-small::after {
@@ -313,8 +315,8 @@ $ripple-color: white;
     border: 1px solid $ripple-color;
     background-color: $ripple-color;
     border-radius: 50%;
-    width: 6px;
-    height: 6px;
+    width: $ripple-size;
+    height: $ripple-size;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -329,20 +331,24 @@ $ripple-color: white;
 }
 @keyframes ripple {
     0% {
-        box-shadow: 0 0 0 0 rgba($ripple-color, 0.2), 0 0 0 0.33em rgba($ripple-color, 0.2), 0 0 0 0.66em rgba($ripple-color, 0.2);
+        box-shadow: 0 0 0 0 rgba($ripple-color, 0.2), 0 0 0 #{$ripple-size + $ripple-offset} rgba($ripple-color, 0.2),
+            0 0 0 #{$ripple-size + $ripple-offset * 2} rgba($ripple-color, 0.2);
     }
     100% {
-        box-shadow: 0 0 0 0.33em rgba($ripple-color, 0.2), 0 0 0 0.66em rgba($ripple-color, 0.2), 0 0 0 1em rgba($ripple-color, 0);
+        box-shadow: 0 0 0 #{$ripple-size + $ripple-offset} rgba($ripple-color, 0.2),
+            0 0 0 #{$ripple-size + $ripple-offset * 2} rgba($ripple-color, 0.2),
+            0 0 0 #{$ripple-size + $ripple-offset * 3} rgba($ripple-color, 0.2);
     }
 }
-@keyframes ripple-small {
-    0% {
-        box-shadow: 0 0 0 0.33em rgba($ripple-color, 0.4), 0 0 0 0.66em rgba($ripple-color, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba($ripple-color, 0.4), 0 0 0 0.33em rgba($ripple-color, 0.4);
-    }
-}
+// @keyframes ripple-small {
+//     0% {
+//         box-shadow: 0 0 0 #{$ripple-size * $ripple-multi} rgba($ripple-color, 0.4),
+//             0 0 0 #{$ripple-size * $ripple-multi * $ripple-multi} rgba($ripple-color, 0);
+//     }
+//     100% {
+//         box-shadow: 0 0 0 0 rgba($ripple-color, 0.4), 0 0 0 #{$ripple-size * $ripple-multi} rgba($ripple-color, 0.4);
+//     }
+// }
 
 .chat-bubble {
     position: absolute;
