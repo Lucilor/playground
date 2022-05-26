@@ -36,6 +36,9 @@ export class BullsAndCowsComponent extends AppStorage() {
     get canGuess() {
         return this.guessInput && this.bc.canGuess && this.form.valid;
     }
+    get guessValidators() {
+        return Validators.pattern(new RegExp(`^[${this.bc.config.chars}]*$`));
+    }
     @ViewChild(NgScrollbar) scrollbar!: NgScrollbar;
 
     constructor(private message: MessageService, private dialog: MatDialog) {
@@ -43,7 +46,7 @@ export class BullsAndCowsComponent extends AppStorage() {
         this.difficulty = this.load("difficulty") || difficulties[1];
         this.bc = new BullsAndCows(this.difficulty.config);
         this.form = typedFormGroup({
-            guess: typedFormControl("", Validators.pattern(new RegExp(`^[${this.bc.config.chars}]*$`)))
+            guess: typedFormControl("", this.guessValidators)
         });
         this.form.markAllAsTouched();
         this.start();
@@ -104,6 +107,7 @@ export class BullsAndCowsComponent extends AppStorage() {
             this.save("difficulty", result);
             this.difficulty = result;
             this.bc.config = result.config;
+            this.form.controls.guess.setValidators(this.guessValidators);
             this.start();
         }
     }
