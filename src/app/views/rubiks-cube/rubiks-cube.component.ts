@@ -1,6 +1,6 @@
 import {Component, AfterViewInit, ViewChild, ElementRef} from "@angular/core";
-import {FormControl} from "@angular/forms";
 import {ErrorStateMatcher} from "@angular/material/core";
+import {getFormControl} from "@app/app.common";
 import {ColorEvent} from "ngx-color";
 import {Color} from "three";
 import {RubiksCube, RubiksCubeColors} from "./rubiks-cube-drawer/rubiks-cube";
@@ -30,7 +30,7 @@ export class RubiksCubeComponent implements AfterViewInit {
         {key: "L", name: "左面"},
         {key: "R", name: "右面"}
     ];
-    commandFormControl = new FormControl("");
+    commandFormControl = getFormControl("");
     matcher = new MyErrorStateMatcher();
     colorIdx = -1;
 

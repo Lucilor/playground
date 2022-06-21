@@ -1,7 +1,7 @@
 import {Component, ViewChild} from "@angular/core";
 import {Validators} from "@angular/forms";
 import {MatDialog} from "@angular/material/dialog";
-import {local} from "@app/app.common";
+import {getFormControl, getFormGroup, local, TypedFormGroup} from "@app/app.common";
 import {
     BullsAndCowsDifficulty,
     difficulties,
@@ -11,7 +11,6 @@ import {timeout} from "@lucilor/utils";
 import {AppStorage} from "@mixins/app-storage.mixin";
 import {MessageService} from "@modules/message/services/message.service";
 import md5 from "md5";
-import {typedFormControl, typedFormGroup, TypedFormGroup} from "ngx-forms-typed";
 import {NgScrollbar} from "ngx-scrollbar";
 import {BullsAndCows} from "./bulls-and-cows";
 
@@ -31,7 +30,7 @@ export class BullsAndCowsComponent extends AppStorage() {
     answer = "";
     form: TypedFormGroup<BullsAndCowsForm>;
     get guessInput() {
-        return this.form.value.guess;
+        return this.form.value.guess || "";
     }
     get canGuess() {
         return this.guessInput && this.bc.canGuess && this.form.valid;
@@ -45,8 +44,8 @@ export class BullsAndCowsComponent extends AppStorage() {
         super("bullsAndCows", local);
         this.difficulty = this.load("difficulty") || difficulties[1];
         this.bc = new BullsAndCows(this.difficulty.config);
-        this.form = typedFormGroup({
-            guess: typedFormControl("", this.guessValidators)
+        this.form = getFormGroup({
+            guess: getFormControl("", {validators: this.guessValidators})
         });
         this.form.markAllAsTouched();
         this.start();

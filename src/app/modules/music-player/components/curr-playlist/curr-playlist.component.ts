@@ -1,9 +1,9 @@
 import {Component, Input} from "@angular/core";
+import {getFormControl, getFormGroup} from "@app/app.common";
 import {Utils} from "@mixins/utils.mixin";
 import {MusicService, PlaylistMode, playlistModeNames, PlaylistRaw, Song} from "@modules/music-player/services/music.service";
 import Color from "color";
 import {Properties} from "csstype";
-import {typedFormControl, typedFormGroup, TypedFormGroup} from "ngx-forms-typed";
 
 @Component({
     selector: "app-curr-playlist",
@@ -13,11 +13,11 @@ import {typedFormControl, typedFormGroup, TypedFormGroup} from "ngx-forms-typed"
 export class CurrPlaylistComponent extends Utils() {
     @Input() mainColor = new Color("white");
     playlist$ = this.music.playlist$;
-    form: TypedFormGroup<Omit<PlaylistRaw, "content">> = typedFormGroup({
-        id: typedFormControl(""),
-        name: typedFormControl(""),
-        cover: typedFormControl(""),
-        mode: typedFormControl("")
+    form = getFormGroup<Omit<PlaylistRaw, "content">>({
+        id: getFormControl(""),
+        name: getFormControl(""),
+        cover: getFormControl(""),
+        mode: getFormControl("")
     });
     get containerStyle(): Partial<Properties> {
         return {color: this.mainColor.isLight() ? "black" : "white"};

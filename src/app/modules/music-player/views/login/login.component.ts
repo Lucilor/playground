@@ -1,9 +1,9 @@
 import {Component, OnInit} from "@angular/core";
 import {AbstractControl, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
+import {getFormControl, getFormGroup} from "@app/app.common";
 import {MusicService} from "@modules/music-player/services/music.service";
 import {SpinnerService} from "@modules/spinner/services/spinner.service";
-import {typedFormControl, typedFormGroup} from "ngx-forms-typed";
 
 interface LoginForm {
     user: string;
@@ -16,8 +16,8 @@ interface LoginForm {
     styleUrls: ["./login.component.scss"]
 })
 export class LoginComponent implements OnInit {
-    form = typedFormGroup<LoginForm>({
-        user: typedFormControl("", {
+    form = getFormGroup<LoginForm>({
+        user: getFormControl("", {
             validators: [
                 (control: AbstractControl) => {
                     const emailError = Validators.email(control);
@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
                 }
             ]
         }),
-        password: typedFormControl("")
+        password: getFormControl("")
     });
 
     constructor(private spinner: SpinnerService, private music: MusicService, private router: Router, private route: ActivatedRoute) {}
@@ -41,8 +41,8 @@ export class LoginComponent implements OnInit {
         if (form.untouched) {
             form.markAllAsTouched();
         }
-        if (form.valid) {
-            const {user, password} = form.value;
+        const {user, password} = form.value;
+        if (form.valid && user && password) {
             this.spinner.show(this.spinner.defaultLoaderId, {text: "正在登录..."});
             await this.music.login(user, password, !Validators.email(form.get("user") as AbstractControl));
             this.spinner.hide(this.spinner.defaultLoaderId);

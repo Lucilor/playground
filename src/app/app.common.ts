@@ -1,5 +1,6 @@
+import {FormGroup, FormControl, FormControlState, FormControlOptions, AbstractControlOptions} from "@angular/forms";
 import {Router} from "@angular/router";
-import {LocalStorage, SessionStorage} from "@lucilor/utils";
+import {SessionStorage, LocalStorage, ObjectOf} from "@lucilor/utils";
 
 export interface Response<T> {
     code: number;
@@ -40,3 +41,11 @@ export const navigate = (router: Router, routeInfo: RouteInfo) => {
 
 export const session = new SessionStorage("playground");
 export const local = new LocalStorage("playground");
+
+export type TypedFormGroup<T extends ObjectOf<any>> = FormGroup<{[K in keyof T]: FormControl<T[K]>}>;
+
+export const getFormControl = <T>(value: T | FormControlState<T>, opts: FormControlOptions = {}) =>
+    new FormControl(value, {...opts, nonNullable: true});
+
+export const getFormGroup = <T extends ObjectOf<any>>(controls: {[K in keyof T]: FormControl<T[K]>}, opts?: AbstractControlOptions) =>
+    new FormGroup(controls, opts);

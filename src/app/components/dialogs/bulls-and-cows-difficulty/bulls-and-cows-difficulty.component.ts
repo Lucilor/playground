@@ -1,7 +1,7 @@
 import {Component, Inject} from "@angular/core";
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {getFormControl, getFormGroup, TypedFormGroup} from "@app/app.common";
 import {BullsAndCowsConfig} from "@views/bulls-and-cows/bulls-and-cows";
-import {typedFormControl, TypedFormGroup, typedFormGroup} from "ngx-forms-typed";
 import {getOpenDialogFunc} from "../dialog.common";
 
 export interface BullsAndCowsDifficulty {
@@ -42,10 +42,10 @@ export class BullsAndCowsDifficultyComponent {
         @Inject(MAT_DIALOG_DATA) public data: BullsAndCowsDifficulty
     ) {
         this.difficultyIdx = difficulties.findIndex((v) => v.name === data.name);
-        this.form = typedFormGroup({
-            chars: typedFormControl(data.config.chars),
-            digits: typedFormControl(data.config.digits),
-            uniqueChars: typedFormControl(data.config.uniqueChars)
+        this.form = getFormGroup({
+            chars: getFormControl(data.config.chars),
+            digits: getFormControl(data.config.digits),
+            uniqueChars: getFormControl(data.config.uniqueChars)
         });
     }
 
