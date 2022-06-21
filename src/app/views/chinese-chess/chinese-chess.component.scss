@@ -13,7 +13,7 @@ $tile-size: 58.88px;
     border-style: solid;
 }
 @mixin border2x {
-    border-width: calc(2 * #{$border-width});
+    border-width: #{$border-width * 2};
     border-color: $border-color;
     border-style: solid;
 }
@@ -305,9 +305,8 @@ $tile-size: 58.88px;
     }
 }
 
-$ripple-size: 6px;
-$ripple-offset: 6px;
 $ripple-color: white;
+$ripple-size: 6px;
 .ripple::after,
 .ripple-small::after {
     content: "";
@@ -317,11 +316,11 @@ $ripple-color: white;
     border-radius: 50%;
     width: $ripple-size;
     height: $ripple-size;
+    font-size: $ripple-size;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 0.75em;
 }
 .ripple::after {
     animation: ripple 1s linear infinite;
@@ -331,24 +330,20 @@ $ripple-color: white;
 }
 @keyframes ripple {
     0% {
-        box-shadow: 0 0 0 0 rgba($ripple-color, 0.2), 0 0 0 #{$ripple-size + $ripple-offset} rgba($ripple-color, 0.2),
-            0 0 0 #{$ripple-size + $ripple-offset * 2} rgba($ripple-color, 0.2);
+        box-shadow: 0 0 0 0 rgba($ripple-color, 0.3), 0 0 0 0.8em rgba($ripple-color, 0.3), 0 0 0 1.6em rgba($ripple-color, 0.3);
     }
     100% {
-        box-shadow: 0 0 0 #{$ripple-size + $ripple-offset} rgba($ripple-color, 0.2),
-            0 0 0 #{$ripple-size + $ripple-offset * 2} rgba($ripple-color, 0.2),
-            0 0 0 #{$ripple-size + $ripple-offset * 3} rgba($ripple-color, 0.2);
+        box-shadow: 0 0 0 0.8em rgba($ripple-color, 0.3), 0 0 0 1.6em rgba($ripple-color, 0.3), 0 0 0 2.4em rgba($ripple-color, 0);
     }
 }
-// @keyframes ripple-small {
-//     0% {
-//         box-shadow: 0 0 0 #{$ripple-size * $ripple-multi} rgba($ripple-color, 0.4),
-//             0 0 0 #{$ripple-size * $ripple-multi * $ripple-multi} rgba($ripple-color, 0);
-//     }
-//     100% {
-//         box-shadow: 0 0 0 0 rgba($ripple-color, 0.4), 0 0 0 #{$ripple-size * $ripple-multi} rgba($ripple-color, 0.4);
-//     }
-// }
+@keyframes ripple-small {
+    0% {
+        box-shadow: 0 0 0 0.8em rgba($ripple-color, 0.5), 0 0 0 1.6em rgba($ripple-color, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba($ripple-color, 0.5), 0 0 0 0.8em rgba($ripple-color, 0.5);
+    }
+}
 
 .chat-bubble {
     position: absolute;
