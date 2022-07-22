@@ -27,7 +27,7 @@ export const routesInfo = {
     bullsAndCows: {path: "bulls-and-cows", title: "猜数字"} as RouteInfo,
     chineseChess: {path: "chinese-chess", title: "中国象棋", beta: true} as RouteInfo,
     thuum: {path: "thuum", title: "Thuum"} as RouteInfo,
-    blog: {path: "https://candypurity.com/wordpress", title: "博客", isOuter: true} as RouteInfo,
+    // blog: {path: "https://candypurity.com/wordpress", title: "博客", isOuter: true} as RouteInfo,
     kod: {path: "https://candypurity.com/kod", title: "网盘", isOuter: true} as RouteInfo
 };
 
