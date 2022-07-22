@@ -30,7 +30,9 @@
                         "tsConfig": "tsconfig.app.json",
                         "assets": ["src/favicon.ico", "src/assets"],
                         "styles": ["./node_modules/@angular/material/prebuilt-themes/indigo-pink.css", "src/styles.scss"],
-                        "stylePreprocessorOptions": {"includePaths": ["src"]},
+                        "stylePreprocessorOptions": {
+                            "includePaths": ["src"]
+                        },
                         "scripts": [],
                         "webWorkerTsConfig": "tsconfig.worker.json",
                         "allowedCommonJsDependencies": ["@lucilor/utils", "lodash", "highlight.js", "md5", "color"],
@@ -102,7 +104,9 @@
                         "karmaConfig": "karma.conf.js",
                         "assets": ["src/favicon.ico", "src/assets"],
                         "styles": ["./node_modules/@angular/material/prebuilt-themes/indigo-pink.css", "src/styles.scss"],
-                        "stylePreprocessorOptions": {"includePaths": ["src"]},
+                        "stylePreprocessorOptions": {
+                            "includePaths": ["src"]
+                        },
                         "scripts": [],
                         "fileReplacements": [
                             {
