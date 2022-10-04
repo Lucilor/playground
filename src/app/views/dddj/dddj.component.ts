@@ -76,7 +76,9 @@ export class DddjComponent implements OnInit {
         const playAudio = new Promise<HTMLAudioElement | null>((resolve) => {
             if (musicUrl) {
                 const audio = new Audio(config.path.imgPath + musicUrl);
-                audio.addEventListener("canplaythrough", () => resolve(audio));
+                // fixme: not working on mobile device
+                // audio.addEventListener("canplay", () => resolve(audio));
+                resolve(audio);
             } else {
                 resolve(null);
             }
