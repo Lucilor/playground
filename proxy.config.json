@@ -13,5 +13,12 @@
         "secure": false,
         "changeOrigin": true,
         "logLevel": "debug"
+    },
+    "/daidai": {
+        "target": "https://img-play.daidaiyuyin.com",
+        "pathRewrite": {"^/daidai": ""},
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
     }
 }

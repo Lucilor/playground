@@ -1,13 +1,13 @@
 import {Injectable} from "@angular/core";
-import {Resolve, ActivatedRouteSnapshot, RouterStateSnapshot} from "@angular/router";
-import {RouteInfo, routesInfo} from "@app/app.common";
+import {Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Router} from "@angular/router";
+import {RouteInfo} from "@app/app-routing.module";
 import {ObjectOf} from "@lucilor/utils";
 
 @Injectable({
     providedIn: "root"
 })
 export class PathResolveService implements Resolve<RouteInfo | null> {
-    constructor() {}
+    constructor(private router: Router) {}
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         const url = state.url.replace(/^\//, "");
@@ -20,7 +20,8 @@ export class PathResolveService implements Resolve<RouteInfo | null> {
         }
         const typoPath = url.slice(0, index);
         const threshold = this.getThreshold(typoPath);
-        const routesInfo2 = Object.values(routesInfo).filter((routeInfo) => Math.abs(routeInfo.path.length - typoPath.length) < threshold);
+        const routesInfo = this.router.config as RouteInfo[];
+        const routesInfo2 = routesInfo.filter((routeInfo) => Math.abs(routeInfo.path.length - typoPath.length) < threshold);
 
         if (!routesInfo2.length) {
             return null;

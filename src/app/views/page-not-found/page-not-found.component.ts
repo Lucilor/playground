@@ -1,6 +1,7 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
-import {navigate, RouteInfo} from "@app/app.common";
+import {RouteInfo} from "@app/app-routing.module";
+import {navigate} from "@app/app.common";
 import {AppStatusService} from "@services/app-status.service";
 
 @Component({
@@ -8,7 +9,7 @@ import {AppStatusService} from "@services/app-status.service";
     templateUrl: "./page-not-found.component.html",
     styleUrls: ["./page-not-found.component.scss"]
 })
-export class PageNotFoundComponent implements OnInit,OnDestroy {
+export class PageNotFoundComponent implements OnInit, OnDestroy {
     routeInfo: RouteInfo | null;
 
     constructor(private route: ActivatedRoute, private router: Router, private status: AppStatusService) {

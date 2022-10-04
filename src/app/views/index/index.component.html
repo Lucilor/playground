@@ -2,7 +2,7 @@
     <button mat-raised-button color="primary" *ngFor="let routeInfo of routesInfo" (click)="onLinkClick(routeInfo)">
         <div>
             <span>{{ routeInfo.title }}</span>
-            <sup *ngIf="routeInfo.beta" style="color: lightpink">beta</sup>
+            <sup *ngIf="routeInfo.data?.beta" style="color: lightpink">beta</sup>
         </div>
     </button>
 </div>

@@ -3,7 +3,7 @@ import {NavigationEnd, Router} from "@angular/router";
 import {Subscribed} from "@mixins/subscribed.mixin";
 import {AppStatusService} from "@services/app-status.service";
 import {DateTime} from "luxon";
-import {routesInfo} from "./app.common";
+import {RouteInfo} from "./app-routing.module";
 
 @Component({
     selector: "app-root",
@@ -22,9 +22,9 @@ export class AppComponent extends Subscribed() {
         this.router.events.subscribe((event) => {
             if (event instanceof NavigationEnd) {
                 const url = event.urlAfterRedirects;
-                const routeInfo = Object.values(routesInfo).find((v) => url.startsWith("/" + v.path));
+                const routesInfo = this.router.config as RouteInfo[];
+                const routeInfo = routesInfo.find((v) => url.startsWith("/" + v.path));
                 this.showHomeBtn = routeInfo?.path !== "index";
-                document.title = routeInfo?.title || "404 Not Found";
             }
         });
         this.status.loaderText$.subscribe((text) => (this.loaderText = text));

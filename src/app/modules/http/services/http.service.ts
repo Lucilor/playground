@@ -26,6 +26,7 @@ export interface HttpOptions {
     reportProgress?: boolean;
     responseType?: "json";
     withCredentials?: boolean;
+    noStrict?: boolean;
 }
 /* eslint-enable @typescript-eslint/indent */
 
@@ -39,7 +40,6 @@ export class HttpService {
     http: HttpClient;
     snackBar: MatSnackBar;
     baseURL = environment.host;
-    strict = true;
 
     constructor(injector: Injector) {
         this.message = injector.get(MessageService);
@@ -91,7 +91,9 @@ export class HttpService {
             if (!response) {
                 throw new Error("请求错误");
             }
-            if (this.strict) {
+            if (options?.noStrict) {
+                return response;
+            } else {
                 const code = response.code;
                 if (code === 0) {
                     if (typeof response.msg === "string" && response.msg) {
@@ -101,8 +103,6 @@ export class HttpService {
                 } else {
                     throw new Error(response.msg);
                 }
-            } else {
-                return response;
             }
         } catch (error) {
             this.alert(error);

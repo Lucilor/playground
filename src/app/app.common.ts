@@ -2,6 +2,7 @@ import {FormGroup, FormControl, FormControlState, FormControlOptions, AbstractCo
 import {Router} from "@angular/router";
 import {environment} from "@env";
 import {SessionStorage, LocalStorage, ObjectOf} from "@lucilor/utils";
+import {RouteInfo} from "./app-routing.module";
 
 export interface Response<T> {
     code: number;
@@ -11,30 +12,9 @@ export interface Response<T> {
     importance?: number;
 }
 
-export interface RouteInfo {
-    path: string;
-    title: string;
-    hiddinInIndex?: boolean;
-    beta?: boolean;
-    isOuter?: boolean;
-}
-
-export const routesInfo = {
-    index: {path: "index", title: "首页", hiddinInIndex: true} as RouteInfo,
-    bezier: {path: "bezier", title: "贝塞尔曲线"} as RouteInfo,
-    rubiksCube: {path: "rubiks-cube", title: "魔方"} as RouteInfo,
-    chinesePoetry: {path: "chinese-poetry", title: "古诗词"} as RouteInfo,
-    chat: {path: "chat", title: "机器人茉莉"} as RouteInfo,
-    bullsAndCows: {path: "bulls-and-cows", title: "猜数字"} as RouteInfo,
-    chineseChess: {path: "chinese-chess", title: "中国象棋", beta: true} as RouteInfo,
-    thuum: {path: "thuum", title: "Thuum"} as RouteInfo,
-    // blog: {path: "https://candypurity.com/wordpress", title: "博客", isOuter: true} as RouteInfo,
-    kod: {path: "https://candypurity.com/kod", title: "网盘", isOuter: true} as RouteInfo
-};
-
 export const navigate = (router: Router, routeInfo: RouteInfo) => {
-    if (routeInfo.isOuter) {
-        window.open(routeInfo.path);
+    if (routeInfo.data?.isOuter) {
+        window.open(routeInfo.redirectTo, "_blank");
     } else {
         router.navigate([routeInfo.path], {queryParamsHandling: "merge"});
     }

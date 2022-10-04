@@ -1,6 +1,7 @@
 import {Component} from "@angular/core";
 import {Router} from "@angular/router";
-import {navigate, RouteInfo, routesInfo} from "@app/app.common";
+import {RouteInfo} from "@app/app-routing.module";
+import {navigate} from "@app/app.common";
 import {Subscribed} from "@mixins/subscribed.mixin";
 import {AppStatusService} from "@services/app-status.service";
 import {cloneDeep} from "lodash";
@@ -17,11 +18,12 @@ export class IndexComponent extends Subscribed() {
     constructor(private status: AppStatusService, private router: Router) {
         super();
         this.routesInfo = [];
-        for (const v of Object.values(cloneDeep(routesInfo))) {
-            if (v.hiddinInIndex) {
+        const routesInfo = this.router.config as RouteInfo[];
+        for (const v of routesInfo) {
+            if (v.data?.hiddinInIndex) {
                 continue;
             }
-            this.routesInfo.push(v);
+            this.routesInfo.push(cloneDeep(v));
         }
     }
 
