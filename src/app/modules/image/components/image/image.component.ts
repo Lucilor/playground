@@ -4,8 +4,8 @@ import {Component, ElementRef, Input, ViewChild} from "@angular/core";
 import {SafeUrl} from "@angular/platform-browser";
 import {timeout} from "@lucilor/utils";
 
-export const imgEmpty = "assets/images/empty.jpg";
-export const imgLoading = "assets/images/loading.gif";
+const imgEmpty = "assets/images/empty.jpg";
+const imgLoading = "assets/images/loading.gif";
 
 @Component({
     selector: "app-image",
@@ -27,15 +27,45 @@ export const imgLoading = "assets/images/loading.gif";
     ]
 })
 export class ImageComponent {
-    @Input() src?: string | SafeUrl;
-    private _bigPic = false;
+    private _src?: string | SafeUrl;
     @Input()
-    get bigPic() {
-        return this._bigPic;
+    get src() {
+        return this._src;
     }
-    set bigPic(value: boolean | string) {
-        this._bigPic = coerceBooleanProperty(value);
+    set src(value) {
+        this._src = value;
+        if (value) {
+            this.loading = true;
+            this._src2 = "";
+        } else {
+            this.loading = false;
+            this._src2 = imgEmpty;
+        }
     }
+    private _src2 = "";
+
+    private _bigPicSrc?: string | SafeUrl;
+    @Input()
+    get bigPicSrc() {
+        return this._bigPicSrc;
+    }
+    set bigPicSrc(value) {
+        this._bigPicSrc = value;
+    }
+
+    private _prefix?: string;
+    @Input()
+    get prefix() {
+        return this._prefix;
+    }
+    set prefix(value) {
+        if (this._prefix !== value) {
+            this._prefix = value;
+            this.loading = true;
+            this._src2 = "";
+        }
+    }
+
     private _control = false;
     @Input()
     get control() {
@@ -52,17 +82,35 @@ export class ImageComponent {
 
     constructor(private elRef: ElementRef) {}
 
+    getSrc() {
+        const {prefix, _src, _src2} = this;
+        if (_src2) {
+            return _src2;
+        } else if (prefix && _src) {
+            return prefix + _src;
+        }
+        return _src;
+    }
+
+    getBigPicSrc() {
+        const {prefix, bigPicSrc} = this;
+        if (prefix && bigPicSrc) {
+            return prefix + bigPicSrc;
+        }
+        return bigPicSrc;
+    }
+
     onLoad() {
         this.loading = false;
     }
 
     onError() {
         this.loading = false;
-        this.src = this.emptySrc;
+        this._src2 = this.emptySrc;
     }
 
     async showBigPic() {
-        if (this.bigPic && this.bigPicDiv) {
+        if (this.bigPicSrc && this.bigPicDiv) {
             this.bigPicVisible = true;
             await timeout();
             const el = this.bigPicDiv.nativeElement;
@@ -72,7 +120,7 @@ export class ImageComponent {
     }
 
     async hideBigPic() {
-        if (this.bigPic && this.bigPicDiv) {
+        if (this.bigPicSrc && this.bigPicDiv) {
             this.bigPicVisible = false;
             await timeout(400);
             const bpEl = this.bigPicDiv.nativeElement;

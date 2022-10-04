@@ -2,7 +2,8 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {Component, OnInit, Inject, ViewChild, OnDestroy, ElementRef, AfterViewInit} from "@angular/core";
 import {FormControl} from "@angular/forms";
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
+import {DomSanitizer, SafeHtml, SafeResourceUrl} from "@angular/platform-browser";
+import {getFormControlErrorString} from "@app/app.common";
 import {timeout} from "@lucilor/utils";
 import {clamp, cloneDeep, debounce} from "lodash";
 import {QuillEditorComponent, QuillViewComponent} from "ngx-quill";
@@ -19,9 +20,11 @@ export class MessageComponent implements OnInit, AfterViewInit, OnDestroy {
     titleHTML: SafeHtml = "";
     subTitleHTML: SafeHtml = "";
     contentHTML: SafeHtml = "";
+    iframeSrc: SafeResourceUrl = "";
     page = 0;
     @ViewChild(QuillEditorComponent) editor?: QuillViewComponent;
     @ViewChild("contentInput") contentInput?: ElementRef<HTMLInputElement | HTMLTextAreaElement>;
+    @ViewChild("iframe") iframe?: ElementRef<HTMLIFrameElement>;
     autoCompleteOptions?: Observable<Required<PromptData>["options"]>;
 
     private get _editorToolbarHeight() {
@@ -86,11 +89,7 @@ export class MessageComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     get inputErrors() {
-        const errors = this.input.errors;
-        if (!errors) {
-            return null;
-        }
-        return Object.keys(errors).join(", ");
+        return getFormControlErrorString(this.input);
     }
 
     constructor(
@@ -112,7 +111,7 @@ export class MessageComponent implements OnInit, AfterViewInit, OnDestroy {
         } else if (data.content instanceof Error) {
             data.title = "Oops!";
             data.content = data.content.message;
-            console.warn(data.content);
+            // console.warn(data.content);
         } else if (data.content instanceof HttpErrorResponse) {
             data.title = "网络错误";
             const {error, status, statusText} = data.content;
@@ -154,12 +153,13 @@ export class MessageComponent implements OnInit, AfterViewInit, OnDestroy {
                 startWith(data.promptData.value),
                 map((value) => this.filterAutoCompleteOptions(value))
             );
-        }
-        if (data.type === "book") {
+        } else if (data.type === "book") {
             if (!data.bookData) {
                 data.bookData = [];
             }
             this.setPage(0);
+        } else if (data.type === "iframe") {
+            this.iframeSrc = this.sanitizer.bypassSecurityTrustResourceUrl(data.content);
         }
 
         const id = window.setInterval(() => {
@@ -175,6 +175,12 @@ export class MessageComponent implements OnInit, AfterViewInit, OnDestroy {
             await timeout(500);
             this.contentInput.nativeElement.focus();
         }
+        // if (this.iframe) {
+        //     const iframeEl = this.iframe.nativeElement;
+        //     iframeEl.addEventListener("load", () => {
+        //         console.log(iframeEl.contentWindow?.document.title);
+        //     });
+        // }
     }
 
     ngOnDestroy() {
@@ -196,11 +202,11 @@ export class MessageComponent implements OnInit, AfterViewInit, OnDestroy {
         } else if (this.data.type === "button" && button) {
             this.dialogRef.close(typeof button === "string" ? button : button.label);
         } else {
-            this.cancle();
+            this.cancel();
         }
     }
 
-    cancle() {
+    cancel() {
         this.dialogRef.close(false);
     }
 

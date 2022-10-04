@@ -1,4 +1,4 @@
-import {ValidatorFn} from "@angular/forms";
+import {AbstractControlOptions} from "@angular/forms";
 
 export interface BaseMessageData {
     title?: string;
@@ -26,16 +26,17 @@ export interface ButtonMessageData extends BaseMessageData {
 export interface PromptData {
     type?: string;
     hint?: string;
+    label?: string;
     value?: string;
     placeholder?: string;
-    validators?: ValidatorFn | ValidatorFn[] | null;
+    validators?: AbstractControlOptions["validators"];
     options?: {value: string; label?: string}[];
 }
 
 export interface PromptMessageData extends BaseMessageData {
     type: "prompt";
     promptData?: PromptData;
-    btnTexts?: {submit?: string; cancle?: string};
+    btnTexts?: {submit?: string; cancel?: string};
 }
 
 export interface BookPageData {
@@ -54,7 +55,12 @@ export interface BookMessageData extends BaseMessageData {
 export interface EditorMessageData extends BaseMessageData {
     type: "editor";
     editable?: boolean;
-    btnTexts?: {submit?: string; cancle?: string};
+    btnTexts?: {submit?: string; cancel?: string};
+}
+
+export interface IFrameMessageData extends BaseMessageData {
+    type: "iframe";
+    content: string;
 }
 
 export type MessageData =
@@ -63,7 +69,8 @@ export type MessageData =
     | PromptMessageData
     | BookMessageData
     | EditorMessageData
-    | ButtonMessageData;
+    | ButtonMessageData
+    | IFrameMessageData;
 
 export interface MessageDataMap {
     alert: AlertMessageData;
@@ -72,4 +79,5 @@ export interface MessageDataMap {
     book: BookMessageData;
     editor: EditorMessageData;
     button: ButtonMessageData;
+    iframe: IFrameMessageData;
 }

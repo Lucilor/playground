@@ -10,7 +10,8 @@ import {
     PromptMessageData,
     BookMessageData,
     EditorMessageData,
-    ButtonMessageData
+    ButtonMessageData,
+    IFrameMessageData
 } from "../components/message/message-types";
 import {MessageComponent} from "../components/message/message.component";
 
@@ -23,6 +24,7 @@ export class MessageService {
     constructor(private dialog: MatDialog, private snackBar: MatSnackBar) {}
 
     async open(config: MatDialogConfig<MessageData>) {
+        config = {width: "40%", ...config};
         const ref = this.dialog.open<MessageComponent, MessageData, boolean | string>(MessageComponent, config);
         return await lastValueFrom(ref.afterClosed());
     }
@@ -41,8 +43,12 @@ export class MessageService {
         await this.open({data: this._getData(data, "alert"), ...others});
     }
 
-    async confirm(data: string | MessageDataParams<ConfirmMessageData>) {
-        return !!(await this.open({data: this._getData(data, "confirm")}));
+    async error(message: string, others: Omit<MatDialogConfig<AlertMessageData>, "data"> = {}) {
+        await this.alert({content: new Error(message)}, others);
+    }
+
+    async confirm(data: string | MessageDataParams<ConfirmMessageData>, others: Omit<MatDialogConfig<AlertMessageData>, "data"> = {}) {
+        return !!(await this.open({data: this._getData(data, "confirm"), ...others}));
     }
 
     async prompt(data: string | MessageDataParams<PromptMessageData>, others: Omit<MatDialogConfig<PromptMessageData>, "data"> = {}) {
@@ -53,16 +59,20 @@ export class MessageService {
         return null;
     }
 
-    async book(data: string | MessageDataParams<BookMessageData>) {
-        await this.open({data: this._getData(data, "book"), width: "80vw", height: "65vh"});
+    async book(data: string | MessageDataParams<BookMessageData>, others: Omit<MatDialogConfig<BookMessageData>, "data"> = {}) {
+        await this.open({data: this._getData(data, "book"), width: "80vw", ...others});
     }
 
-    async editor(data: string | MessageDataParams<EditorMessageData>) {
-        return String(await this.open({data: this._getData(data, "editor")}));
+    async editor(data: string | MessageDataParams<EditorMessageData>, others: Omit<MatDialogConfig<EditorMessageData>, "data"> = {}) {
+        return String(await this.open({data: this._getData(data, "editor"), width: "80vw", ...others}));
     }
 
-    async button(data: string | MessageDataParams<ButtonMessageData>) {
-        return String(await this.open({data: this._getData(data, "button")}));
+    async button(data: string | MessageDataParams<ButtonMessageData>, others: Omit<MatDialogConfig<ButtonMessageData>, "data"> = {}) {
+        return String(await this.open({data: this._getData(data, "button"), ...others}));
+    }
+
+    async iframe(data: string | MessageDataParams<IFrameMessageData>, others: Omit<MatDialogConfig<IFrameMessageData>, "data"> = {}) {
+        return String(await this.open({data: this._getData(data, "iframe"), width: "100vw", height: "100vh", ...others}));
     }
 
     async snack(message: string, action?: string, config?: MatSnackBarConfig) {

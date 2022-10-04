@@ -4,7 +4,7 @@
             <h1>{{ moli.name }}</h1>
             <h2>{{ moli.description }}</h2>
             <figure class="avatar">
-                <app-image [src]="moli.avatar" [bigPic]="true"></app-image>
+                <app-image [src]="moli.avatar" [bigPicSrc]="true"></app-image>
             </figure>
         </div>
         <div class="messages">
@@ -17,11 +17,11 @@
                         [ngSwitch]="message.type"
                     >
                         <figure class="avatar" *ngIf="message.user">
-                            <app-image [src]="moli.avatar" [bigPic]="true"></app-image>
+                            <app-image [src]="moli.avatar" [bigPicSrc]="true"></app-image>
                         </figure>
                         <span></span>
                         <span *ngSwitchCase="'text'" [innerHTML]="message.text"></span>
-                        <app-image *ngSwitchCase="'image'" [src]="message.url" [bigPic]="true"></app-image>
+                        <app-image *ngSwitchCase="'image'" [src]="message.url" [bigPicSrc]="true"></app-image>
                         <div class="timestamp">{{ message.timestamp }}</div>
                     </div>
                 </ng-scrollbar>

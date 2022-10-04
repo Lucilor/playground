@@ -1,0 +1,5 @@
+https://conf.58youxi.com/config/api/base/dicts?source=1&hostName=daidaiyuyin.com
+https://play.daidaiyuyin.com/web/api/gift/getMagicList?latitude=23.02775875&longitude=113.12851220&city_code=138&register=3&source=1&channelId=DB73EA269873&version=2.11.55&companyCode=PP_001&lang=zh_CN&lang_area=CN&magicType=0
+https://play.daidaiyuyin.com/web/api/gift/getGiftList?latitude=23.02775875&longitude=113.12851220&city_code=138&register=3&source=1&channelId=DB73EA269873&version=2.11.55&companyCode=PP_001&lang=zh_CN&lang_area=CN
+https://play.daidaiyuyin.com/web/api/gift/getBottleGift?latitude=23.02775875&longitude=113.12851220&city_code=138&register=3&source=1&channelId=DB73EA269873&version=2.11.55&companyCode=PP_001&lang=zh_CN&lang_area=CN
+https://play.daidaiyuyin.com/web/api/box/getUserBag?latitude=23.02775875&longitude=113.12851220&city_code=138&register=3&source=1&channelId=DB73EA269873&version=2.11.55&companyCode=PP_001&lang=zh_CN&lang_area=CN&uid=12878857

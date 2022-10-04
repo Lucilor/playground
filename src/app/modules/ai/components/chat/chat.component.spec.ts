@@ -3,7 +3,6 @@ import {FormsModule} from "@angular/forms";
 import {HttpModule} from "@modules/http/http.module";
 import {ImageModule} from "@modules/image/image.module";
 import {NgScrollbarModule} from "ngx-scrollbar";
-
 import {ChatComponent} from "./chat.component";
 
 describe("ChatComponent", () => {

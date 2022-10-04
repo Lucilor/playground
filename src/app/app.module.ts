@@ -58,16 +58,16 @@ export class MyMatPaginatorIntl extends MatPaginatorIntl {
     declarations: [
         AppComponent,
         BezierComponent,
+        BullsAndCowsComponent,
+        BullsAndCowsDifficultyComponent,
+        ChineseChessCollectionsComponent,
+        ChineseChessComponent,
         ChinesePoetryComponent,
         ChinesePoetrySearchComponent,
         IndexComponent,
         MenuComponent,
-        RubiksCubeComponent,
-        BullsAndCowsComponent,
-        BullsAndCowsDifficultyComponent,
         PageNotFoundComponent,
-        ChineseChessComponent,
-        ChineseChessCollectionsComponent,
+        RubiksCubeComponent,
         ThuumComponent
     ],
     imports: [
