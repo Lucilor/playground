@@ -33,6 +33,7 @@ import {BullsAndCowsComponent} from "@views/bulls-and-cows/bulls-and-cows.compon
 import {ChineseChessComponent} from "@views/chinese-chess/chinese-chess.component";
 import {ChinesePoetryComponent} from "@views/chinese-poetry/chinese-poetry.component";
 import {DddjComponent} from "@views/dddj/dddj.component";
+import {HappyBirthdayComponent} from "@views/happy-birthday/happy-birthday.component";
 import {IndexComponent} from "@views/index/index.component";
 import {PageNotFoundComponent} from "@views/page-not-found/page-not-found.component";
 import {RubiksCubeComponent} from "@views/rubiks-cube/rubiks-cube.component";
@@ -67,6 +68,7 @@ export class MyMatPaginatorIntl extends MatPaginatorIntl {
         ChinesePoetryComponent,
         ChinesePoetrySearchComponent,
         DddjComponent,
+        HappyBirthdayComponent,
         IndexComponent,
         MenuComponent,
         PageNotFoundComponent,

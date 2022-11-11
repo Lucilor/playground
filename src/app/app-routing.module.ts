@@ -7,6 +7,7 @@ import {BullsAndCowsComponent} from "@views/bulls-and-cows/bulls-and-cows.compon
 import {ChineseChessComponent} from "@views/chinese-chess/chinese-chess.component";
 import {ChinesePoetryComponent} from "@views/chinese-poetry/chinese-poetry.component";
 import {DddjComponent} from "@views/dddj/dddj.component";
+import {HappyBirthdayComponent} from "@views/happy-birthday/happy-birthday.component";
 import {IndexComponent} from "@views/index/index.component";
 import {PageNotFoundComponent} from "@views/page-not-found/page-not-found.component";
 import {RubiksCubeComponent} from "@views/rubiks-cube/rubiks-cube.component";
@@ -24,7 +25,8 @@ const routesInfo: RouteInfo[] = [
     {path: "chinese-chess", title: "中国象棋", data: {beta: true}, component: ChineseChessComponent},
     {path: "thuum", title: "Thuum", component: ThuumComponent},
     {path: "kod", pathMatch: "full", redirectTo: "https://candypurity.com/kod", title: "网盘", data: {isOuter: true}},
-    {path: "dddj", title: "带带电竞", component: DddjComponent}
+    {path: "dddj", title: "带带电竞", component: DddjComponent},
+    {path: "happy-birthday", title: "生日快乐", component: HappyBirthdayComponent, data: {hiddinInIndex: true}}
 ];
 
 const routes: Routes = [
