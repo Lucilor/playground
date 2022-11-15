@@ -6,11 +6,16 @@
                 <div
                     class="gift"
                     *ngFor="let gift of group.giftWebVoList"
-                    [matTooltip]="gift.giftName + '(' + gift.diamondAmount + ')'"
+                    [matTooltip]="gift.briefIntroduction || ''"
                     (click)="showGiftPreview(gift)"
                 >
-                    <app-image [src]="gift.giftIcon" [prefix]="config.path.imgPath"></app-image>
+                    <app-image [src]="gift.giftIcon" [prefix]="config.path.imgPath" objectFit="cover"></app-image>
                     <div class="gift-name">{{ gift.giftName }}</div>
+                    <div class="gift-price">
+                        <span>¥{{ gift.giftPrice }}</span>
+                        <span *ngIf="gift.expectedValue"> / ¥{{ gift.expectedValue.toFixed(2) }}</span>
+                    </div>
+                    <div class="gift-probability" *ngIf="gift.probability">{{ gift.probability }}%</div>
                 </div>
             </div>
         </ng-scrollbar>

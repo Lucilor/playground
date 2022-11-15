@@ -21,11 +21,10 @@
     }
 }
 
-$gift-group-height: 200px;
-$gift-name-height: 20px;
+$gift-group-height: 240px;
+$gift-box-width: 90px;
+$gift-img-width: $gift-box-width - 15px;
 .gift-groups {
-    flex: 0 0 calc($gift-group-height);
-
     .gifts-container {
         width: 100%;
         height: calc($gift-group-height - 48px);
@@ -36,12 +35,12 @@ $gift-name-height: 20px;
         flex-wrap: wrap;
 
         .gift {
-            width: 90px;
-            height: calc(($gift-group-height - 48px) / 2);
+            width: $gift-box-width;
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             flex-direction: column;
+            text-align: center;
             cursor: pointer;
             padding: 3px;
             transition: 0.3s;
@@ -51,19 +50,11 @@ $gift-name-height: 20px;
             }
 
             app-image {
-                height: calc(($gift-group-height - 48px) / 2 - $gift-name-height);
+                width: $gift-img-width;
+                height: $gift-img-width;
                 background: rgba(0, 0, 0, 0.7);
                 border-radius: 50%;
                 overflow: hidden;
-            }
-
-            .gift-name {
-                width: 100%;
-                height: $gift-name-height;
-                text-overflow: ellipsis;
-                overflow: hidden;
-                white-space: nowrap;
-                text-align: center;
             }
         }
     }

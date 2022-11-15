@@ -3,6 +3,7 @@ import {coerceBooleanProperty} from "@angular/cdk/coercion";
 import {Component, ElementRef, Input, ViewChild} from "@angular/core";
 import {SafeUrl} from "@angular/platform-browser";
 import {timeout} from "@lucilor/utils";
+import {Properties} from "csstype";
 
 const imgEmpty = "assets/images/empty.jpg";
 const imgLoading = "assets/images/loading.gif";
@@ -74,6 +75,10 @@ export class ImageComponent {
     set control(value: boolean | string) {
         this._control = coerceBooleanProperty(value);
     }
+
+    @Input()
+    objectFit: Properties["objectFit"] = "contain";
+
     loading = true;
     loadingSrc = imgLoading;
     emptySrc = imgEmpty;
