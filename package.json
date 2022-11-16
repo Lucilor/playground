@@ -55,22 +55,22 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^14.2.9",
-    "@angular-eslint/builder": "^14.1.2",
-    "@angular-eslint/eslint-plugin": "^14.1.2",
-    "@angular-eslint/eslint-plugin-template": "^14.1.2",
-    "@angular-eslint/schematics": "^14.1.2",
-    "@angular-eslint/template-parser": "^14.1.2",
+    "@angular-eslint/builder": "^14.2.0",
+    "@angular-eslint/eslint-plugin": "^14.2.0",
+    "@angular-eslint/eslint-plugin-template": "^14.2.0",
+    "@angular-eslint/schematics": "^14.2.0",
+    "@angular-eslint/template-parser": "^14.2.0",
     "@angular/cli": "^14.2.9",
     "@angular/compiler-cli": "^14.2.10",
     "@types/color": "^3.0.3",
     "@types/jasmine": "~4.3.0",
-    "@types/lodash": "^4.14.188",
+    "@types/lodash": "^4.14.189",
     "@types/luxon": "^3.1.0",
     "@types/md5": "^2.3.2",
     "@types/quill": "^1.3.10",
     "@types/three": "^0.146.0",
-    "@typescript-eslint/eslint-plugin": "^5.42.1",
-    "@typescript-eslint/parser": "^5.42.1",
+    "@typescript-eslint/eslint-plugin": "^5.43.0",
+    "@typescript-eslint/parser": "^5.43.0",
     "axios": "^1.1.3",
     "eslint": "^8.27.0",
     "eslint-plugin-import": "2.26.0",
@@ -86,5 +86,9 @@
     "karma-jasmine-html-reporter": "^2.0.0",
     "protractor": "~7.0.0",
     "typescript": "~4.8.4"
+  },
+  "resolutions": {
+    "@types/node@>=10.0.0": "patch:@types/node@npm%3A17.0.29#./.yarn/patches/@types-node-npm-17.0.29-0de8e6d3d0.patch",
+    "@types/node@*": "patch:@types/node@npm%3A17.0.29#./.yarn/patches/@types-node-npm-17.0.29-0de8e6d3d0.patch"
   }
 }

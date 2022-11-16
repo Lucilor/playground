@@ -1,0 +1,21 @@
+diff --git a/globals.d.ts b/globals.d.ts
+index da499940ebbaa462edb8ce6c2dd2f1b67a19b925..508acc42e65337fbb8598fadca2acec185fecae0 100644
+--- a/globals.d.ts
++++ b/globals.d.ts
+@@ -69,11 +69,11 @@ declare var AbortController: {
+     new(): AbortController;
+ };
+ 
+-declare var AbortSignal: {
+-    prototype: AbortSignal;
+-    new(): AbortSignal;
+-    // TODO: Add abort() static
+-};
++// declare var AbortSignal: {
++//     prototype: AbortSignal;
++//     new(): AbortSignal;
++//     // TODO: Add abort() static
++// };
+ //#endregion borrowed
+ 
+ //#region ArrayLike.at()
