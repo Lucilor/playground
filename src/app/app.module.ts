@@ -45,68 +45,68 @@ import {AppComponent} from "./app.component";
 
 @Injectable()
 export class MyMatPaginatorIntl extends MatPaginatorIntl {
-    itemsPerPageLabel = "每页条数";
-    previousPageLabel = "上一页";
-    nextPageLabel = "下一页";
-    firstPageLabel = "首页";
-    lastPageLabel = "尾页";
+  itemsPerPageLabel = "每页条数";
+  previousPageLabel = "上一页";
+  nextPageLabel = "下一页";
+  firstPageLabel = "首页";
+  lastPageLabel = "尾页";
 
-    getRangeLabel = (page: number, pageSize: number, length: number) => {
-        const totalPage = Math.ceil(length / pageSize);
-        return `第${page + 1}页，共${totalPage}页`;
-    };
+  getRangeLabel = (page: number, pageSize: number, length: number) => {
+    const totalPage = Math.ceil(length / pageSize);
+    return `第${page + 1}页，共${totalPage}页`;
+  };
 }
 
 @NgModule({
-    declarations: [
-        AppComponent,
-        BezierComponent,
-        BullsAndCowsComponent,
-        BullsAndCowsDifficultyComponent,
-        ChineseChessCollectionsComponent,
-        ChineseChessComponent,
-        ChinesePoetryComponent,
-        ChinesePoetrySearchComponent,
-        DddjComponent,
-        HappyBirthdayComponent,
-        IndexComponent,
-        MenuComponent,
-        PageNotFoundComponent,
-        RubiksCubeComponent,
-        ThuumComponent
-    ],
-    imports: [
-        AIModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        BrowserModule,
-        ColorChromeModule,
-        DragDropModule,
-        FormsModule,
-        HttpModule,
-        ImageModule,
-        MatAutocompleteModule,
-        MatButtonModule,
-        MatCardModule,
-        MatDividerModule,
-        MatExpansionModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatListModule,
-        MatMenuModule,
-        MatPaginatorModule,
-        MatSelectModule,
-        MatSlideToggleModule,
-        MatTabsModule,
-        MatTooltipModule,
-        MessageModule,
-        MusicPlayerModule,
-        NgScrollbarModule,
-        ReactiveFormsModule,
-        SpinnerModule
-    ],
-    providers: [{provide: MatPaginatorIntl, useClass: MyMatPaginatorIntl}],
-    bootstrap: [AppComponent]
+  declarations: [
+    AppComponent,
+    BezierComponent,
+    BullsAndCowsComponent,
+    BullsAndCowsDifficultyComponent,
+    ChineseChessCollectionsComponent,
+    ChineseChessComponent,
+    ChinesePoetryComponent,
+    ChinesePoetrySearchComponent,
+    DddjComponent,
+    HappyBirthdayComponent,
+    IndexComponent,
+    MenuComponent,
+    PageNotFoundComponent,
+    RubiksCubeComponent,
+    ThuumComponent
+  ],
+  imports: [
+    AIModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    BrowserModule,
+    ColorChromeModule,
+    DragDropModule,
+    FormsModule,
+    HttpModule,
+    ImageModule,
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatCardModule,
+    MatDividerModule,
+    MatExpansionModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
+    MatMenuModule,
+    MatPaginatorModule,
+    MatSelectModule,
+    MatSlideToggleModule,
+    MatTabsModule,
+    MatTooltipModule,
+    MessageModule,
+    MusicPlayerModule,
+    NgScrollbarModule,
+    ReactiveFormsModule,
+    SpinnerModule
+  ],
+  providers: [{provide: MatPaginatorIntl, useClass: MyMatPaginatorIntl}],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}

@@ -8,24 +8,24 @@ import {NgxUiLoaderModule} from "ngx-ui-loader";
 import {ChineseChessCollectionsComponent} from "./chinese-chess-collections.component";
 
 describe("ChineseChessCollectionsComponent", () => {
-    let component: ChineseChessCollectionsComponent;
-    let fixture: ComponentFixture<ChineseChessCollectionsComponent>;
+  let component: ChineseChessCollectionsComponent;
+  let fixture: ComponentFixture<ChineseChessCollectionsComponent>;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            declarations: [ChineseChessCollectionsComponent],
-            imports: [HttpModule, MatButtonModule, NgScrollbarModule, NgxUiLoaderModule, SpinnerModule],
-            providers: [{provide: MatDialogRef, useValue: {}}]
-        }).compileComponents();
-    });
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ChineseChessCollectionsComponent],
+      imports: [HttpModule, MatButtonModule, NgScrollbarModule, NgxUiLoaderModule, SpinnerModule],
+      providers: [{provide: MatDialogRef, useValue: {}}]
+    }).compileComponents();
+  });
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(ChineseChessCollectionsComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ChineseChessCollectionsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it("should create", () => {
-        expect(component).toBeTruthy();
-    });
+  it("should create", () => {
+    expect(component).toBeTruthy();
+  });
 });

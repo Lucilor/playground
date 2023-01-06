@@ -12,34 +12,34 @@ import {NgScrollbarModule} from "ngx-scrollbar";
 import {RubiksCubeComponent} from "./rubiks-cube.component";
 
 describe("RubiksCubeComponent", () => {
-    let component: RubiksCubeComponent;
-    let fixture: ComponentFixture<RubiksCubeComponent>;
+  let component: RubiksCubeComponent;
+  let fixture: ComponentFixture<RubiksCubeComponent>;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            declarations: [RubiksCubeComponent, MenuComponent],
-            imports: [
-                BrowserAnimationsModule,
-                ColorChromeModule,
-                FormsModule,
-                MatExpansionModule,
-                MatFormFieldModule,
-                MatIconModule,
-                MatInputModule,
-                MatMenuModule,
-                NgScrollbarModule,
-                ReactiveFormsModule
-            ]
-        }).compileComponents();
-    });
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [RubiksCubeComponent, MenuComponent],
+      imports: [
+        BrowserAnimationsModule,
+        ColorChromeModule,
+        FormsModule,
+        MatExpansionModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule,
+        MatMenuModule,
+        NgScrollbarModule,
+        ReactiveFormsModule
+      ]
+    }).compileComponents();
+  });
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(RubiksCubeComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(RubiksCubeComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it("should create", () => {
-        expect(component).toBeTruthy();
-    });
+  it("should create", () => {
+    expect(component).toBeTruthy();
+  });
 });

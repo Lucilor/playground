@@ -1,9 +1,9 @@
 <div class="player-container" [class.mini]="isMini">
-    <div class="show-toggle" (click)="toggleMini()">
-        <div class="arrow" [class]="{left: isMini, right: !isMini}"><div class="inner"></div></div>
-    </div>
-    <div #playerEl class="cplayer"></div>
-    <app-spinner id="musicPlayerLoader" [config]="{hasProgressBar: false}"></app-spinner>
+  <div class="show-toggle" (click)="toggleMini()">
+    <div class="arrow" [class]="{left: isMini, right: !isMini}"><div class="inner"></div></div>
+  </div>
+  <div #playerEl class="cplayer"></div>
+  <app-spinner id="musicPlayerLoader" [config]="{hasProgressBar: false}"></app-spinner>
 </div>
 
 <div class="floating-lyric"></div>

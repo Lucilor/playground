@@ -1,13 +1,13 @@
 .form {
-    width: 360px;
-    padding: 20px;
-    box-sizing: border-box;
+  width: 360px;
+  padding: 20px;
+  box-sizing: border-box;
 
-    > *:not(:last-child) {
-        margin-bottom: 10px;
-    }
+  > *:not(:last-child) {
+    margin-bottom: 10px;
+  }
 }
 
 .mat-form-field {
-    display: block;
+  display: block;
 }

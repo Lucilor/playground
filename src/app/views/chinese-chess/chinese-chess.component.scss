@@ -1,6 +1,6 @@
 div {
-    box-sizing: border-box;
-    position: relative;
+  box-sizing: border-box;
+  position: relative;
 }
 
 $border-width: 1px;
@@ -8,438 +8,431 @@ $border-color: black;
 $tile-size: 58.88px;
 
 @mixin border {
-    border-width: $border-width;
-    border-color: $border-color;
-    border-style: solid;
+  border-width: $border-width;
+  border-color: $border-color;
+  border-style: solid;
 }
 @mixin border2x {
-    border-width: #{$border-width * 2};
-    border-color: $border-color;
-    border-style: solid;
+  border-width: #{$border-width * 2};
+  border-color: $border-color;
+  border-style: solid;
 }
 @mixin line($deg) {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 50%;
-    box-sizing: border-box;
-    border-bottom: $border-width solid $border-color;
-    transform-origin: bottom center;
-    transform: rotateZ($deg) scale(1.414);
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 50%;
+  box-sizing: border-box;
+  border-bottom: $border-width solid $border-color;
+  transform-origin: bottom center;
+  transform: rotateZ($deg) scale(1.414);
 }
 @mixin abs() {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
 }
 
 .container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .menu {
-    width: 25%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.8);
+  width: 25%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border-radius: 20px;
+  box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.2);
+
+  .help {
+    cursor: pointer;
+    text-align: right;
+  }
+
+  .sub-menu {
     display: flex;
-    flex-direction: column;
-    padding: 10px;
-    border-radius: 20px;
-    box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.2);
-
-    .help {
-        cursor: pointer;
-        text-align: right;
+    &:not(:last-child) {
+      border-bottom: 2px solid gray;
+      margin-bottom: 5px;
     }
 
-    .sub-menu {
-        display: flex;
-        &:not(:last-child) {
-            border-bottom: 2px solid gray;
-            margin-bottom: 5px;
-        }
-
-        .mat-form-field {
-            width: 100%;
-            .mat-icon {
-                cursor: pointer;
-            }
-        }
-
-        &.black,
-        &.red {
-            flex: 1 1 0;
-        }
-        &.red {
-            align-items: flex-end;
-        }
-        &.divider {
-            flex-direction: column;
-            .red::after {
-                content: "红方";
-                color: red;
-            }
-            .black::after {
-                content: "黑方";
-                color: black;
-            }
-        }
+    &.black,
+    &.red {
+      flex: 1 1 0;
     }
+    &.red {
+      align-items: flex-end;
+    }
+    &.divider {
+      flex-direction: column;
+      .red::after {
+        content: "红方";
+        color: red;
+      }
+      .black::after {
+        content: "黑方";
+        color: black;
+      }
+    }
+  }
 }
 
 .board {
-    display: flex;
-    flex-direction: column;
-    font-family: "魏碑";
-    margin: 20px;
+  display: flex;
+  flex-direction: column;
+  font-family: "魏碑";
+  margin: 20px;
 }
 
 .battle-field {
-    box-sizing: content-box;
+  box-sizing: content-box;
+  @include border2x();
+  background-color: burlywood;
+  padding: 30px;
+
+  .divider {
+    width: 100%;
+    height: 11.11%;
     @include border2x();
-    background-color: burlywood;
-    padding: 30px;
+    border-top: none;
+    border-bottom: none;
+    display: flex;
+    justify-content: space-around;
 
-    .divider {
-        width: 100%;
-        height: 11.11%;
-        @include border2x();
-        border-top: none;
-        border-bottom: none;
-        display: flex;
-        justify-content: space-around;
-
-        > * {
-            display: flex;
-            justify-content: center;
-            font-size: 1em;
-            > * {
-                display: inline-block;
-                transform-origin: center;
-            }
-            &:first-child > * {
-                transform: rotate(-90deg);
-            }
-            &:last-child > * {
-                transform: rotate(90deg);
-            }
-        }
+    > * {
+      display: flex;
+      justify-content: center;
+      font-size: 1em;
+      > * {
+        display: inline-block;
+        transform-origin: center;
+      }
+      &:first-child > * {
+        transform: rotate(-90deg);
+      }
+      &:last-child > * {
+        transform: rotate(90deg);
+      }
     }
+  }
 }
 
 .piece {
-    z-index: 1;
-    border-radius: 50%;
-    border: 4px double;
-    background-color: wheat;
-    text-shadow: 0px 0px 2px white;
-    box-shadow: 3px 3px 2px black;
-    transition: 0.3s ease-in-out;
-    &.black {
-        border-color: black;
-        color: black;
+  z-index: 1;
+  border-radius: 50%;
+  border: 4px double;
+  background-color: wheat;
+  text-shadow: 0px 0px 2px white;
+  box-shadow: 3px 3px 2px black;
+  transition: 0.3s ease-in-out;
+  &.black {
+    border-color: black;
+    color: black;
+  }
+  &.red {
+    border-color: red;
+    color: red;
+  }
+  &::after {
+    content: attr(name);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.75em;
+  }
+  &.selectable {
+    cursor: pointer;
+    &:hover,
+    &:active {
+      transform: translateY(-2px);
+      box-shadow: 3px 3px 5px 2px black;
     }
-    &.red {
-        border-color: red;
-        color: red;
-    }
-    &::after {
-        content: attr(name);
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 0.75em;
-    }
-    &.selectable {
-        cursor: pointer;
-        &:hover,
-        &:active {
-            transform: translateY(-2px);
-            box-shadow: 3px 3px 5px 2px black;
-        }
-    }
-    &.selected {
-        animation: blink 1s infinite;
-        transform: translateY(-2px);
-        box-shadow: 3px 3px 5px 2px black;
-    }
-    &.prev-moved {
-        box-shadow: 3px 3px 2px black, 0 0 0 3px rgba(255, 255, 255, 0.3);
-    }
+  }
+  &.selected {
+    animation: blink 1s infinite;
+    transform: translateY(-2px);
+    box-shadow: 3px 3px 5px 2px black;
+  }
+  &.prev-moved {
+    box-shadow: 3px 3px 2px black, 0 0 0 3px rgba(255, 255, 255, 0.3);
+  }
 }
 
 .side {
-    @include border();
+  @include border();
+  width: 100%;
+  height: 44.44%;
+
+  .pieces {
+    @include abs();
+    .piece {
+      width: 9.37%;
+      height: 18.75%;
+      position: absolute;
+      transform: translate(-50%, -50%);
+      &.selectable {
+        &:hover,
+        &:active {
+          transform: translate(-50%, calc(-50% - 2px));
+        }
+      }
+    }
+  }
+
+  .tiles {
     width: 100%;
-    height: 44.44%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    .tile {
+      @include border();
+      width: 12.5%;
+      height: 25%;
 
-    .pieces {
-        @include abs();
-        .piece {
-            width: 9.37%;
-            height: 18.75%;
-            position: absolute;
-            transform: translate(-50%, -50%);
-            &.selectable {
-                &:hover,
-                &:active {
-                    transform: translate(-50%, calc(-50% - 2px));
-                }
-            }
+      .corner {
+        width: 25%;
+        height: 25%;
+        position: absolute;
+        border-color: $border-color;
+        border-style: solid;
+        border-width: 0;
+        &.top {
+          top: 2px;
+          border-top-width: calc(2 * #{$border-width});
         }
-    }
-
-    .tiles {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-wrap: wrap;
-        .tile {
-            @include border();
-            width: 12.5%;
-            height: 25%;
-
-            .corner {
-                width: 25%;
-                height: 25%;
-                position: absolute;
-                border-color: $border-color;
-                border-style: solid;
-                border-width: 0;
-                &.top {
-                    top: 2px;
-                    border-top-width: calc(2 * #{$border-width});
-                }
-                &.right {
-                    right: 2px;
-                    border-right-width: calc(2 * #{$border-width});
-                }
-                &.bottom {
-                    bottom: 2px;
-                    border-bottom-width: calc(2 * #{$border-width});
-                }
-                &.left {
-                    left: 2px;
-                    border-left-width: calc(2 * #{$border-width});
-                }
-            }
+        &.right {
+          right: 2px;
+          border-right-width: calc(2 * #{$border-width});
         }
-    }
-
-    &.black {
-        .tile {
-            &:nth-of-type(4)::before,
-            &:nth-of-type(13)::before {
-                @include line(45deg);
-            }
-            &:nth-of-type(5)::before,
-            &:nth-of-type(12)::before {
-                @include line(-45deg);
-            }
+        &.bottom {
+          bottom: 2px;
+          border-bottom-width: calc(2 * #{$border-width});
         }
-    }
-    &.red {
-        .tile {
-            &:nth-of-type(20)::before,
-            &:nth-of-type(29)::before {
-                @include line(45deg);
-            }
-            &:nth-of-type(21)::before,
-            &:nth-of-type(28)::before {
-                @include line(-45deg);
-            }
+        &.left {
+          left: 2px;
+          border-left-width: calc(2 * #{$border-width});
         }
+      }
     }
+  }
 
-    .prompt-positions {
-        @include abs();
-
-        .prompt-position {
-            position: absolute;
-            z-index: 2;
-            width: 45px;
-            height: 45px;
-            transform: translate(-50%, -50%);
-            &.ripple {
-                cursor: pointer;
-            }
-        }
+  &.black {
+    .tile {
+      &:nth-of-type(4)::before,
+      &:nth-of-type(13)::before {
+        @include line(45deg);
+      }
+      &:nth-of-type(5)::before,
+      &:nth-of-type(12)::before {
+        @include line(-45deg);
+      }
     }
+  }
+  &.red {
+    .tile {
+      &:nth-of-type(20)::before,
+      &:nth-of-type(29)::before {
+        @include line(45deg);
+      }
+      &:nth-of-type(21)::before,
+      &:nth-of-type(28)::before {
+        @include line(-45deg);
+      }
+    }
+  }
+
+  .prompt-positions {
+    @include abs();
+
+    .prompt-position {
+      position: absolute;
+      z-index: 2;
+      width: 45px;
+      height: 45px;
+      transform: translate(-50%, -50%);
+      &.ripple {
+        cursor: pointer;
+      }
+    }
+  }
 }
 
 .graveyard {
+  .piece {
+    width: 8.33%;
+    height: 50%;
+    display: inline-block;
+  }
+  &.black {
+    transform: scaleY(-1);
     .piece {
-        width: 8.33%;
-        height: 50%;
-        display: inline-block;
+      transform: scaleY(-1);
     }
-    &.black {
-        transform: scaleY(-1);
-        .piece {
-            transform: scaleY(-1);
-        }
-    }
-    &.ripple {
-        cursor: pointer;
-    }
+  }
+  &.ripple {
+    cursor: pointer;
+  }
 }
 
 @keyframes blink {
-    0% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 $ripple-color: white;
 $ripple-size: 6px;
 .ripple::after,
 .ripple-small::after {
-    content: "";
-    display: block;
-    border: 1px solid $ripple-color;
-    background-color: $ripple-color;
-    border-radius: 50%;
-    width: $ripple-size;
-    height: $ripple-size;
-    font-size: $ripple-size;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  content: "";
+  display: block;
+  border: 1px solid $ripple-color;
+  background-color: $ripple-color;
+  border-radius: 50%;
+  width: $ripple-size;
+  height: $ripple-size;
+  font-size: $ripple-size;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 .ripple::after {
-    animation: ripple 1s linear infinite;
+  animation: ripple 1s linear infinite;
 }
 .ripple-small::after {
-    animation: ripple-small 1s linear infinite;
+  animation: ripple-small 1s linear infinite;
 }
 @keyframes ripple {
-    0% {
-        box-shadow: 0 0 0 0 rgba($ripple-color, 0.3), 0 0 0 0.8em rgba($ripple-color, 0.3), 0 0 0 1.6em rgba($ripple-color, 0.3);
-    }
-    100% {
-        box-shadow: 0 0 0 0.8em rgba($ripple-color, 0.3), 0 0 0 1.6em rgba($ripple-color, 0.3), 0 0 0 2.4em rgba($ripple-color, 0);
-    }
+  0% {
+    box-shadow: 0 0 0 0 rgba($ripple-color, 0.3), 0 0 0 0.8em rgba($ripple-color, 0.3), 0 0 0 1.6em rgba($ripple-color, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 0 0.8em rgba($ripple-color, 0.3), 0 0 0 1.6em rgba($ripple-color, 0.3), 0 0 0 2.4em rgba($ripple-color, 0);
+  }
 }
 @keyframes ripple-small {
-    0% {
-        box-shadow: 0 0 0 0.8em rgba($ripple-color, 0.5), 0 0 0 1.6em rgba($ripple-color, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba($ripple-color, 0.5), 0 0 0 0.8em rgba($ripple-color, 0.5);
-    }
+  0% {
+    box-shadow: 0 0 0 0.8em rgba($ripple-color, 0.5), 0 0 0 1.6em rgba($ripple-color, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba($ripple-color, 0.5), 0 0 0 0.8em rgba($ripple-color, 0.5);
+  }
 }
 
 .chat-bubble {
-    position: absolute;
-    width: 300%;
-    height: 90%;
-    transform: translate(-50%, -100%);
-    font-size: 0.5em;
-    text-align: center;
-    font-weight: bold;
-    display: none;
+  position: absolute;
+  width: 300%;
+  height: 90%;
+  transform: translate(-50%, -100%);
+  font-size: 0.5em;
+  text-align: center;
+  font-weight: bold;
+  display: none;
 
-    .bar {
-        border-radius: 1000px;
-        background: #fff;
-        height: 100%;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.2);
-    }
-    .arrow {
-        border-top: 7px solid #fff;
-        border-left: 7px solid transparent;
-        border-right: 7px solid transparent;
-        width: 14px;
-        height: 7px;
-        margin: 0 auto;
-    }
+  .bar {
+    border-radius: 1000px;
+    background: #fff;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.2);
+  }
+  .arrow {
+    border-top: 7px solid #fff;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    width: 14px;
+    height: 7px;
+    margin: 0 auto;
+  }
 }
 
 .shout1 {
-    display: block;
-    animation: shout1 1s ease-in-out both;
-    transform-origin: center center;
+  display: block;
+  animation: shout1 1s ease-in-out both;
+  transform-origin: center center;
 }
 @keyframes shout1 {
-    20% {
-        transform: translate(-50%, -100%) rotate3d(0, 0, 1, 5deg) scale3d(1.5, 1.5, 1.5);
-    }
-    25% {
-        transform: translate(-50%, -100%) rotate3d(0, 0, 1, -5deg) scale3d(1.5, 1.5, 1.5);
-    }
-    30% {
-        transform: translate(-50%, -100%) rotate3d(0, 0, 1, 5deg) scale3d(1.5, 1.5, 1.5);
-    }
-    35% {
-        transform: translate(-50%, -100%) rotate3d(0, 0, 1, -5deg) scale3d(1.5, 1.5, 1.5);
-    }
-    40% {
-        transform: translate(-50%, -100%) rotate3d(0, 0, 1, 5deg) scale3d(1.5, 1.5, 1.5);
-    }
-    45% {
-        transform: translate(-50%, -100%) rotate3d(0, 0, 1, -5deg) scale3d(1.5, 1.5, 1.5);
-    }
-    50% {
-        transform: translate(-50%, -100%) rotate3d(0, 0, 1, 5deg) scale3d(1.5, 1.5, 1.5);
-    }
-    60% {
-        transform: translate(-50%, -100%) rotate3d(0, 0, 1, 5deg) scale3d(1.5, 1.5, 1.5);
-    }
-    to {
-        transform: translate(-50%, -100%) rotate3d(0, 0, 1, 0deg);
-    }
+  20% {
+    transform: translate(-50%, -100%) rotate3d(0, 0, 1, 5deg) scale3d(1.5, 1.5, 1.5);
+  }
+  25% {
+    transform: translate(-50%, -100%) rotate3d(0, 0, 1, -5deg) scale3d(1.5, 1.5, 1.5);
+  }
+  30% {
+    transform: translate(-50%, -100%) rotate3d(0, 0, 1, 5deg) scale3d(1.5, 1.5, 1.5);
+  }
+  35% {
+    transform: translate(-50%, -100%) rotate3d(0, 0, 1, -5deg) scale3d(1.5, 1.5, 1.5);
+  }
+  40% {
+    transform: translate(-50%, -100%) rotate3d(0, 0, 1, 5deg) scale3d(1.5, 1.5, 1.5);
+  }
+  45% {
+    transform: translate(-50%, -100%) rotate3d(0, 0, 1, -5deg) scale3d(1.5, 1.5, 1.5);
+  }
+  50% {
+    transform: translate(-50%, -100%) rotate3d(0, 0, 1, 5deg) scale3d(1.5, 1.5, 1.5);
+  }
+  60% {
+    transform: translate(-50%, -100%) rotate3d(0, 0, 1, 5deg) scale3d(1.5, 1.5, 1.5);
+  }
+  to {
+    transform: translate(-50%, -100%) rotate3d(0, 0, 1, 0deg);
+  }
 }
 
 .shout2 {
-    animation: shout2 1s ease-in-out both;
-    transform-origin: center center;
+  animation: shout2 1s ease-in-out both;
+  transform-origin: center center;
 }
 @keyframes shout2 {
-    20% {
-        transform: translate(-50%, -50%) rotate3d(0, 0, 1, 5deg) scale3d(1.2, 1.2, 1.2);
-    }
-    25% {
-        transform: translate(-50%, -50%) rotate3d(0, 0, 1, -5deg) scale3d(1.2, 1.2, 1.2);
-    }
-    30% {
-        transform: translate(-50%, -50%) rotate3d(0, 0, 1, 5deg) scale3d(1.2, 1.2, 1.2);
-    }
-    35% {
-        transform: translate(-50%, -50%) rotate3d(0, 0, 1, -5deg) scale3d(1.2, 1.2, 1.2);
-    }
-    40% {
-        transform: translate(-50%, -50%) rotate3d(0, 0, 1, 5deg) scale3d(1.2, 1.2, 1.2);
-    }
-    45% {
-        transform: translate(-50%, -50%) rotate3d(0, 0, 1, -5deg) scale3d(1.2, 1.2, 1.2);
-    }
-    50% {
-        transform: translate(-50%, -50%) rotate3d(0, 0, 1, 5deg) scale3d(1.2, 1.2, 1.2);
-    }
-    60% {
-        transform: translate(-50%, -50%) rotate3d(0, 0, 1, 5deg) scale3d(1.2, 1.2, 1.2);
-    }
-    to {
-        transform: translate(-50%, -50%) rotate3d(0, 0, 1, 0deg);
-    }
+  20% {
+    transform: translate(-50%, -50%) rotate3d(0, 0, 1, 5deg) scale3d(1.2, 1.2, 1.2);
+  }
+  25% {
+    transform: translate(-50%, -50%) rotate3d(0, 0, 1, -5deg) scale3d(1.2, 1.2, 1.2);
+  }
+  30% {
+    transform: translate(-50%, -50%) rotate3d(0, 0, 1, 5deg) scale3d(1.2, 1.2, 1.2);
+  }
+  35% {
+    transform: translate(-50%, -50%) rotate3d(0, 0, 1, -5deg) scale3d(1.2, 1.2, 1.2);
+  }
+  40% {
+    transform: translate(-50%, -50%) rotate3d(0, 0, 1, 5deg) scale3d(1.2, 1.2, 1.2);
+  }
+  45% {
+    transform: translate(-50%, -50%) rotate3d(0, 0, 1, -5deg) scale3d(1.2, 1.2, 1.2);
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate3d(0, 0, 1, 5deg) scale3d(1.2, 1.2, 1.2);
+  }
+  60% {
+    transform: translate(-50%, -50%) rotate3d(0, 0, 1, 5deg) scale3d(1.2, 1.2, 1.2);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate3d(0, 0, 1, 0deg);
+  }
 }

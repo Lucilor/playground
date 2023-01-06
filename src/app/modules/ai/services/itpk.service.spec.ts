@@ -4,16 +4,16 @@ import {MessageModule} from "@modules/message/message.module";
 import {ItpkService} from "./itpk.service";
 
 describe("ItpkService", () => {
-    let service: ItpkService;
+  let service: ItpkService;
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            imports: [HttpModule, MessageModule]
-        });
-        service = TestBed.inject(ItpkService);
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpModule, MessageModule]
     });
+    service = TestBed.inject(ItpkService);
+  });
 
-    it("should be created", () => {
-        expect(service).toBeTruthy();
-    });
+  it("should be created", () => {
+    expect(service).toBeTruthy();
+  });
 });

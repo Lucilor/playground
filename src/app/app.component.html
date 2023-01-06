@@ -1,11 +1,15 @@
 <div class="bg" [ngStyle]="bgStyle$ | async"></div>
-<router-outlet></router-outlet>
+<div class="flex-110">
+  <router-outlet></router-outlet>
+</div>
 <app-spinner [text]="loaderText"></app-spinner>
 <button *ngIf="showHomeBtn" class="home-btn" mat-mini-fab color="primary" [routerLink]="'/index'">
-    <mat-icon>home</mat-icon>
+  <mat-icon>home</mat-icon>
 </button>
-<div class="footer" [matTooltip]="lastUpdateStr">
+<div class="flex-row" style="justify-content: center">
+  <div class="footer" [matTooltip]="lastUpdateStr">
     <a href="https://beian.miit.gov.cn/" target="_blank">粤ICP备18015215号-1</a>
     <span>&nbsp;&nbsp;</span>
-    <span>Copyright © 2022 Lucilor</span>
+    <span>Copyright © 2023 Lucilor</span>
+  </div>
 </div>

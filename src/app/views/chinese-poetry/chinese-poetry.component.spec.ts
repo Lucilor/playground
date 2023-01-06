@@ -9,23 +9,23 @@ import {NgScrollbarModule} from "ngx-scrollbar";
 import {ChinesePoetryComponent} from "./chinese-poetry.component";
 
 describe("ChinesePoetryComponent", () => {
-    let component: ChinesePoetryComponent;
-    let fixture: ComponentFixture<ChinesePoetryComponent>;
+  let component: ChinesePoetryComponent;
+  let fixture: ComponentFixture<ChinesePoetryComponent>;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            declarations: [ChinesePoetryComponent],
-            imports: [HttpModule, MatExpansionModule, MatPaginatorModule, MessageModule, NgScrollbarModule, SpinnerModule]
-        }).compileComponents();
-    });
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ChinesePoetryComponent],
+      imports: [HttpModule, MatExpansionModule, MatPaginatorModule, MessageModule, NgScrollbarModule, SpinnerModule]
+    }).compileComponents();
+  });
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(ChinesePoetryComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ChinesePoetryComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it("should create", () => {
-        expect(component).toBeTruthy();
-    });
+  it("should create", () => {
+    expect(component).toBeTruthy();
+  });
 });

@@ -1,86 +1,86 @@
 @import "utils";
 
 .container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 
-    .title {
-        font-size: 1.2em;
-        font-weight: bold;
-        padding: 10px;
-    }
+  .title {
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 10px;
+  }
 }
 
 .header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 
-    .toolbar {
-        margin: 0 !important;
-        position: absolute;
-        left: 0;
-        top: 0;
+  .toolbar {
+    margin: 0 !important;
+    position: absolute;
+    left: 0;
+    top: 0;
 
-        & > * {
-            transition: 0.3s;
-            &:hover {
-                transform: scale(1.5);
-            }
-        }
-
-        .mat-icon {
-            @include mat-icon-size(30px);
-        }
+    & > * {
+      transition: 0.3s;
+      &:hover {
+        transform: scale(1.5);
+      }
     }
+
+    .mat-icon {
+      @include mat-icon-size(30px);
+    }
+  }
 }
 
 .sections {
-    position: relative;
-    height: 100%;
-    overflow: hidden;
+  position: relative;
+  height: 100%;
+  overflow: hidden;
 
-    .section {
-        .mat-selection-list {
-            padding-top: 0;
+  .section {
+    .mat-selection-list {
+      padding-top: 0;
 
-            .mat-list-item {
-                height: 60px;
-            }
-        }
+      .mat-list-item {
+        height: 60px;
+      }
     }
+  }
 }
 
 .track {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
 
-    .track-image {
-        width: 25%;
-        border-radius: 50%;
-    }
+  .track-image {
+    width: 25%;
+    border-radius: 50%;
+  }
 
-    .lyric {
-        text-align: center;
-        line-height: 2em;
-    }
+  .lyric {
+    text-align: center;
+    line-height: 2em;
+  }
 
-    .ng-scrollbar {
-        width: 100%;
-        flex: 1 1 0;
-    }
+  .ng-scrollbar {
+    width: 100%;
+    flex: 1 1 0;
+  }
 }
 
 ::ng-deep {
-    .mat-list-item {
-        color: inherit !important;
-    }
+  .mat-list-item {
+    color: inherit !important;
+  }
 
-    .mat-tab-group {
-        height: 100%;
-    }
+  .mat-tab-group {
+    height: 100%;
+  }
 }

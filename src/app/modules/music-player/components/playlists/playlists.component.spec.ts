@@ -12,34 +12,34 @@ import {NgxUiLoaderModule} from "ngx-ui-loader";
 import {PlaylistsComponent} from "./playlists.component";
 
 describe("PlaylistsComponent", () => {
-    let component: PlaylistsComponent;
-    let fixture: ComponentFixture<PlaylistsComponent>;
+  let component: PlaylistsComponent;
+  let fixture: ComponentFixture<PlaylistsComponent>;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            declarations: [PlaylistsComponent],
-            imports: [
-                HttpModule,
-                InfiniteScrollModule,
-                MatIconModule,
-                MatListModule,
-                MatMenuModule,
-                MatSelectModule,
-                MessageModule,
-                NgScrollbarModule,
-                NgxUiLoaderModule,
-                SpinnerModule
-            ]
-        }).compileComponents();
-    });
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [PlaylistsComponent],
+      imports: [
+        HttpModule,
+        InfiniteScrollModule,
+        MatIconModule,
+        MatListModule,
+        MatMenuModule,
+        MatSelectModule,
+        MessageModule,
+        NgScrollbarModule,
+        NgxUiLoaderModule,
+        SpinnerModule
+      ]
+    }).compileComponents();
+  });
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(PlaylistsComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(PlaylistsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it("should create", () => {
-        expect(component).toBeTruthy();
-    });
+  it("should create", () => {
+    expect(component).toBeTruthy();
+  });
 });

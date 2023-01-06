@@ -5,9 +5,10 @@ import {MatButtonModule} from "@angular/material/button";
 import {FormsModule} from "@angular/forms";
 import {ImageModule} from "../image/image.module";
 import {NgScrollbarModule} from "ngx-scrollbar";
+import {MatIconModule} from "@angular/material/icon";
 
 @NgModule({
-    declarations: [ChatComponent],
-    imports: [CommonModule, FormsModule, ImageModule, MatButtonModule, NgScrollbarModule]
+  declarations: [ChatComponent],
+  imports: [CommonModule, FormsModule, ImageModule, MatButtonModule, MatIconModule, NgScrollbarModule]
 })
 export class AIModule {}

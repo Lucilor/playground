@@ -1,21 +1,21 @@
 .content {
-    > *:not(:last-child) {
-        margin-bottom: 5px;
-    }
+  > *:not(:last-child) {
+    margin-bottom: 5px;
+  }
 }
 
 .color-input {
-    font-size: 1rem;
+  font-size: 1rem;
 
-    &:not(:last-child){
-		margin-bottom: 5px;
-	}
+  &:not(:last-child) {
+    margin-bottom: 5px;
+  }
 }
 
 .mat-icon {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .mat-form-field {
-	display: block;
+  display: block;
 }

@@ -11,34 +11,34 @@ import {NgScrollbarModule} from "ngx-scrollbar";
 import {BullsAndCowsComponent} from "./bulls-and-cows.component";
 
 describe("BullsAndCowsComponent", () => {
-    let component: BullsAndCowsComponent;
-    let fixture: ComponentFixture<BullsAndCowsComponent>;
+  let component: BullsAndCowsComponent;
+  let fixture: ComponentFixture<BullsAndCowsComponent>;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            declarations: [BullsAndCowsComponent],
-            imports: [
-                BrowserAnimationsModule,
-                FormsModule,
-                MatCardModule,
-                MatDividerModule,
-                MatFormFieldModule,
-                MatIconModule,
-                MatInputModule,
-                MessageModule,
-                NgScrollbarModule,
-                ReactiveFormsModule
-            ]
-        }).compileComponents();
-    });
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [BullsAndCowsComponent],
+      imports: [
+        BrowserAnimationsModule,
+        FormsModule,
+        MatCardModule,
+        MatDividerModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule,
+        MessageModule,
+        NgScrollbarModule,
+        ReactiveFormsModule
+      ]
+    }).compileComponents();
+  });
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(BullsAndCowsComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(BullsAndCowsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it("should create", () => {
-        expect(component).toBeTruthy();
-    });
+  it("should create", () => {
+    expect(component).toBeTruthy();
+  });
 });

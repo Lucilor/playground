@@ -5,28 +5,28 @@ import {navigate} from "@app/app.common";
 import {AppStatusService} from "@services/app-status.service";
 
 @Component({
-    selector: "app-page-not-found",
-    templateUrl: "./page-not-found.component.html",
-    styleUrls: ["./page-not-found.component.scss"]
+  selector: "app-page-not-found",
+  templateUrl: "./page-not-found.component.html",
+  styleUrls: ["./page-not-found.component.scss"]
 })
 export class PageNotFoundComponent implements OnInit, OnDestroy {
-    routeInfo: RouteInfo | null;
+  routeInfo: RouteInfo | null;
 
-    constructor(private route: ActivatedRoute, private router: Router, private status: AppStatusService) {
-        this.routeInfo = this.route.snapshot.data.redirect;
-    }
+  constructor(private route: ActivatedRoute, private router: Router, private status: AppStatusService) {
+    this.routeInfo = this.route.snapshot.data.redirect;
+  }
 
-    ngOnInit() {
-        this.status.setFixedBgUrl("");
-    }
+  ngOnInit() {
+    this.status.setFixedBgUrl("");
+  }
 
-    ngOnDestroy() {
-        this.status.setFixedBgUrl(null);
-    }
+  ngOnDestroy() {
+    this.status.setFixedBgUrl(null);
+  }
 
-    redirect() {
-        if (this.routeInfo) {
-            navigate(this.router, this.routeInfo);
-        }
+  redirect() {
+    if (this.routeInfo) {
+      navigate(this.router, this.routeInfo);
     }
+  }
 }

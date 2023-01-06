@@ -4,14 +4,14 @@ import {MessageModule} from "@modules/message/message.module";
 import {AppStatusService} from "./app-status.service";
 
 describe("AppStatusService", () => {
-    let service: AppStatusService;
+  let service: AppStatusService;
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({imports: [HttpModule, MessageModule]});
-        service = TestBed.inject(AppStatusService);
-    });
+  beforeEach(() => {
+    TestBed.configureTestingModule({imports: [HttpModule, MessageModule]});
+    service = TestBed.inject(AppStatusService);
+  });
 
-    it("should be created", () => {
-        expect(service).toBeTruthy();
-    });
+  it("should be created", () => {
+    expect(service).toBeTruthy();
+  });
 });

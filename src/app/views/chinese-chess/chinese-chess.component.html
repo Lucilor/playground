@@ -1,182 +1,182 @@
 <input type="file" accept=".json" #importInput hidden (change)="importCollection($event)" />
 <div class="container">
-    <div
-        #boardRef
-        class="board"
-        *ngIf="sizes.font"
-        [style.fontSize.px]="sizes.font"
-        [style.width.px]="sizes.board[0]"
-        [style.height.px]="sizes.board[1]"
-    >
-        <ng-container *ngTemplateOutlet="graveyard; context: {$implicit: 'black'}"> </ng-container>
-        <div class="battle-field" [style.width.px]="sizes.battleField[0]" [style.height.px]="sizes.battleField[1]">
-            <ng-container *ngTemplateOutlet="side; context: {$implicit: 'black'}"> </ng-container>
-            <div class="divider">
-                <div>
-                    <div>楚</div>
-                    <div>河</div>
-                </div>
-                <div>
-                    <div>界</div>
-                    <div>漢</div>
-                </div>
-            </div>
-            <ng-container *ngTemplateOutlet="side; context: {$implicit: 'red'}"> </ng-container>
+  <div
+    #boardRef
+    class="board"
+    *ngIf="sizes.font"
+    [style.fontSize.px]="sizes.font"
+    [style.width.px]="sizes.board[0]"
+    [style.height.px]="sizes.board[1]"
+  >
+    <ng-container *ngTemplateOutlet="graveyard; context: {$implicit: 'black'}"> </ng-container>
+    <div class="battle-field" [style.width.px]="sizes.battleField[0]" [style.height.px]="sizes.battleField[1]">
+      <ng-container *ngTemplateOutlet="side; context: {$implicit: 'black'}"> </ng-container>
+      <div class="divider">
+        <div>
+          <div>楚</div>
+          <div>河</div>
         </div>
-        <ng-container *ngTemplateOutlet="graveyard; context: {$implicit: 'red'}"> </ng-container>
+        <div>
+          <div>界</div>
+          <div>漢</div>
+        </div>
+      </div>
+      <ng-container *ngTemplateOutlet="side; context: {$implicit: 'red'}"> </ng-container>
     </div>
-    <div class="menu" [style.height.px]="sizes.battleField[1] + 60" [ngSwitch]="mode$.value">
-        <div class="help"><mat-icon color="primary" (click)="showInfo()">help</mat-icon></div>
-        <ng-scrollbar>
-            <ng-container *ngSwitchCase="'下棋'">
-                <ng-template *ngTemplateOutlet="subMenu; context: {$implicit: 'black'}"></ng-template>
-                <div class="sub-menu divider">
-                    <ng-template *ngTemplateOutlet="mode"></ng-template>
-                    <mat-slide-toggle [checked]="applyCollection" (change)="toggleApplyCollection($event)">应用集合</mat-slide-toggle>
-                    <ng-container *ngIf="applyCollection">
-                        <ng-template *ngTemplateOutlet="collectionState"></ng-template>
-                    </ng-container>
-                    <div>
-                        <span [attr.class]="board.currentSide.name"> 当前行动: </span>
-                    </div>
-                    <div *ngIf="this.aiThinking">电脑思考中...</div>
-                    <div class="btn-group">
-                        <button mat-raised-button color="primary" (click)="backward()">悔棋</button>
-                        <button mat-raised-button color="primary" (click)="reset()">重来</button>
-                        <button mat-raised-button color="primary" (click)="showBoardMoves()">步法</button>
-                    </div>
-                </div>
-                <ng-template *ngTemplateOutlet="subMenu; context: {$implicit: 'red'}"></ng-template>
-            </ng-container>
-            <ng-container *ngSwitchCase="'摆棋'">
-                <div class="sub-menu divider">
-                    <ng-template *ngTemplateOutlet="mode"></ng-template>
-                    <ng-template *ngTemplateOutlet="collectionState"></ng-template>
-                    <div class="btn-group">
-                        <button mat-raised-button color="primary" (click)="reset(false)">初始局面</button>
-                        <button mat-raised-button color="primary" (click)="killAllPieces()">世界末日</button>
-                        <button mat-raised-button color="primary" (click)="createCollection()">新建集合</button>
-                        <button mat-raised-button color="primary" (click)="exportCollection()">保存集合</button>
-                        <button mat-raised-button color="primary" (click)="importInput.click()">载入集合</button>
-                        <button mat-raised-button color="primary" (click)="addToCollection()">新建棋局</button>
-                        <button mat-raised-button color="primary" (click)="updateToCollection()">更新棋局</button>
-                        <button mat-raised-button color="primary" (click)="deleteFromCollection()">删除棋局</button>
-                        <button mat-raised-button color="primary" (click)="getCollections()">下载范例</button>
-                    </div>
-                </div>
-            </ng-container>
-        </ng-scrollbar>
-    </div>
+    <ng-container *ngTemplateOutlet="graveyard; context: {$implicit: 'red'}"> </ng-container>
+  </div>
+  <div class="menu" [style.height.px]="sizes.battleField[1] + 60" [ngSwitch]="mode$.value">
+    <div class="help"><mat-icon color="primary" (click)="showInfo()">help</mat-icon></div>
+    <ng-scrollbar>
+      <ng-container *ngSwitchCase="'下棋'">
+        <ng-template *ngTemplateOutlet="subMenu; context: {$implicit: 'black'}"></ng-template>
+        <div class="sub-menu divider">
+          <ng-template *ngTemplateOutlet="mode"></ng-template>
+          <mat-slide-toggle [checked]="applyCollection" (change)="toggleApplyCollection($event)">应用集合</mat-slide-toggle>
+          <ng-container *ngIf="applyCollection">
+            <ng-template *ngTemplateOutlet="collectionState"></ng-template>
+          </ng-container>
+          <div>
+            <span [attr.class]="board.currentSide.name"> 当前行动: </span>
+          </div>
+          <div *ngIf="this.aiThinking">电脑思考中...</div>
+          <div class="btn-group">
+            <button mat-raised-button color="primary" (click)="backward()">悔棋</button>
+            <button mat-raised-button color="primary" (click)="reset()">重来</button>
+            <button mat-raised-button color="primary" (click)="showBoardMoves()">步法</button>
+          </div>
+        </div>
+        <ng-template *ngTemplateOutlet="subMenu; context: {$implicit: 'red'}"></ng-template>
+      </ng-container>
+      <ng-container *ngSwitchCase="'摆棋'">
+        <div class="sub-menu divider">
+          <ng-template *ngTemplateOutlet="mode"></ng-template>
+          <ng-template *ngTemplateOutlet="collectionState"></ng-template>
+          <div class="btn-group">
+            <button mat-raised-button color="primary" (click)="reset(false)">初始局面</button>
+            <button mat-raised-button color="primary" (click)="killAllPieces()">世界末日</button>
+            <button mat-raised-button color="primary" (click)="createCollection()">新建集合</button>
+            <button mat-raised-button color="primary" (click)="exportCollection()">保存集合</button>
+            <button mat-raised-button color="primary" (click)="importInput.click()">载入集合</button>
+            <button mat-raised-button color="primary" (click)="addToCollection()">新建棋局</button>
+            <button mat-raised-button color="primary" (click)="updateToCollection()">更新棋局</button>
+            <button mat-raised-button color="primary" (click)="deleteFromCollection()">删除棋局</button>
+            <button mat-raised-button color="primary" (click)="getCollections()">下载范例</button>
+          </div>
+        </div>
+      </ng-container>
+    </ng-scrollbar>
+  </div>
 </div>
 
 <ng-template #side let-side>
-    <div [attr.class]="'side ' + side">
-        <div class="tiles">
-            <div class="tile" *ngFor="let tile of tilesPerSide; let j = index">
-                <div class="corner top left" *ngIf="hasCorner(side, 0, j)"></div>
-                <div class="corner top right" *ngIf="hasCorner(side, 1, j)"></div>
-                <div class="corner bottom left" *ngIf="hasCorner(side, 2, j)"></div>
-                <div class="corner bottom right" *ngIf="hasCorner(side, 3, j)"></div>
-            </div>
-        </div>
-        <div class="pieces">
-            <div
-                class="piece"
-                *ngFor="let piece of getPieces(side)"
-                [attr.name]="piece.name"
-                [attr.type]="piece.type"
-                [class]="{
-                    red: side === 'red',
-                    black: side === 'black',
-                    selectable: isPieceSelectable(piece),
-                    selected: isPieceSelected(piece),
-                    'prev-moved': prevPiece$.value?.id === piece.id
-                }"
-                [style.left]="getLeft(piece.position[0], side)"
-                [style.top]="getTop(piece.position[1], side)"
-                [style.zIndex]="piece.type === 'general' ? 2 : 1"
-                (click)="onPieceClick(piece)"
-            >
-                <div class="chat-bubble" *ngIf="piece.type === 'general'">
-                    <div class="bar"><span>将军！</span></div>
-                    <div class="arrow"></div>
-                </div>
-            </div>
-        </div>
-        <div class="prompt-positions" *ngIf="board.currentSide.name === side">
-            <div
-                class="prompt-position ripple"
-                *ngFor="let p of promptPositions"
-                [style.left]="getLeft(p[0], side)"
-                [style.top]="getTop(p[1], side)"
-                (click)="onPromptPositionsClick(p)"
-            ></div>
-        </div>
-        <div class="prompt-positions" *ngIf="!currPiece$.value && prevPiece$.value?.side?.name === side">
-            <div
-                class="prompt-position ripple-small"
-                [style.left]="getLeft(prevPosition[0], side)"
-                [style.top]="getTop(prevPosition[1], side)"
-            ></div>
-        </div>
+  <div [attr.class]="'side ' + side">
+    <div class="tiles">
+      <div class="tile" *ngFor="let tile of tilesPerSide; let j = index">
+        <div class="corner top left" *ngIf="hasCorner(side, 0, j)"></div>
+        <div class="corner top right" *ngIf="hasCorner(side, 1, j)"></div>
+        <div class="corner bottom left" *ngIf="hasCorner(side, 2, j)"></div>
+        <div class="corner bottom right" *ngIf="hasCorner(side, 3, j)"></div>
+      </div>
     </div>
+    <div class="pieces">
+      <div
+        class="piece"
+        *ngFor="let piece of getPieces(side)"
+        [attr.name]="piece.name"
+        [attr.type]="piece.type"
+        [class]="{
+          red: side === 'red',
+          black: side === 'black',
+          selectable: isPieceSelectable(piece),
+          selected: isPieceSelected(piece),
+          'prev-moved': prevPiece$.value?.id === piece.id
+        }"
+        [style.left]="getLeft(piece.position[0], side)"
+        [style.top]="getTop(piece.position[1], side)"
+        [style.zIndex]="piece.type === 'general' ? 2 : 1"
+        (click)="onPieceClick(piece)"
+      >
+        <div class="chat-bubble" *ngIf="piece.type === 'general'">
+          <div class="bar"><span>将军！</span></div>
+          <div class="arrow"></div>
+        </div>
+      </div>
+    </div>
+    <div class="prompt-positions" *ngIf="board.currentSide.name === side">
+      <div
+        class="prompt-position ripple"
+        *ngFor="let p of promptPositions"
+        [style.left]="getLeft(p[0], side)"
+        [style.top]="getTop(p[1], side)"
+        (click)="onPromptPositionsClick(p)"
+      ></div>
+    </div>
+    <div class="prompt-positions" *ngIf="!currPiece$.value && prevPiece$.value?.side?.name === side">
+      <div
+        class="prompt-position ripple-small"
+        [style.left]="getLeft(prevPosition[0], side)"
+        [style.top]="getTop(prevPosition[1], side)"
+      ></div>
+    </div>
+  </div>
 </ng-template>
 <ng-template #graveyard let-side>
+  <div
+    class="graveyard"
+    [class]="{red: side === 'red', black: side === 'black', ripple: showGraveyardRipple(side)}"
+    [style.width.px]="sizes.graveyard[0]"
+    [style.height.px]="sizes.graveyard[1]"
+    (click)="onGraveyardClick(side)"
+  >
     <div
-        class="graveyard"
-        [class]="{red: side === 'red', black: side === 'black', ripple: showGraveyardRipple(side)}"
-        [style.width.px]="sizes.graveyard[0]"
-        [style.height.px]="sizes.graveyard[1]"
-        (click)="onGraveyardClick(side)"
-    >
-        <div
-            class="piece"
-            [class]="{red: side === 'red', black: side === 'black', selectable: isPieceSelectable(piece), selected: isPieceSelected(piece)}"
-            *ngFor="let piece of getGraveyard(side)"
-            [attr.name]="piece.name"
-            (click)="onPieceClick(piece)"
-        ></div>
-    </div>
+      class="piece"
+      [class]="{red: side === 'red', black: side === 'black', selectable: isPieceSelectable(piece), selected: isPieceSelected(piece)}"
+      *ngFor="let piece of getGraveyard(side)"
+      [attr.name]="piece.name"
+      (click)="onPieceClick(piece)"
+    ></div>
+  </div>
 </ng-template>
 <ng-template #subMenu let-side>
-    <div [class]="'sub-menu ' + side">
-        <mat-form-field>
-            <mat-label>{{ side === "red" ? "红方" : "黑方" }}</mat-label>
-            <mat-select [value]="getPlayer(side)" (selectionChange)="setPlayer($event, side)">
-                <mat-option *ngFor="let player of playersList" [value]="player.value">{{ player.name }}</mat-option>
-            </mat-select>
-        </mat-form-field>
-    </div>
+  <div [class]="'sub-menu ' + side">
+    <mat-form-field>
+      <mat-label>{{ side === "red" ? "红方" : "黑方" }}</mat-label>
+      <mat-select [value]="getPlayer(side)" (selectionChange)="setPlayer($event, side)">
+        <mat-option *ngFor="let player of playersList" [value]="player.value">{{ player.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 </ng-template>
 <ng-template #mode>
-    <mat-form-field>
-        <mat-label>模式</mat-label>
-        <mat-select [value]="mode$.value" (selectionChange)="setMode($event)">
-            <mat-option *ngFor="let mode of modes" [value]="mode">{{ mode }}</mat-option>
-        </mat-select>
-    </mat-form-field>
+  <mat-form-field>
+    <mat-label>模式</mat-label>
+    <mat-select [value]="mode$.value" (selectionChange)="setMode($event)">
+      <mat-option *ngFor="let mode of modes" [value]="mode">{{ mode }}</mat-option>
+    </mat-select>
+  </mat-form-field>
 </ng-template>
 <ng-template #collectionState>
-    <mat-form-field>
-        <mat-label>当前集合</mat-label>
-        <input type="text" matInput name="当前集合" [(ngModel)]="collection.name" />
-        <mat-icon matSuffix color="primary" (click)="editCollection()">description</mat-icon>
-    </mat-form-field>
-    <mat-form-field>
-        <mat-label>当前棋局</mat-label>
-        <input
-            type="text"
-            matInput
-            name="当前棋局"
-            [value]="collectionBoard?.name || ''"
-            (change)="changeBoardName($event)"
-            [matAutocomplete]="boards"
-        />
-        <mat-autocomplete #boards="matAutocomplete" (optionSelected)="changeCollectionIdx($event)">
-            <mat-option *ngFor="let board of collection.boards; let i = index" [value]="board.name">
-                {{ board.name }}
-            </mat-option>
-        </mat-autocomplete>
-        <mat-icon matSuffix color="primary" (click)="editCollectionBoard($event)">description</mat-icon>
-    </mat-form-field>
+  <mat-form-field>
+    <mat-label>当前集合</mat-label>
+    <input type="text" matInput name="当前集合" [(ngModel)]="collection.name" />
+    <mat-icon matSuffix color="primary" (click)="editCollection()">description</mat-icon>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>当前棋局</mat-label>
+    <input
+      type="text"
+      matInput
+      name="当前棋局"
+      [value]="collectionBoard?.name || ''"
+      (change)="changeBoardName($event)"
+      [matAutocomplete]="boards"
+    />
+    <mat-autocomplete #boards="matAutocomplete" (optionSelected)="changeCollectionIdx($event)">
+      <mat-option *ngFor="let board of collection.boards; let i = index" [value]="board.name">
+        {{ board.name }}
+      </mat-option>
+    </mat-autocomplete>
+    <mat-icon matSuffix color="primary" (click)="editCollectionBoard($event)">description</mat-icon>
+  </mat-form-field>
 </ng-template>

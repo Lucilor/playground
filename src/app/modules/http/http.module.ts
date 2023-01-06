@@ -7,14 +7,7 @@ import {RouterModule} from "@angular/router";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 @NgModule({
-    declarations: [],
-    imports: [
-        CommonModule,
-        HttpClientModule,
-        BrowserAnimationsModule,
-        RouterModule.forRoot([]),
-        MessageModule,
-        NgxUiLoaderHttpModule
-    ]
+  declarations: [],
+  imports: [CommonModule, HttpClientModule, BrowserAnimationsModule, RouterModule.forRoot([]), MessageModule, NgxUiLoaderHttpModule]
 })
 export class HttpModule {}

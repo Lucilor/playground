@@ -1,47 +1,48 @@
 /* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
-    "compileOnSave": false,
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "esnext",
+    "lib": ["esnext", "dom"],
+    "paths": {
+      "@components/*": ["src/app/components/*"],
+      "@directives/*": ["src/app/directives/*"],
+      "@guards/*": ["src/app/guards/*"],
+      "@mixins/*": ["src/app/mixins/*"],
+      "@modules/*": ["src/app/modules/*"],
+      "@services/*": ["src/app/services/*"],
+      "@views/*": ["src/app/views/*"],
+      "@app/*": ["src/app/*"],
+      "@env": ["src/environments/environment.ts"]
+    },
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "useDefineForClassFields": false
+  },
+  "angularCompilerOptions": {
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  },
+  "ts-node": {
     "compilerOptions": {
-        "baseUrl": "./",
-        "outDir": "./dist/out-tsc",
-        "forceConsistentCasingInFileNames": true,
-        "strict": true,
-        "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true,
-        "sourceMap": true,
-        "declaration": false,
-        "downlevelIteration": true,
-        "experimentalDecorators": true,
-        "moduleResolution": "node",
-        "importHelpers": true,
-        "target": "es2020",
-        "module": "esnext",
-        "lib": ["esnext", "dom"],
-        "paths": {
-            "@components/*": ["src/app/components/*"],
-            "@directives/*": ["src/app/directives/*"],
-            "@guards/*": ["src/app/guards/*"],
-            "@mixins/*": ["src/app/mixins/*"],
-            "@modules/*": ["src/app/modules/*"],
-            "@services/*": ["src/app/services/*"],
-            "@views/*": ["src/app/views/*"],
-            "@app/*": ["src/app/*"],
-            "@env": ["src/environments/environment.ts"]
-        },
-        "allowJs": true,
-        "allowSyntheticDefaultImports": true,
-        "resolveJsonModule": true
-    },
-    "angularCompilerOptions": {
-        "strictInjectionParameters": true,
-        "strictInputAccessModifiers": true,
-        "strictTemplates": true
-    },
-    "ts-node": {
-        "compilerOptions": {
-            "target": "esnext",
-            "module": "commonjs",
-            "esModuleInterop": true
-        }
+      "target": "esnext",
+      "module": "commonjs",
+      "esModuleInterop": true
     }
+  }
 }

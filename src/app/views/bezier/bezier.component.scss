@@ -1,41 +1,41 @@
 .content > *:not(:last-child) {
-    margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 .point-info-container {
-    .point-info {
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
+  .point-info {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
 
-        div {
-            width: 100%;
-        }
-
-        mat-form-field {
-            width: 50%;
-            padding: 0 5px;
-            box-sizing: border-box;
-        }
+    div {
+      width: 100%;
     }
 
-    .point-title {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+    mat-form-field {
+      width: 50%;
+      padding: 0 5px;
+      box-sizing: border-box;
     }
+  }
 
-    .delete-btn {
-        color: red;
-        cursor: pointer;
-    }
+  .point-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .delete-btn {
+    color: red;
+    cursor: pointer;
+  }
 }
 
 .controls {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-    > *:not(:last-child) {
-        margin-bottom: 5px;
-    }
+  > *:not(:last-child) {
+    margin-bottom: 5px;
+  }
 }

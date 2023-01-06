@@ -4,14 +4,14 @@ import {MessageModule} from "@modules/message/message.module";
 import {LoginGuard} from "./login.guard";
 
 describe("LoginGuard", () => {
-    let guard: LoginGuard;
+  let guard: LoginGuard;
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({imports: [HttpModule, MessageModule]});
-        guard = TestBed.inject(LoginGuard);
-    });
+  beforeEach(() => {
+    TestBed.configureTestingModule({imports: [HttpModule, MessageModule]});
+    guard = TestBed.inject(LoginGuard);
+  });
 
-    it("should be created", () => {
-        expect(guard).toBeTruthy();
-    });
+  it("should be created", () => {
+    expect(guard).toBeTruthy();
+  });
 });

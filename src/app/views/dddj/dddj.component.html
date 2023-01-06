@@ -1,27 +1,27 @@
 <div class="gift-preview" id="gift-preview" [ngClass]="{playing: isSvgaPlaying}"></div>
 <mat-tab-group class="gift-groups">
-    <mat-tab class="gift-group" *ngFor="let group of giftGroups" [label]="group.giftTypeName">
-        <ng-scrollbar class="gifts-container">
-            <div class="gifts">
-                <div
-                    class="gift"
-                    *ngFor="let gift of group.giftWebVoList"
-                    [matTooltip]="gift.briefIntroduction || ''"
-                    (click)="showGiftPreview(gift)"
-                >
-                    <app-image [src]="gift.giftIcon" [prefix]="config.path.imgPath" objectFit="cover"></app-image>
-                    <div class="gift-name">{{ gift.giftName }}</div>
-                    <div class="gift-price">
-                        <span>¥{{ gift.giftPrice }}</span>
-                        <span *ngIf="gift.expectedValue"> / ¥{{ gift.expectedValue.toFixed(2) }}</span>
-                    </div>
-                    <div class="gift-probability" *ngIf="gift.probability">{{ gift.probability }}%</div>
-                </div>
-            </div>
-        </ng-scrollbar>
-    </mat-tab>
+  <mat-tab class="gift-group" *ngFor="let group of giftGroups" [label]="group.giftTypeName">
+    <ng-scrollbar class="gifts-container">
+      <div class="gifts">
+        <div
+          class="gift"
+          *ngFor="let gift of group.giftWebVoList"
+          [matTooltip]="gift.briefIntroduction || ''"
+          (click)="showGiftPreview(gift)"
+        >
+          <app-image [src]="gift.giftIcon" [prefix]="config.path.imgPath" objectFit="cover"></app-image>
+          <div class="gift-name">{{ gift.giftName }}</div>
+          <div class="gift-price">
+            <span>¥{{ gift.giftPrice }}</span>
+            <span *ngIf="gift.expectedValue"> / ¥{{ gift.expectedValue.toFixed(2) }}</span>
+          </div>
+          <div class="gift-probability" *ngIf="gift.probability">{{ gift.probability }}%</div>
+        </div>
+      </div>
+    </ng-scrollbar>
+  </mat-tab>
 </mat-tab-group>
 <div class="footer">
-    <span>动画音量参差不齐，播放时请注意音量</span>
-    <span>动画分移动端动画和PC端动画，目前只播放移动端动画，目测这两者只有放大比例不同。</span>
+  <span>动画音量参差不齐，播放时请注意音量</span>
+  <span>动画分移动端动画和PC端动画，目前只播放移动端动画，目测这两者只有放大比例不同。</span>
 </div>
