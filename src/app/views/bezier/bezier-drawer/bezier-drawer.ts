@@ -14,7 +14,8 @@ import {
   Mesh,
   MeshBasicMaterial,
   Plane,
-  Clock
+  Clock,
+  BufferAttribute
 } from "three";
 import {BezierCurve} from "./bezier-curve";
 import {fitCurve} from "./fit-curve";
@@ -133,7 +134,11 @@ export class BezierDrawer extends Drawer {
       setGeoPos(curveGeometry, []);
       return;
     }
-    const curvePosition = Array.from(curveGeometry.getAttribute("position")?.array || []);
+    const curveAttr = curveGeometry.getAttribute("position");
+    if (!(curveAttr instanceof BufferAttribute)) {
+      return;
+    }
+    const curvePosition = Array.from(curveAttr.array);
     let point: Point | undefined;
     if (this.mode === "ctrlPoints") {
       point = this.curve.getPoint(_currentTime / duration);
@@ -333,10 +338,13 @@ export class BezierDrawer extends Drawer {
     if (point) {
       this._updatePointPositions(point);
       const curve2Geometry = this.objects.curve2.geometry as BufferGeometry;
-      const curve2Position = Array.from(curve2Geometry.getAttribute("position")?.array || []);
-      const p = this._getPoint(point);
-      curve2Position.push(p.x, p.y, 0);
-      setGeoPos(curve2Geometry, curve2Position);
+      const curve2Attr = curve2Geometry.getAttribute("position");
+      if (curve2Attr instanceof BufferAttribute) {
+        const curve2Position = Array.from(curve2Attr.array);
+        const p = this._getPoint(point);
+        curve2Position.push(p.x, p.y, 0);
+        setGeoPos(curve2Geometry, curve2Position);
+      }
     }
     this.curves = fitCurve(
       this.pointerPositions.map((v) => v.toArray()),
