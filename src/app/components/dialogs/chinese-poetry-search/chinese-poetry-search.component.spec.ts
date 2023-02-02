@@ -10,27 +10,27 @@ import {NgScrollbarModule} from "ngx-scrollbar";
 import {ChinesePoetrySearchComponent} from "./chinese-poetry-search.component";
 
 describe("ChinesePoetrySearchComponent", () => {
-    let component: ChinesePoetrySearchComponent;
-    let fixture: ComponentFixture<ChinesePoetrySearchComponent>;
+  let component: ChinesePoetrySearchComponent;
+  let fixture: ComponentFixture<ChinesePoetrySearchComponent>;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            declarations: [ChinesePoetrySearchComponent],
-            imports: [BrowserAnimationsModule, FormsModule, MatFormFieldModule, MatInputModule, MessageModule, NgScrollbarModule],
-            providers: [
-                {provide: MatDialogRef, useValue: {}},
-                {provide: MAT_DIALOG_DATA, useValue: {}}
-            ]
-        }).compileComponents();
-    });
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ChinesePoetrySearchComponent],
+      imports: [BrowserAnimationsModule, FormsModule, MatFormFieldModule, MatInputModule, MessageModule, NgScrollbarModule],
+      providers: [
+        {provide: MatDialogRef, useValue: {}},
+        {provide: MAT_DIALOG_DATA, useValue: {}}
+      ]
+    }).compileComponents();
+  });
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(ChinesePoetrySearchComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ChinesePoetrySearchComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it("should create", () => {
-        expect(component).toBeTruthy();
-    });
+  it("should create", () => {
+    expect(component).toBeTruthy();
+  });
 });

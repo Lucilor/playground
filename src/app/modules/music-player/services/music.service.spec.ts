@@ -4,14 +4,14 @@ import {MessageModule} from "@modules/message/message.module";
 import {MusicService} from "./music.service";
 
 describe("MusicPlayerService", () => {
-    let service: MusicService;
+  let service: MusicService;
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({imports: [HttpModule, MessageModule]});
-        service = TestBed.inject(MusicService);
-    });
+  beforeEach(() => {
+    TestBed.configureTestingModule({imports: [HttpModule, MessageModule]});
+    service = TestBed.inject(MusicService);
+  });
 
-    it("should be created", () => {
-        expect(service).toBeTruthy();
-    });
+  it("should be created", () => {
+    expect(service).toBeTruthy();
+  });
 });

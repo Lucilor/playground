@@ -7,27 +7,27 @@ import {AppStatusService} from "@services/app-status.service";
 import {cloneDeep} from "lodash";
 
 @Component({
-    selector: "app-index",
-    templateUrl: "./index.component.html",
-    styleUrls: ["./index.component.scss"]
+  selector: "app-index",
+  templateUrl: "./index.component.html",
+  styleUrls: ["./index.component.scss"]
 })
 export class IndexComponent extends Subscribed() {
-    routesInfo: RouteInfo[];
-    bgConfig = this.status.bgConfig;
+  routesInfo: RouteInfo[];
+  bgConfig = this.status.bgConfig;
 
-    constructor(private status: AppStatusService, private router: Router) {
-        super();
-        this.routesInfo = [];
-        const routesInfo = this.router.config as RouteInfo[];
-        for (const v of routesInfo) {
-            if (v.data?.hiddinInIndex) {
-                continue;
-            }
-            this.routesInfo.push(cloneDeep(v));
-        }
+  constructor(private status: AppStatusService, private router: Router) {
+    super();
+    this.routesInfo = [];
+    const routesInfo = this.router.config as RouteInfo[];
+    for (const v of routesInfo) {
+      if (v.data?.hiddinInIndex || !v.title) {
+        continue;
+      }
+      this.routesInfo.push(cloneDeep(v));
     }
+  }
 
-    onLinkClick(routeInfo: RouteInfo) {
-        navigate(this.router, routeInfo);
-    }
+  onLinkClick(routeInfo: RouteInfo) {
+    navigate(this.router, routeInfo);
+  }
 }

@@ -9,31 +9,31 @@ import {NgScrollbarModule} from "ngx-scrollbar";
 import {ChineseChessComponent} from "./chinese-chess.component";
 
 describe("ChineseChessComponent", () => {
-    let component: ChineseChessComponent;
-    let fixture: ComponentFixture<ChineseChessComponent>;
+  let component: ChineseChessComponent;
+  let fixture: ComponentFixture<ChineseChessComponent>;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            declarations: [ChineseChessComponent],
-            imports: [
-                BrowserAnimationsModule,
-                MatButtonModule,
-                MatIconModule,
-                MatSelectModule,
-                MatSlideToggleModule,
-                MessageModule,
-                NgScrollbarModule
-            ]
-        }).compileComponents();
-    });
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ChineseChessComponent],
+      imports: [
+        BrowserAnimationsModule,
+        MatButtonModule,
+        MatIconModule,
+        MatSelectModule,
+        MatSlideToggleModule,
+        MessageModule,
+        NgScrollbarModule
+      ]
+    }).compileComponents();
+  });
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(ChineseChessComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ChineseChessComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it("should create", () => {
-        expect(component).toBeTruthy();
-    });
+  it("should create", () => {
+    expect(component).toBeTruthy();
+  });
 });

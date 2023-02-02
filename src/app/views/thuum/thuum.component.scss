@@ -1,107 +1,130 @@
 @font-face {
-    font-family: thuum;
-    src: url("https://candypurity.com/static/fonts/Dovahkiin_1/dovahkiin_1-webfont.ttf");
+  font-family: thuum;
+  src: url("https://candypurity.com/static/fonts/Dovahkiin_1/dovahkiin_1-webfont.ttf");
 }
 
 .container {
-    display: flex;
-    width: 100vw;
-    height: 100vh;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
 
-    .thuum {
-        font-family: thuum;
-        font-size: 2rem;
-        background: white;
-        color: black;
-        text-shadow: 0px 1px 0px #c0c0c0, 0px 2px 0px #b0b0b0, 0px 3px 0px #a0a0a0, 0px 4px 0px #909090, 0px 5px 10px rgba(0, 0, 0, 0.9);
-    }
+  .thuum {
+    font-family: thuum;
+    font-size: 2rem;
+    background: white;
+    color: black;
+    text-shadow: 0px 1px 0px #c0c0c0, 0px 2px 0px #b0b0b0, 0px 3px 0px #a0a0a0, 0px 4px 0px #909090, 0px 5px 10px rgba(0, 0, 0, 0.9);
+  }
 
-    .thuum-char {
-        position: relative;
-        display: inline-block;
-        white-space: pre;
-    }
+  .thuum-char {
+    position: relative;
+    display: inline-block;
+    white-space: pre;
+  }
 
-    .thuum-layer {
-        position: absolute;
-        top: 0;
-        background-color: white;
-        height: 100%;
-    }
+  .thuum-layer {
+    position: absolute;
+    top: 0;
+    background-color: white;
+    height: 100%;
+  }
 }
 
 @keyframes slide {
-    0% {
-        flex: 0 0 0;
-    }
+  0% {
+    flex: 0 0 0;
+  }
 
-    50% {
-        flex: 1 1 0;
-    }
+  50% {
+    flex: 1 1 0;
+  }
 
-    100% {
-        flex: 0 0 0;
-    }
+  100% {
+    flex: 0 0 0;
+  }
 }
 
+.fade-in {
+  opacity: 0;
+  animation: fade-in var(--anim-duration) var(--anim-delay) forwards;
+}
 @keyframes fade-in {
-    0% {
-        opacity: 0;
-    }
+  0% {
+    opacity: 0;
+  }
 
-    100% {
-        opacity: 1;
-    }
+  100% {
+    opacity: 1;
+  }
 }
 
+.fade-out {
+  opacity: 1;
+  animation: fade-out var(--anim-duration) var(--anim-delay) forwards;
+}
 @keyframes fade-out {
-    0% {
-        opacity: 1;
-    }
+  0% {
+    opacity: 1;
+  }
 
-    100% {
-        opacity: 0;
-    }
+  100% {
+    opacity: 0;
+  }
 }
 
+.slide-out {
+  left: unset;
+  right: 0;
+  width: 100%;
+  animation: slide-out var(--anim-duration) var(--anim-delay) forwards;
+}
 @keyframes slide-out {
-    0% {
-        width: 100%;
-    }
+  0% {
+    width: 100%;
+  }
 
-    100% {
-        width: 0;
-    }
+  100% {
+    width: 0;
+  }
 }
 
+.slide-in {
+  left: 0;
+  right: unset;
+  width: 0;
+  animation: slide-in var(--anim-duration) var(--anim-delay) forwards;
+}
 @keyframes slide-in {
-    0% {
-        width: 0%;
-    }
+  0% {
+    width: 0%;
+  }
 
-    100% {
-        width: 100%;
-    }
+  100% {
+    width: 100%;
+  }
 }
 
+.show-thuum {
+  animation: show-thuum var(--anim-duration) var(--anim-delay) forwards;
+}
 @keyframes show-thuum {
-    0% {
-        color: black;
-    }
+  0% {
+    color: black;
+  }
 
-    50% {
-        color: cyan;
-    }
+  50% {
+    color: cyan;
+  }
 
-    100% {
-        color: black;
-    }
+  100% {
+    color: black;
+  }
 }
 
 ::ng-deep {
-    .thuum-title {
-        font-family: thuum !important;
-    }
+  .thuum-title {
+    font-family: thuum !important;
+  }
 }

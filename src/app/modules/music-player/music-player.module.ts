@@ -28,45 +28,45 @@ import {LoginComponent} from "./views/login/login.component";
 
 @Injectable()
 export class MyMatPaginatorIntl extends MatPaginatorIntl {
-    itemsPerPageLabel = "每页条数";
-    previousPageLabel = "上一页";
-    nextPageLabel = "下一页";
-    firstPageLabel = "首页";
-    lastPageLabel = "尾页";
+  itemsPerPageLabel = "每页条数";
+  previousPageLabel = "上一页";
+  nextPageLabel = "下一页";
+  firstPageLabel = "首页";
+  lastPageLabel = "尾页";
 
-    getRangeLabel = (page: number, pageSize: number, length: number) => {
-        const totalPage = Math.ceil(length / pageSize);
-        return `第${page + 1}页，共${totalPage}页`;
-    };
+  getRangeLabel = (page: number, pageSize: number, length: number) => {
+    const totalPage = Math.ceil(length / pageSize);
+    return `第${page + 1}页，共${totalPage}页`;
+  };
 }
 
 @NgModule({
-    declarations: [MusicPlayerComponent, LoginComponent, HomeComponent, PlaylistsComponent, CurrPlaylistComponent],
-    imports: [
-        BrowserAnimationsModule,
-        CommonModule,
-        FormsModule,
-        HttpModule,
-        ImageModule,
-        InfiniteScrollModule,
-        MatButtonModule,
-        MatCardModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatListModule,
-        MatMenuModule,
-        MatPaginatorModule,
-        MatSelectModule,
-        MatTabsModule,
-        MatTooltipModule,
-        MessageModule,
-        MusicPlayerRoutingModule,
-        NgScrollbarModule,
-        ReactiveFormsModule,
-        SpinnerModule
-    ],
-    exports: [MusicPlayerComponent],
-    providers: [{provide: MatPaginatorIntl, useClass: MyMatPaginatorIntl}]
+  declarations: [MusicPlayerComponent, LoginComponent, HomeComponent, PlaylistsComponent, CurrPlaylistComponent],
+  imports: [
+    BrowserAnimationsModule,
+    CommonModule,
+    FormsModule,
+    HttpModule,
+    ImageModule,
+    InfiniteScrollModule,
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
+    MatMenuModule,
+    MatPaginatorModule,
+    MatSelectModule,
+    MatTabsModule,
+    MatTooltipModule,
+    MessageModule,
+    MusicPlayerRoutingModule,
+    NgScrollbarModule,
+    ReactiveFormsModule,
+    SpinnerModule
+  ],
+  exports: [MusicPlayerComponent],
+  providers: [{provide: MatPaginatorIntl, useClass: MyMatPaginatorIntl}]
 })
 export class MusicPlayerModule {}

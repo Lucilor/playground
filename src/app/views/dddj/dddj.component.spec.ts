@@ -5,21 +5,21 @@ import {MessageModule} from "@modules/message/message.module";
 import {DddjComponent} from "./dddj.component";
 
 describe("DddjComponent", () => {
-    let component: DddjComponent;
-    let fixture: ComponentFixture<DddjComponent>;
+  let component: DddjComponent;
+  let fixture: ComponentFixture<DddjComponent>;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            declarations: [DddjComponent],
-            imports: [HttpModule, MatTabsModule, MessageModule]
-        }).compileComponents();
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [DddjComponent],
+      imports: [HttpModule, MatTabsModule, MessageModule]
+    }).compileComponents();
 
-        fixture = TestBed.createComponent(DddjComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+    fixture = TestBed.createComponent(DddjComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it("should create", () => {
-        expect(component).toBeTruthy();
-    });
+  it("should create", () => {
+    expect(component).toBeTruthy();
+  });
 });

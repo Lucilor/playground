@@ -1,25 +1,25 @@
 <div [formGroup]="form" class="form">
-    <mat-form-field>
-        <mat-label>难度预设</mat-label>
-        <mat-select [(ngModel)]="difficultyIdx" [ngModelOptions]="{standalone: true}" (selectionChange)="changeDifficulty()">
-            <mat-option *ngFor="let d of difficulties; let i = index" [value]="i">
-                {{ d.name }}
-            </mat-option>
-            <mat-option [value]="-1">自定义</mat-option>
-        </mat-select>
-        <mat-hint *ngIf="difficultyIdx > -1">{{ difficulty.desc }}</mat-hint>
-    </mat-form-field>
-    <mat-form-field>
-        <mat-label>字符范围</mat-label>
-        <input type="text" matInput [formControlName]="'chars'" [readonly]="difficultyIdx > -1" />
-    </mat-form-field>
-    <mat-form-field>
-        <mat-label>字符数量</mat-label>
-        <input type="number" matInput [formControlName]="'digits'" [readonly]="difficultyIdx > -1" />
-    </mat-form-field>
-    <mat-slide-toggle [formControlName]="'uniqueChars'">字符是否唯一</mat-slide-toggle>
-    <div class="btn-group">
-        <button mat-raised-button color="primary" (click)="submit()">确定</button>
-        <button mat-raised-button color="primary" (click)="cancle()">取消</button>
-    </div>
+  <mat-form-field>
+    <mat-label>难度预设</mat-label>
+    <mat-select [(ngModel)]="difficultyIdx" [ngModelOptions]="{standalone: true}" (selectionChange)="changeDifficulty()">
+      <mat-option *ngFor="let d of difficulties; let i = index" [value]="i">
+        {{ d.name }}
+      </mat-option>
+      <mat-option [value]="-1">自定义</mat-option>
+    </mat-select>
+    <mat-hint *ngIf="difficultyIdx > -1">{{ difficulty.desc }}</mat-hint>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>字符范围</mat-label>
+    <input type="text" matInput [formControlName]="'chars'" [readonly]="difficultyIdx > -1" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>字符数量</mat-label>
+    <input type="number" matInput [formControlName]="'digits'" [readonly]="difficultyIdx > -1" />
+  </mat-form-field>
+  <mat-slide-toggle [formControlName]="'uniqueChars'">字符是否唯一</mat-slide-toggle>
+  <div class="btn-group">
+    <button mat-raised-button color="primary" (click)="submit()">确定</button>
+    <button mat-raised-button color="primary" (click)="cancle()">取消</button>
+  </div>
 </div>

@@ -1,11 +1,11 @@
 <ng-scrollbar>
-    <div class="collections">
-        <app-spinner [id]="loadId"></app-spinner>
-        <ng-container *ngFor="let item of data">
-            <a mat-raised-button color="primary" [href]="getDownloadURL(item.name)" download target="_blank">{{ item.name }}</a>
-        </ng-container>
-    </div>
+  <div class="collections">
+    <app-spinner [id]="loadId"></app-spinner>
+    <ng-container *ngFor="let item of data">
+      <a mat-raised-button color="primary" [href]="getDownloadURL(item.name)" download target="_blank">{{ item.name }}</a>
+    </ng-container>
+  </div>
 </ng-scrollbar>
 <div class="btn-group" style="text-align: center">
-    <button mat-raised-button color="primary" (click)="dialogRef.close()">关闭</button>
+  <button mat-raised-button color="primary" (click)="dialogRef.close()">关闭</button>
 </div>

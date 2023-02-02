@@ -4,14 +4,14 @@ import {HttpModule} from "../http.module";
 import {ChinesePoetryService} from "./chinese-poetry.service";
 
 describe("ChinesePoetryService", () => {
-    let service: ChinesePoetryService;
+  let service: ChinesePoetryService;
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({imports: [HttpModule, MessageModule]});
-        service = TestBed.inject(ChinesePoetryService);
-    });
+  beforeEach(() => {
+    TestBed.configureTestingModule({imports: [HttpModule, MessageModule]});
+    service = TestBed.inject(ChinesePoetryService);
+  });
 
-    it("should be created", () => {
-        expect(service).toBeTruthy();
-    });
+  it("should be created", () => {
+    expect(service).toBeTruthy();
+  });
 });

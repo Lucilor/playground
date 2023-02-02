@@ -1,24 +1,24 @@
 {
-    "/api": {
-        "target": "https://candypurity.com/api",
-        // "target": "http://localhost:8080",
-        "pathRewrite": {"^/api": ""},
-        "secure": false,
-        "changeOrigin": true,
-        "logLevel": "debug"
-    },
-    "/netease-music": {
-        "target": "https://candypurity.com/netease-music",
-        "pathRewrite": {"^/netease-music": ""},
-        "secure": false,
-        "changeOrigin": true,
-        "logLevel": "debug"
-    },
-    "/daidai": {
-        "target": "https://img-play.daidaiyuyin.com",
-        "pathRewrite": {"^/daidai": ""},
-        "secure": false,
-        "changeOrigin": true,
-        "logLevel": "debug"
-    }
+  "/api": {
+    "target": "https://candypurity.com/api",
+    // "target": "http://localhost:8080",
+    "pathRewrite": {"^/api": ""},
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/netease-music": {
+    "target": "https://candypurity.com/netease-music",
+    "pathRewrite": {"^/netease-music": ""},
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/daidai": {
+    "target": "https://img-play.daidaiyuyin.com",
+    "pathRewrite": {"^/daidai": ""},
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
 }

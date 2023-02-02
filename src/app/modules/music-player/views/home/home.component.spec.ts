@@ -15,35 +15,35 @@ import {NgxUiLoaderModule} from "ngx-ui-loader";
 import {HomeComponent} from "./home.component";
 
 describe("HomeComponent", () => {
-    let component: HomeComponent;
-    let fixture: ComponentFixture<HomeComponent>;
+  let component: HomeComponent;
+  let fixture: ComponentFixture<HomeComponent>;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            declarations: [CurrPlaylistComponent, HomeComponent, PlaylistsComponent],
-            imports: [
-                HttpModule,
-                InfiniteScrollModule,
-                MatIconModule,
-                MatListModule,
-                MatCardModule,
-                MatMenuModule,
-                MatTabsModule,
-                MessageModule,
-                NgScrollbarModule,
-                NgxUiLoaderModule,
-                SpinnerModule
-            ]
-        }).compileComponents();
-    });
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [CurrPlaylistComponent, HomeComponent, PlaylistsComponent],
+      imports: [
+        HttpModule,
+        InfiniteScrollModule,
+        MatIconModule,
+        MatListModule,
+        MatCardModule,
+        MatMenuModule,
+        MatTabsModule,
+        MessageModule,
+        NgScrollbarModule,
+        NgxUiLoaderModule,
+        SpinnerModule
+      ]
+    }).compileComponents();
+  });
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(HomeComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(HomeComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it("should create", () => {
-        expect(component).toBeTruthy();
-    });
+  it("should create", () => {
+    expect(component).toBeTruthy();
+  });
 });

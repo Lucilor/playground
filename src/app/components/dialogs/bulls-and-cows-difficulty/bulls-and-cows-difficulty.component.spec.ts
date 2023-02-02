@@ -9,38 +9,38 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {BullsAndCowsDifficultyComponent} from "./bulls-and-cows-difficulty.component";
 
 describe("BullsAndCowsDifficultyComponent", () => {
-    let component: BullsAndCowsDifficultyComponent;
-    let fixture: ComponentFixture<BullsAndCowsDifficultyComponent>;
+  let component: BullsAndCowsDifficultyComponent;
+  let fixture: ComponentFixture<BullsAndCowsDifficultyComponent>;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            declarations: [BullsAndCowsDifficultyComponent],
-            imports: [
-                BrowserAnimationsModule,
-                FormsModule,
-                MatFormFieldModule,
-                MatInputModule,
-                MatSelectModule,
-                MatSlideToggleModule,
-                ReactiveFormsModule
-            ],
-            providers: [
-                {provide: MatDialogRef, useValue: {}},
-                {
-                    provide: MAT_DIALOG_DATA,
-                    useValue: {name: "标准", desc: "标准玩法。", config: {chars: "1234567890", digits: 4, uniqueChars: true}}
-                }
-            ]
-        }).compileComponents();
-    });
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [BullsAndCowsDifficultyComponent],
+      imports: [
+        BrowserAnimationsModule,
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatSlideToggleModule,
+        ReactiveFormsModule
+      ],
+      providers: [
+        {provide: MatDialogRef, useValue: {}},
+        {
+          provide: MAT_DIALOG_DATA,
+          useValue: {name: "标准", desc: "标准玩法。", config: {chars: "1234567890", digits: 4, uniqueChars: true}}
+        }
+      ]
+    }).compileComponents();
+  });
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(BullsAndCowsDifficultyComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(BullsAndCowsDifficultyComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it("should create", () => {
-        expect(component).toBeTruthy();
-    });
+  it("should create", () => {
+    expect(component).toBeTruthy();
+  });
 });

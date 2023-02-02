@@ -3,6 +3,7 @@
 # compiled output
 /dist
 /tmp
+/.tmp
 /out-tsc
 # Only exists if Bazel was run
 /bazel-out
@@ -48,10 +49,8 @@ Thumbs.db
 
 # yarn
 .yarn/*
-!.yarn/patches
-!.yarn/plugins
 !.yarn/releases
+!.yarn/plugins
 !.yarn/sdks
 !.yarn/versions
-
-.tmp
+!.yarn/patches

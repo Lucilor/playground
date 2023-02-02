@@ -1,128 +1,128 @@
 ::ng-deep .player-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    font-size: 12px;
-    display: flex;
-    z-index: 1000;
-    width: 320px;
-    transition: 0.25s ease 0.1s;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  font-size: 12px;
+  display: flex;
+  z-index: 1000;
+  width: 320px;
+  transition: 0.25s ease 0.1s;
 
-    &.mini {
-        right: 0;
-        width: 20px;
-
-        c-player {
-            width: 0;
-        }
-    }
-
-    .show-toggle {
-        position: relative;
-        top: 0.16667em;
-        width: 20px;
-        height: calc(50px - 0.33333em);
-        opacity: 0;
-        transform: translateX(100%);
-        transition: 0.25s ease 0.1s;
-        box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px;
-        background-color: rgba(255, 255, 255, 0.6);
-        border-top-left-radius: 0.33333em;
-        border-bottom-left-radius: 0.33333em;
-    }
-    &:hover,
-    &.mini {
-        .show-toggle {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
+  &.mini {
+    right: 0;
+    width: 20px;
 
     c-player {
-        transition: width 0.25s ease 0.1s;
-
-        .cp-drop-down-menu-playlist,
-        .cp-playlist {
-            max-height: 300px;
-            overflow: auto;
-        }
+      width: 0;
     }
+  }
 
-    .cp-poster {
-        border-radius: 50%;
-        cursor: pointer;
-
-        &.playing {
-            animation: rotate 10s linear infinite;
-        }
-        &.paused {
-            animation: rotate 10s linear paused;
-        }
+  .show-toggle {
+    position: relative;
+    top: 0.16667em;
+    width: 20px;
+    height: calc(50px - 0.33333em);
+    opacity: 0;
+    transform: translateX(100%);
+    transition: 0.25s ease 0.1s;
+    box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-top-left-radius: 0.33333em;
+    border-bottom-left-radius: 0.33333em;
+  }
+  &:hover,
+  &.mini {
+    .show-toggle {
+      opacity: 1;
+      transform: translateX(0);
     }
+  }
+
+  c-player {
+    transition: width 0.25s ease 0.1s;
+
+    .cp-drop-down-menu-playlist,
+    .cp-playlist {
+      max-height: 300px;
+      overflow: auto;
+    }
+  }
+
+  .cp-poster {
+    border-radius: 50%;
+    cursor: pointer;
+
+    &.playing {
+      animation: rotate 10s linear infinite;
+    }
+    &.paused {
+      animation: rotate 10s linear paused;
+    }
+  }
 }
 
 .arrow {
-    z-index: 1;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    .inner {
-        width: 10px;
-        height: 10px;
-        border-top: 2px solid rgba(0, 0, 0, 0.6);
-        border-left: 2px solid rgba(0, 0, 0, 0.6);
-        transition: 0.5s ease 0.1s;
-    }
+  .inner {
+    width: 10px;
+    height: 10px;
+    border-top: 2px solid rgba(0, 0, 0, 0.6);
+    border-left: 2px solid rgba(0, 0, 0, 0.6);
+    transition: 0.5s ease 0.1s;
+  }
 
+  &:hover {
+    cursor: pointer;
+  }
+
+  &.left {
     &:hover {
-        cursor: pointer;
+      animation: slide-left 1s ease-in-out infinite;
     }
+    .inner {
+      transform: translate(2px, 0) rotate(-45deg);
+    }
+  }
 
-    &.left {
-        &:hover {
-            animation: slide-left 1s ease-in-out infinite;
-        }
-        .inner {
-            transform: translate(2px, 0) rotate(-45deg);
-        }
+  &.right {
+    &:hover {
+      animation: slide-right 1s ease-in-out infinite;
     }
-
-    &.right {
-        &:hover {
-            animation: slide-right 1s ease-in-out infinite;
-        }
-        .inner {
-            transform: translate(-2px, 0) rotate(130deg);
-        }
+    .inner {
+      transform: translate(-2px, 0) rotate(130deg);
     }
+  }
 }
 
 @keyframes rotate {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes slide-left {
-    0% {
-        transform: translateX(15%);
-    }
-    100% {
-        transform: translateX(-15%);
-    }
+  0% {
+    transform: translateX(15%);
+  }
+  100% {
+    transform: translateX(-15%);
+  }
 }
 
 @keyframes slide-right {
-    0% {
-        transform: translateX(-15%);
-    }
-    100% {
-        transform: translateX(15%);
-    }
+  0% {
+    transform: translateX(-15%);
+  }
+  100% {
+    transform: translateX(15%);
+  }
 }

@@ -12,33 +12,33 @@ import {NgScrollbarModule} from "ngx-scrollbar";
 import {BezierComponent} from "./bezier.component";
 
 describe("BezierComponent", () => {
-    let component: BezierComponent;
-    let fixture: ComponentFixture<BezierComponent>;
+  let component: BezierComponent;
+  let fixture: ComponentFixture<BezierComponent>;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            declarations: [BezierComponent, MenuComponent],
-            imports: [
-                BrowserAnimationsModule,
-                FormsModule,
-                MatExpansionModule,
-                MatFormFieldModule,
-                MatIconModule,
-                MatInputModule,
-                MatSelectModule,
-                MatSlideToggleModule,
-                NgScrollbarModule
-            ]
-        }).compileComponents();
-    });
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [BezierComponent, MenuComponent],
+      imports: [
+        BrowserAnimationsModule,
+        FormsModule,
+        MatExpansionModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule,
+        MatSelectModule,
+        MatSlideToggleModule,
+        NgScrollbarModule
+      ]
+    }).compileComponents();
+  });
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(BezierComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(BezierComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it("should create", () => {
-        expect(component).toBeTruthy();
-    });
+  it("should create", () => {
+    expect(component).toBeTruthy();
+  });
 });

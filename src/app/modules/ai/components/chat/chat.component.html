@@ -1,41 +1,37 @@
 <div class="container">
-    <div class="chat">
-        <div class="chat-title">
-            <h1>{{ moli.name }}</h1>
-            <h2>{{ moli.description }}</h2>
-            <figure class="avatar">
-                <app-image [src]="moli.avatar" [bigPicSrc]="true"></app-image>
-            </figure>
-        </div>
-        <div class="messages">
-            <div class="messages-content">
-                <ng-scrollbar #scrollbar>
-                    <div
-                        class="message new"
-                        *ngFor="let message of messages"
-                        [class]="{'message-personal': !message.user, loading: message.isLoading}"
-                        [ngSwitch]="message.type"
-                    >
-                        <figure class="avatar" *ngIf="message.user">
-                            <app-image [src]="moli.avatar" [bigPicSrc]="true"></app-image>
-                        </figure>
-                        <span></span>
-                        <span *ngSwitchCase="'text'" [innerHTML]="message.text"></span>
-                        <app-image *ngSwitchCase="'image'" [src]="message.url" [bigPicSrc]="true"></app-image>
-                        <div class="timestamp">{{ message.timestamp }}</div>
-                    </div>
-                </ng-scrollbar>
-            </div>
-        </div>
-        <div class="message-box">
-            <textarea
-                type="text"
-                class="message-input"
-                [(ngModel)]="input"
-                (keydown)="onKeyDown($event)"
-                placeholder="有什么想说的？"
-            ></textarea>
-            <button mat-raised-button color="primary" type="submit" class="message-submit" (click)="send()">发送</button>
-        </div>
+  <div class="chat">
+    <div class="chat-title">
+      <h1>{{ moli.name }}</h1>
+      <h2>{{ moli.description }}</h2>
+      <figure class="avatar">
+        <app-image [src]="moli.avatar" [bigPicSrc]="true"></app-image>
+      </figure>
     </div>
+    <div class="messages">
+      <div class="messages-content">
+        <ng-scrollbar #scrollbar>
+          <div
+            class="message new"
+            *ngFor="let message of messages"
+            [class]="{'message-personal': !message.user, loading: message.isLoading}"
+            [ngSwitch]="message.type"
+          >
+            <figure class="avatar" *ngIf="message.user">
+              <app-image [src]="moli.avatar" [bigPicSrc]="true"></app-image>
+            </figure>
+            <span></span>
+            <span *ngSwitchCase="'text'" [innerHTML]="message.text"></span>
+            <app-image *ngSwitchCase="'image'" [src]="message.url" [bigPicSrc]="true"></app-image>
+            <div class="timestamp">{{ message.timestamp }}</div>
+          </div>
+        </ng-scrollbar>
+      </div>
+    </div>
+    <div class="message-box">
+      <textarea type="text" class="message-input" [(ngModel)]="input" (keydown)="onKeyDown($event)" placeholder="有什么想说的？"></textarea>
+      <button mat-icon-button color="primary" type="submit" class="message-submit" (click)="send()">
+        <mat-icon>send</mat-icon>
+      </button>
+    </div>
+  </div>
 </div>

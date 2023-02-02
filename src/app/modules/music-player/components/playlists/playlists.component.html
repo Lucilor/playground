@@ -1,74 +1,74 @@
 <div class="container" [ngStyle]="containerStyle">
-    <div class="header">
-        <div class="btn-group toolbar">
-            <button mat-icon-button class="toolbar" *ngIf="level$.value > 0" (click)="back()">
-                <mat-icon>arrow_back</mat-icon>
-            </button>
-        </div>
-        <div class="title" [ngSwitch]="level$.value">
-            <span *ngSwitchCase="0">歌单列表</span>
-            <span *ngSwitchCase="1">{{ playlist?.name }}</span>
-            <span *ngSwitchCase="2">{{ track?.name }}</span>
-        </div>
+  <div class="header">
+    <div class="btn-group toolbar">
+      <button mat-icon-button class="toolbar" *ngIf="level$.value > 0" (click)="back()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
     </div>
-    <app-spinner id="playlistLoader"></app-spinner>
-    <div class="sections" [ngSwitch]="level$.value">
-        <ng-scrollbar *ngSwitchCase="0" class="section">
-            <div infiniteScroll [scrollWindow]="false" scrollViewport (scrolled)="onScroll()">
-                <mat-selection-list (selectionChange)="selectPlaylist($event)" [multiple]="false">
-                    <mat-list-option
-                        *ngFor="let playlist of playlists"
-                        [value]="playlist.id"
-                        [matTooltip]="playlist.description || ''"
-                        (contextmenu)="onContextMenu($event, contextMenuPlaceholder, playlist.id)"
-                    >
-                        <img mat-list-avatar [src]="playlist.coverImgUrl" />
-                        <div mat-line>{{ playlist.name }}</div>
-                        <div mat-line>{{ playlist.trackCount }}首歌曲</div>
-                    </mat-list-option>
-                    <mat-list-option *ngIf="loading"> 正在加载... </mat-list-option>
-                    <app-spinner [id]="loaderId"></app-spinner>
-                </mat-selection-list>
-            </div>
-        </ng-scrollbar>
-
-        <ng-scrollbar *ngSwitchCase="1" class="section">
-            <div infiniteScroll [scrollWindow]="false" scrollViewport (scrolled)="onScroll()">
-                <mat-selection-list *ngIf="playlist" (selectionChange)="selectTrack($event)" [multiple]="false">
-                    <mat-list-option *ngFor="let track of playlist.tracks" [value]="track.id">
-                        <img mat-list-avatar [src]="track.al.picUrl" />
-                        <div mat-line>{{ track.name }}</div>
-                        <div mat-line>{{ getTrackSubtitle(track) }}</div>
-                    </mat-list-option>
-                </mat-selection-list>
-            </div>
-        </ng-scrollbar>
-
-        <div *ngSwitchCase="2" class="section" style="height: 100%">
-            <div *ngIf="track" class="track">
-                <div class="title">{{ getTrackSubtitle(track) }}</div>
-                <ng-scrollbar>
-                    <div *ngIf="lyric" class="lyric">
-                        <div *ngFor="let item of lyric.items; let i = index" class="item">
-                            <div>{{ item.word }}</div>
-                            <div *ngIf="tlyric && tlyric.items[i].word">{{ tlyric.items[i].word }}</div>
-                        </div>
-                    </div>
-                </ng-scrollbar>
-            </div>
-        </div>
+    <div class="title" [ngSwitch]="level$.value">
+      <span *ngSwitchCase="0">歌单列表</span>
+      <span *ngSwitchCase="1">{{ playlist?.name }}</span>
+      <span *ngSwitchCase="2">{{ track?.name }}</span>
     </div>
+  </div>
+  <app-spinner id="playlistLoader"></app-spinner>
+  <div class="sections" [ngSwitch]="level$.value">
+    <ng-scrollbar *ngSwitchCase="0" class="section">
+      <div infiniteScroll [scrollWindow]="false" scrollViewport (scrolled)="onScroll()">
+        <mat-selection-list (selectionChange)="selectPlaylist($event)" [multiple]="false">
+          <mat-list-option
+            *ngFor="let playlist of playlists"
+            [value]="playlist.id"
+            [matTooltip]="playlist.description || ''"
+            (contextmenu)="onContextMenu($event, contextMenuPlaceholder, playlist.id)"
+          >
+            <img mat-list-avatar [src]="playlist.coverImgUrl" />
+            <div mat-line>{{ playlist.name }}</div>
+            <div mat-line>{{ playlist.trackCount }}首歌曲</div>
+          </mat-list-option>
+          <mat-list-option *ngIf="loading"> 正在加载... </mat-list-option>
+          <app-spinner [id]="loaderId"></app-spinner>
+        </mat-selection-list>
+      </div>
+    </ng-scrollbar>
+
+    <ng-scrollbar *ngSwitchCase="1" class="section">
+      <div infiniteScroll [scrollWindow]="false" scrollViewport (scrolled)="onScroll()">
+        <mat-selection-list *ngIf="playlist" (selectionChange)="selectTrack($event)" [multiple]="false">
+          <mat-list-option *ngFor="let track of playlist.tracks" [value]="track.id">
+            <img mat-list-avatar [src]="track.al.picUrl" />
+            <div mat-line>{{ track.name }}</div>
+            <div mat-line>{{ getTrackSubtitle(track) }}</div>
+          </mat-list-option>
+        </mat-selection-list>
+      </div>
+    </ng-scrollbar>
+
+    <div *ngSwitchCase="2" class="section" style="height: 100%">
+      <div *ngIf="track" class="track">
+        <div class="title">{{ getTrackSubtitle(track) }}</div>
+        <ng-scrollbar>
+          <div *ngIf="lyric" class="lyric">
+            <div *ngFor="let item of lyric.items; let i = index" class="item">
+              <div>{{ item.word }}</div>
+              <div *ngIf="tlyric && tlyric.items[i].word">{{ tlyric.items[i].word }}</div>
+            </div>
+          </div>
+        </ng-scrollbar>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div
-    #contextMenuPlaceholder
-    style="visibility: hidden; position: absolute"
-    [style.left]="contextMenuPosition.x"
-    [style.top]="contextMenuPosition.y"
-    [matMenuTriggerFor]="contextMenu"
+  #contextMenuPlaceholder
+  style="visibility: hidden; position: absolute"
+  [style.left]="contextMenuPosition.x"
+  [style.top]="contextMenuPosition.y"
+  [matMenuTriggerFor]="contextMenu"
 ></div>
 <mat-menu #contextMenu="matMenu">
-    <ng-template matMenuContent>
-        <button mat-menu-item (click)="setAsCurrentPlaylist()">设为当前歌单</button>
-    </ng-template>
+  <ng-template matMenuContent>
+    <button mat-menu-item (click)="setAsCurrentPlaylist()">设为当前歌单</button>
+  </ng-template>
 </mat-menu>

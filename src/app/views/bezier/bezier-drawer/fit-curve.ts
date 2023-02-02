@@ -26,27 +26,27 @@ type CallbackFn = (obj?: any) => void;
  *          [first-point, control-point-1, control-point-2, second-point] and points are [x, y]
  */
 export const fitCurve = (points: number[][], maxError: number, progressCallback?: CallbackFn) => {
-    if (!Array.isArray(points)) {
-        throw new TypeError("First argument should be an array");
+  if (!Array.isArray(points)) {
+    throw new TypeError("First argument should be an array");
+  }
+  points.forEach((point) => {
+    if (!Array.isArray(point) || point.some((item) => typeof item !== "number") || point.length !== points[0].length) {
+      throw Error("Each point should be an array of numbers. Each point should have the same amount of numbers.");
     }
-    points.forEach((point) => {
-        if (!Array.isArray(point) || point.some((item) => typeof item !== "number") || point.length !== points[0].length) {
-            throw Error("Each point should be an array of numbers. Each point should have the same amount of numbers.");
-        }
-    });
+  });
 
-    // Remove duplicate points
-    points = points.filter((point, i) => i === 0 || !point.every((val, j) => val === points[i - 1][j]));
+  // Remove duplicate points
+  points = points.filter((point, i) => i === 0 || !point.every((val, j) => val === points[i - 1][j]));
 
-    if (points.length < 2) {
-        return [];
-    }
+  if (points.length < 2) {
+    return [];
+  }
 
-    const len = points.length;
-    const leftTangent = createTangent(points[1], points[0]);
-    const rightTangent = createTangent(points[len - 2], points[len - 1]);
+  const len = points.length;
+  const leftTangent = createTangent(points[1], points[0]);
+  const rightTangent = createTangent(points[len - 2], points[len - 1]);
 
-    return fitCubic(points, leftTangent, rightTangent, maxError, progressCallback);
+  return fitCubic(points, leftTangent, rightTangent, maxError, progressCallback);
 };
 
 /**
@@ -61,93 +61,93 @@ export const fitCurve = (points: number[][], maxError: number, progressCallback?
  *          [first-point, control-point-1, control-point-2, second-point] and points are [x, y]
  */
 const fitCubic = (points: number[][], leftTangent: number[], rightTangent: number[], error: number, progressCallback?: CallbackFn) => {
-    const MaxIterations = 20; //Max times to try iterating (to find an acceptable curve)
+  const MaxIterations = 20; //Max times to try iterating (to find an acceptable curve)
 
-    let bezCurve: number[][]; //Control points of fitted Bezier curve
-    let uPrime; //Improved parameter values
-    let maxError: number;
-    let prevErr: number; //Maximum fitting error
-    let splitPoint: number;
-    let prevSplit; //Point to split point set at if we need more than one curve
-    let centerVector: number[];
-    let beziers: number[][][]; //Array of fitted Bezier curves if we need more than one curve
-    let dist;
-    let i;
+  let bezCurve: number[][]; //Control points of fitted Bezier curve
+  let uPrime; //Improved parameter values
+  let maxError: number;
+  let prevErr: number; //Maximum fitting error
+  let splitPoint: number;
+  let prevSplit; //Point to split point set at if we need more than one curve
+  let centerVector: number[];
+  let beziers: number[][][]; //Array of fitted Bezier curves if we need more than one curve
+  let dist;
+  let i;
 
-    //console.log('fitCubic, ', points.length);
+  //console.log('fitCubic, ', points.length);
 
-    //Use heuristic if region only has two points in it
-    if (points.length === 2) {
-        dist = maths.vectorLen(maths.subtract(points[0], points[1])) / 3.0;
-        bezCurve = [
-            points[0],
-            maths.addArrays(points[0], maths.mulItems(leftTangent, dist)),
-            maths.addArrays(points[1], maths.mulItems(rightTangent, dist)),
-            points[1]
-        ];
+  //Use heuristic if region only has two points in it
+  if (points.length === 2) {
+    dist = maths.vectorLen(maths.subtract(points[0], points[1])) / 3.0;
+    bezCurve = [
+      points[0],
+      maths.addArrays(points[0], maths.mulItems(leftTangent, dist)),
+      maths.addArrays(points[1], maths.mulItems(rightTangent, dist)),
+      points[1]
+    ];
+    return [bezCurve];
+  }
+
+  //Parameterize points, and attempt to fit curve
+  const u = chordLengthParameterize(points); //Parameter values for point
+  let genRes = generateAndReport(points, u, u, leftTangent, rightTangent, progressCallback);
+  bezCurve = genRes.bezCurve;
+  maxError = genRes.maxError;
+  splitPoint = genRes.splitPoint;
+
+  if (maxError === 0 || maxError < error) {
+    return [bezCurve];
+  }
+  //If error not too large, try some reparameterization and iteration
+  if (maxError < error * error) {
+    uPrime = u;
+    prevErr = maxError;
+    prevSplit = splitPoint;
+
+    for (i = 0; i < MaxIterations; i++) {
+      uPrime = reparameterize(bezCurve, points, uPrime);
+      genRes = generateAndReport(points, u, uPrime, leftTangent, rightTangent, progressCallback);
+      bezCurve = genRes.bezCurve;
+      maxError = genRes.maxError;
+      splitPoint = genRes.splitPoint;
+
+      if (maxError < error) {
         return [bezCurve];
-    }
-
-    //Parameterize points, and attempt to fit curve
-    const u = chordLengthParameterize(points); //Parameter values for point
-    let genRes = generateAndReport(points, u, u, leftTangent, rightTangent, progressCallback);
-    bezCurve = genRes.bezCurve;
-    maxError = genRes.maxError;
-    splitPoint = genRes.splitPoint;
-
-    if (maxError === 0 || maxError < error) {
-        return [bezCurve];
-    }
-    //If error not too large, try some reparameterization and iteration
-    if (maxError < error * error) {
-        uPrime = u;
-        prevErr = maxError;
-        prevSplit = splitPoint;
-
-        for (i = 0; i < MaxIterations; i++) {
-            uPrime = reparameterize(bezCurve, points, uPrime);
-            genRes = generateAndReport(points, u, uPrime, leftTangent, rightTangent, progressCallback);
-            bezCurve = genRes.bezCurve;
-            maxError = genRes.maxError;
-            splitPoint = genRes.splitPoint;
-
-            if (maxError < error) {
-                return [bezCurve];
-            }
-            //If the development of the fitted curve grinds to a halt,
-            //we abort this attempt (and try a shorter curve):
-            else if (splitPoint === prevSplit) {
-                const errChange = maxError / prevErr;
-                if (errChange > 0.9999 && errChange < 1.0001) {
-                    break;
-                }
-            }
-
-            prevErr = maxError;
-            prevSplit = splitPoint;
+      }
+      //If the development of the fitted curve grinds to a halt,
+      //we abort this attempt (and try a shorter curve):
+      else if (splitPoint === prevSplit) {
+        const errChange = maxError / prevErr;
+        if (errChange > 0.9999 && errChange < 1.0001) {
+          break;
         }
+      }
+
+      prevErr = maxError;
+      prevSplit = splitPoint;
     }
+  }
 
-    //Fitting failed -- split at max error point and fit recursively
-    beziers = [];
+  //Fitting failed -- split at max error point and fit recursively
+  beziers = [];
 
-    //To create a smooth transition from one curve segment to the next, we
-    //calculate the line between the points directly before and after the
-    //center, and use that as the tangent both to and from the center point.
-    centerVector = maths.subtract(points[splitPoint - 1], points[splitPoint + 1]);
-    //However, this won't work if they're the same point, because the line we
-    //want to use as a tangent would be 0. Instead, we calculate the line from
-    //that "double-point" to the center point, and use its tangent.
-    if (centerVector.every((val) => val === 0)) {
-        //[x,y] -> [-y,x]: http://stackoverflow.com/a/4780141/1869660
-        centerVector = maths.subtract(points[splitPoint - 1], points[splitPoint]);
-        [centerVector[0], centerVector[1]] = [-centerVector[1], centerVector[0]];
-    }
-    const toCenterTangent = maths.normalize(centerVector);
-    //To and from need to point in opposite directions:
-    const fromCenterTangent = maths.mulItems(toCenterTangent, -1);
+  //To create a smooth transition from one curve segment to the next, we
+  //calculate the line between the points directly before and after the
+  //center, and use that as the tangent both to and from the center point.
+  centerVector = maths.subtract(points[splitPoint - 1], points[splitPoint + 1]);
+  //However, this won't work if they're the same point, because the line we
+  //want to use as a tangent would be 0. Instead, we calculate the line from
+  //that "double-point" to the center point, and use its tangent.
+  if (centerVector.every((val) => val === 0)) {
+    //[x,y] -> [-y,x]: http://stackoverflow.com/a/4780141/1869660
+    centerVector = maths.subtract(points[splitPoint - 1], points[splitPoint]);
+    [centerVector[0], centerVector[1]] = [-centerVector[1], centerVector[0]];
+  }
+  const toCenterTangent = maths.normalize(centerVector);
+  //To and from need to point in opposite directions:
+  const fromCenterTangent = maths.mulItems(toCenterTangent, -1);
 
-    /*
+  /*
     Note: An alternative to this "divide and conquer" recursion could be to always
           let new curve segments start by trying to go all the way to the end,
           instead of only to the end of the current subdivided polyline.
@@ -158,38 +158,38 @@ const fitCubic = (points: number[][], leftTangent: number[], rightTangent: numbe
           and the results take twice as many steps and milliseconds to finish,
           without looking any better than what we already have.
     */
-    beziers = beziers.concat(fitCubic(points.slice(0, splitPoint + 1), leftTangent, toCenterTangent, error, progressCallback));
-    beziers = beziers.concat(fitCubic(points.slice(splitPoint), fromCenterTangent, rightTangent, error, progressCallback));
-    return beziers;
+  beziers = beziers.concat(fitCubic(points.slice(0, splitPoint + 1), leftTangent, toCenterTangent, error, progressCallback));
+  beziers = beziers.concat(fitCubic(points.slice(splitPoint), fromCenterTangent, rightTangent, error, progressCallback));
+  return beziers;
 };
 
 const generateAndReport = (
-    points: number[][],
-    paramsOrig: number[],
-    paramsPrime: number[],
-    leftTangent: number[],
-    rightTangent: number[],
-    progressCallback?: CallbackFn
+  points: number[][],
+  paramsOrig: number[],
+  paramsPrime: number[],
+  leftTangent: number[],
+  rightTangent: number[],
+  progressCallback?: CallbackFn
 ) => {
-    const bezCurve = generateBezier(points, paramsPrime, leftTangent, rightTangent);
-    //Find max deviation of points to fitted curve.
-    //Here we always use the original parameters (from chordLengthParameterize()),
-    //because we need to compare the current curve to the actual source polyline,
-    //and not the currently iterated parameters which reparameterize() & generateBezier() use,
-    //as those have probably drifted far away and may no longer be in ascending order.
-    const [maxError, splitPoint] = computeMaxError(points, bezCurve, paramsOrig);
+  const bezCurve = generateBezier(points, paramsPrime, leftTangent, rightTangent);
+  //Find max deviation of points to fitted curve.
+  //Here we always use the original parameters (from chordLengthParameterize()),
+  //because we need to compare the current curve to the actual source polyline,
+  //and not the currently iterated parameters which reparameterize() & generateBezier() use,
+  //as those have probably drifted far away and may no longer be in ascending order.
+  const [maxError, splitPoint] = computeMaxError(points, bezCurve, paramsOrig);
 
-    if (progressCallback) {
-        progressCallback({
-            bez: bezCurve,
-            points,
-            params: paramsOrig,
-            maxErr: maxError,
-            maxPoint: splitPoint
-        });
-    }
+  if (progressCallback) {
+    progressCallback({
+      bez: bezCurve,
+      points,
+      params: paramsOrig,
+      maxErr: maxError,
+      maxPoint: splitPoint
+    });
+  }
 
-    return {bezCurve, maxError, splitPoint};
+  return {bezCurve, maxError, splitPoint};
 };
 
 /**
@@ -203,77 +203,77 @@ const generateAndReport = (
  *          where points are [x, y]
  */
 const generateBezier = (points: number[][], parameters: number[], leftTangent: number[], rightTangent: number[]) => {
-    let i;
-    let len;
-    let tmp;
-    let u;
-    let ux;
-    const firstPoint = points[0];
-    const lastPoint = points[points.length - 1];
+  let i;
+  let len;
+  let tmp;
+  let u;
+  let ux;
+  const firstPoint = points[0];
+  const lastPoint = points[points.length - 1];
 
-    const bezCurve = [firstPoint, [], [], lastPoint]; //Bezier curve ctl pts
-    //console.log('gb', parameters.length);
+  const bezCurve = [firstPoint, [], [], lastPoint]; //Bezier curve ctl pts
+  //console.log('gb', parameters.length);
 
-    //Compute the A's
-    const A = maths.zeros_Xx2x2(parameters.length);
-    for (i = 0, len = parameters.length; i < len; i++) {
-        u = parameters[i];
-        ux = 1 - u;
-        const a = A[i];
+  //Compute the A's
+  const A = maths.zeros_Xx2x2(parameters.length);
+  for (i = 0, len = parameters.length; i < len; i++) {
+    u = parameters[i];
+    ux = 1 - u;
+    const a = A[i];
 
-        a[0] = maths.mulItems(leftTangent, 3 * u * (ux * ux)) as any;
-        a[1] = maths.mulItems(rightTangent, 3 * ux * (u * u)) as any;
-    }
+    a[0] = maths.mulItems(leftTangent, 3 * u * (ux * ux)) as any;
+    a[1] = maths.mulItems(rightTangent, 3 * ux * (u * u)) as any;
+  }
 
-    //Create the C and X matrices
-    const C = [
-        [0, 0],
-        [0, 0]
-    ];
-    const X = [0, 0];
-    for (i = 0, len = points.length; i < len; i++) {
-        u = parameters[i];
-        const a = A[i] as any;
+  //Create the C and X matrices
+  const C = [
+    [0, 0],
+    [0, 0]
+  ];
+  const X = [0, 0];
+  for (i = 0, len = points.length; i < len; i++) {
+    u = parameters[i];
+    const a = A[i] as any;
 
-        C[0][0] += maths.dot(a[0], a[0]);
-        C[0][1] += maths.dot(a[0], a[1]);
-        C[1][0] += maths.dot(a[0], a[1]);
-        C[1][1] += maths.dot(a[1], a[1]);
+    C[0][0] += maths.dot(a[0], a[0]);
+    C[0][1] += maths.dot(a[0], a[1]);
+    C[1][0] += maths.dot(a[0], a[1]);
+    C[1][1] += maths.dot(a[1], a[1]);
 
-        tmp = maths.subtract(points[i], bezier.q([firstPoint, firstPoint, lastPoint, lastPoint], u));
+    tmp = maths.subtract(points[i], bezier.q([firstPoint, firstPoint, lastPoint, lastPoint], u));
 
-        X[0] += maths.dot(a[0], tmp);
-        X[1] += maths.dot(a[1], tmp);
-    }
+    X[0] += maths.dot(a[0], tmp);
+    X[1] += maths.dot(a[1], tmp);
+  }
 
-    //Compute the determinants of C and X
-    const detC0C1 = C[0][0] * C[1][1] - C[1][0] * C[0][1];
-    const detC0X = C[0][0] * X[1] - C[1][0] * X[0];
-    const detXC1 = X[0] * C[1][1] - X[1] * C[0][1];
+  //Compute the determinants of C and X
+  const detC0C1 = C[0][0] * C[1][1] - C[1][0] * C[0][1];
+  const detC0X = C[0][0] * X[1] - C[1][0] * X[0];
+  const detXC1 = X[0] * C[1][1] - X[1] * C[0][1];
 
-    //Finally, derive alpha values
-    const alpha_l = detC0C1 === 0 ? 0 : detXC1 / detC0C1;
-    const alpha_r = detC0C1 === 0 ? 0 : detC0X / detC0C1;
+  //Finally, derive alpha values
+  const alpha_l = detC0C1 === 0 ? 0 : detXC1 / detC0C1;
+  const alpha_r = detC0C1 === 0 ? 0 : detC0X / detC0C1;
 
-    //If alpha negative, use the Wu/Barsky heuristic (see text).
-    //If alpha is 0, you get coincident control points that lead to
-    //divide by zero in any subsequent NewtonRaphsonRootFind() call.
-    const segLength = maths.vectorLen(maths.subtract(firstPoint, lastPoint));
-    const epsilon = 1.0e-6 * segLength;
-    if (alpha_l < epsilon || alpha_r < epsilon) {
-        //Fall back on standard (probably inaccurate) formula, and subdivide further if needed.
-        bezCurve[1] = maths.addArrays(firstPoint, maths.mulItems(leftTangent, segLength / 3.0));
-        bezCurve[2] = maths.addArrays(lastPoint, maths.mulItems(rightTangent, segLength / 3.0));
-    } else {
-        //First and last control points of the Bezier curve are
-        //positioned exactly at the first and last data points
-        //Control points 1 and 2 are positioned an alpha distance out
-        //on the tangent vectors, left and right, respectively
-        bezCurve[1] = maths.addArrays(firstPoint, maths.mulItems(leftTangent, alpha_l));
-        bezCurve[2] = maths.addArrays(lastPoint, maths.mulItems(rightTangent, alpha_r));
-    }
+  //If alpha negative, use the Wu/Barsky heuristic (see text).
+  //If alpha is 0, you get coincident control points that lead to
+  //divide by zero in any subsequent NewtonRaphsonRootFind() call.
+  const segLength = maths.vectorLen(maths.subtract(firstPoint, lastPoint));
+  const epsilon = 1.0e-6 * segLength;
+  if (alpha_l < epsilon || alpha_r < epsilon) {
+    //Fall back on standard (probably inaccurate) formula, and subdivide further if needed.
+    bezCurve[1] = maths.addArrays(firstPoint, maths.mulItems(leftTangent, segLength / 3.0));
+    bezCurve[2] = maths.addArrays(lastPoint, maths.mulItems(rightTangent, segLength / 3.0));
+  } else {
+    //First and last control points of the Bezier curve are
+    //positioned exactly at the first and last data points
+    //Control points 1 and 2 are positioned an alpha distance out
+    //on the tangent vectors, left and right, respectively
+    bezCurve[1] = maths.addArrays(firstPoint, maths.mulItems(leftTangent, alpha_l));
+    bezCurve[2] = maths.addArrays(lastPoint, maths.mulItems(rightTangent, alpha_r));
+  }
 
-    return bezCurve;
+  return bezCurve;
 };
 
 /**
@@ -285,7 +285,7 @@ const generateBezier = (points: number[][], parameters: number[], leftTangent: n
  * @returns New parameter values
  */
 const reparameterize = (bez: number[][], points: number[][], parameters: number[]) =>
-    parameters.map((p, i) => newtonRaphsonRootFind(bez, points[i], p));
+  parameters.map((p, i) => newtonRaphsonRootFind(bez, points[i], p));
 
 /**
  * Use Newton-Raphson iteration to find better root.
@@ -296,7 +296,7 @@ const reparameterize = (bez: number[][], points: number[][], parameters: number[
  * @returns New u
  */
 const newtonRaphsonRootFind = (bez: number[][], point: number[], u: number) => {
-    /*
+  /*
         Newton's root finding algorithm calculates f(x)=0 by reiterating
         x_n+1 = x_n - f(x_n)/f'(x_n)
         We are trying to find curve parameter u for some point p that minimizes
@@ -310,16 +310,16 @@ const newtonRaphsonRootFind = (bez: number[][], point: number[], u: number) => {
         u_n+1 = u_n - |q(u_n)-p * q'(u_n)| / |q'(u_n)**2 + q(u_n)-p * q''(u_n)|
     */
 
-    const d = maths.subtract(bezier.q(bez, u), point);
-    const qprime = bezier.qprime(bez, u);
-    const numerator = maths.mulMatrix(d, qprime);
-    const denominator = maths.sum(maths.squareItems(qprime)) + 2 * maths.mulMatrix(d, bezier.qprimeprime(bez, u));
+  const d = maths.subtract(bezier.q(bez, u), point);
+  const qprime = bezier.qprime(bez, u);
+  const numerator = maths.mulMatrix(d, qprime);
+  const denominator = maths.sum(maths.squareItems(qprime)) + 2 * maths.mulMatrix(d, bezier.qprimeprime(bez, u));
 
-    if (denominator === 0) {
-        return u;
-    } else {
-        return u - numerator / denominator;
-    }
+  if (denominator === 0) {
+    return u;
+  } else {
+    return u - numerator / denominator;
+  }
 };
 
 /**
@@ -329,20 +329,20 @@ const newtonRaphsonRootFind = (bez: number[][], point: number[], u: number) => {
  * @returns Parameter values
  */
 const chordLengthParameterize = (points: number[][]) => {
-    let u: number[] = [];
-    let currU: number;
-    let prevU: number;
-    let prevP: number[];
+  let u: number[] = [];
+  let currU: number;
+  let prevU: number;
+  let prevP: number[];
 
-    points.forEach((p, i) => {
-        currU = i ? prevU + maths.vectorLen(maths.subtract(p, prevP)) : 0;
-        u.push(currU);
+  points.forEach((p, i) => {
+    currU = i ? prevU + maths.vectorLen(maths.subtract(p, prevP)) : 0;
+    u.push(currU);
 
-        prevU = currU;
-        prevP = p;
-    });
-    u = u.map((x) => x / prevU);
-    return u;
+    prevU = currU;
+    prevP = p;
+  });
+  u = u.map((x) => x / prevU);
+  return u;
 };
 
 /**
@@ -354,66 +354,66 @@ const chordLengthParameterize = (points: number[][]) => {
  * @returns Maximum error (squared) and point of max error
  */
 const computeMaxError = (points: number[][], bez: number[][], parameters: number[]) => {
-    let dist; //Current error
-    let maxDist; //Maximum error
-    let splitPoint; //Point of maximum error
-    let v; //Vector from point to curve
-    let i;
-    let count;
-    let point;
+  let dist; //Current error
+  let maxDist; //Maximum error
+  let splitPoint; //Point of maximum error
+  let v; //Vector from point to curve
+  let i;
+  let count;
+  let point;
 
-    maxDist = 0;
-    splitPoint = Math.floor(points.length / 2);
+  maxDist = 0;
+  splitPoint = Math.floor(points.length / 2);
 
-    const t_distMap = mapTtoRelativeDistances(bez, 10);
+  const t_distMap = mapTtoRelativeDistances(bez, 10);
 
-    for (i = 0, count = points.length; i < count; i++) {
-        point = points[i];
-        //Find 't' for a point on the bez curve that's as close to 'point' as possible:
-        const t = find_t(bez, parameters[i], t_distMap, 10);
+  for (i = 0, count = points.length; i < count; i++) {
+    point = points[i];
+    //Find 't' for a point on the bez curve that's as close to 'point' as possible:
+    const t = find_t(bez, parameters[i], t_distMap, 10);
 
-        v = maths.subtract(bezier.q(bez, t), point);
-        dist = v[0] * v[0] + v[1] * v[1];
+    v = maths.subtract(bezier.q(bez, t), point);
+    dist = v[0] * v[0] + v[1] * v[1];
 
-        if (dist > maxDist) {
-            maxDist = dist;
-            splitPoint = i;
-        }
+    if (dist > maxDist) {
+      maxDist = dist;
+      splitPoint = i;
     }
+  }
 
-    return [maxDist, splitPoint];
+  return [maxDist, splitPoint];
 };
 
 //Sample 't's and map them to relative distances along the curve:
 const mapTtoRelativeDistances = (bez: number[][], B_parts: number) => {
-    let B_t_curr;
-    let B_t_dist = [0];
-    let B_t_prev = bez[0];
-    let sumLen = 0;
+  let B_t_curr;
+  let B_t_dist = [0];
+  let B_t_prev = bez[0];
+  let sumLen = 0;
 
-    for (let i = 1; i <= B_parts; i++) {
-        B_t_curr = bezier.q(bez, i / B_parts);
+  for (let i = 1; i <= B_parts; i++) {
+    B_t_curr = bezier.q(bez, i / B_parts);
 
-        sumLen += maths.vectorLen(maths.subtract(B_t_curr, B_t_prev));
+    sumLen += maths.vectorLen(maths.subtract(B_t_curr, B_t_prev));
 
-        B_t_dist.push(sumLen);
-        B_t_prev = B_t_curr;
-    }
+    B_t_dist.push(sumLen);
+    B_t_prev = B_t_curr;
+  }
 
-    //Normalize B_length to the same interval as the parameter distances; 0 to 1:
-    B_t_dist = B_t_dist.map((x) => x / sumLen);
-    return B_t_dist;
+  //Normalize B_length to the same interval as the parameter distances; 0 to 1:
+  B_t_dist = B_t_dist.map((x) => x / sumLen);
+  return B_t_dist;
 };
 
 const find_t = (bez: number[][], param: number, tDistMap: number[], BParts: number) => {
-    if (param < 0) {
-        return 0;
-    }
-    if (param > 1) {
-        return 1;
-    }
+  if (param < 0) {
+    return 0;
+  }
+  if (param > 1) {
+    return 1;
+  }
 
-    /*
+  /*
         'param' is a value between 0 and 1 telling us the relative position
         of a point on the source polyline (linearly from the start (0) to the end (1)).
         To see if a given curve - 'bez' - is a close approximation of the polyline,
@@ -439,26 +439,26 @@ const find_t = (bez: number[][], param: number, tDistMap: number[], BParts: numb
             http://steve.hollasch.net/cgindex/curves/cbezarclen.html
             https://github.com/retuxx/tinyspline
     */
-    let lenMax;
-    let lenMin;
-    let tMax;
-    let tMin;
-    let t = 0;
+  let lenMax;
+  let lenMin;
+  let tMax;
+  let tMin;
+  let t = 0;
 
-    //Find the two t-s that the current param distance lies between,
-    //and then interpolate a somewhat accurate value for the exact t:
-    for (let i = 1; i <= BParts; i++) {
-        if (param <= tDistMap[i]) {
-            tMin = (i - 1) / BParts;
-            tMax = i / BParts;
-            lenMin = tDistMap[i - 1];
-            lenMax = tDistMap[i];
+  //Find the two t-s that the current param distance lies between,
+  //and then interpolate a somewhat accurate value for the exact t:
+  for (let i = 1; i <= BParts; i++) {
+    if (param <= tDistMap[i]) {
+      tMin = (i - 1) / BParts;
+      tMax = i / BParts;
+      lenMin = tDistMap[i - 1];
+      lenMax = tDistMap[i];
 
-            t = ((param - lenMin) / (lenMax - lenMin)) * (tMax - tMin) + tMin;
-            break;
-        }
+      t = ((param - lenMin) / (lenMax - lenMin)) * (tMax - tMin) + tMin;
+      break;
     }
-    return t;
+  }
+  return t;
 };
 
 /**
@@ -471,101 +471,101 @@ const createTangent = (pointA: number[], pointB: number[]) => maths.normalize(ma
     Optimized for our input, which is only numbers and 1x2 arrays (i.e. [x, y] coordinates).
 */
 class maths {
-    //zeros = logAndRun(math.zeros);
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    static zeros_Xx2x2 = (x: number) => {
-        const zs: number[][] = [];
-        while (x--) {
-            zs.push([0, 0]);
-        }
-        return zs;
-    };
-
-    //multiply = logAndRun(math.multiply);
-    static mulItems(items: number[], multiplier: number) {
-        return items.map((x) => x * multiplier);
+  //zeros = logAndRun(math.zeros);
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  static zeros_Xx2x2 = (x: number) => {
+    const zs: number[][] = [];
+    while (x--) {
+      zs.push([0, 0]);
     }
-    static mulMatrix(m1: number[], m2: number[]) {
-        //https://en.wikipedia.org/wiki/Matrix_multiplication#Matrix_product_.28two_matrices.29
-        //Simplified to only handle 1-dimensional matrices (i.e. arrays) of equal length:
-        return m1.reduce((sum, x1, i) => sum + x1 * m2[i], 0);
-    }
+    return zs;
+  };
 
-    //Only used to subract to points (or at least arrays):
-    //  subtract = logAndRun(math.subtract);
-    static subtract(arr1: number[], arr2: number[]) {
-        return arr1.map((x1, i) => x1 - arr2[i]);
-    }
+  //multiply = logAndRun(math.multiply);
+  static mulItems(items: number[], multiplier: number) {
+    return items.map((x) => x * multiplier);
+  }
+  static mulMatrix(m1: number[], m2: number[]) {
+    //https://en.wikipedia.org/wiki/Matrix_multiplication#Matrix_product_.28two_matrices.29
+    //Simplified to only handle 1-dimensional matrices (i.e. arrays) of equal length:
+    return m1.reduce((sum, x1, i) => sum + x1 * m2[i], 0);
+  }
 
-    //add = logAndRun(math.add);
-    static addArrays(arr1: number[], arr2: number[]) {
-        return arr1.map((x1, i) => x1 + arr2[i]);
-    }
-    static addItems(items: number[], addition: number) {
-        return items.map((x) => x + addition);
-    }
+  //Only used to subract to points (or at least arrays):
+  //  subtract = logAndRun(math.subtract);
+  static subtract(arr1: number[], arr2: number[]) {
+    return arr1.map((x1, i) => x1 - arr2[i]);
+  }
 
-    //var sum = logAndRun(math.sum);
-    static sum(items: number[]) {
-        return items.reduce((sum, x) => sum + x);
-    }
+  //add = logAndRun(math.add);
+  static addArrays(arr1: number[], arr2: number[]) {
+    return arr1.map((x1, i) => x1 + arr2[i]);
+  }
+  static addItems(items: number[], addition: number) {
+    return items.map((x) => x + addition);
+  }
 
-    //chain = math.chain;
+  //var sum = logAndRun(math.sum);
+  static sum(items: number[]) {
+    return items.reduce((sum, x) => sum + x);
+  }
 
-    //Only used on two arrays. The dot product is equal to the matrix product in this case:
-    //  dot = logAndRun(math.dot);
-    static dot(m1: number[], m2: number[]) {
-        return maths.mulMatrix(m1, m2);
-    }
+  //chain = math.chain;
 
-    //https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm
-    //  var norm = logAndRun(math.norm);
-    static vectorLen(v: number[]) {
-        return Math.hypot(...v);
-    }
+  //Only used on two arrays. The dot product is equal to the matrix product in this case:
+  //  dot = logAndRun(math.dot);
+  static dot(m1: number[], m2: number[]) {
+    return maths.mulMatrix(m1, m2);
+  }
 
-    //math.divide = logAndRun(math.divide);
-    static divItems(items: number[], divisor: number) {
-        return items.map((x) => x / divisor);
-    }
+  //https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm
+  //  var norm = logAndRun(math.norm);
+  static vectorLen(v: number[]) {
+    return Math.hypot(...v);
+  }
 
-    //var dotPow = logAndRun(math.dotPow);
-    static squareItems(items: number[]) {
-        return items.map((x) => x * x);
-    }
+  //math.divide = logAndRun(math.divide);
+  static divItems(items: number[], divisor: number) {
+    return items.map((x) => x / divisor);
+  }
 
-    static normalize(v: number[]) {
-        return this.divItems(v, this.vectorLen(v));
-    }
+  //var dotPow = logAndRun(math.dotPow);
+  static squareItems(items: number[]) {
+    return items.map((x) => x * x);
+  }
 
-    //Math.pow = logAndRun(Math.pow);
+  static normalize(v: number[]) {
+    return this.divItems(v, this.vectorLen(v));
+  }
+
+  //Math.pow = logAndRun(Math.pow);
 }
 
 class bezier {
-    //Evaluates cubic bezier at t, return point
-    static q(ctrlPoly: number[][], t: number) {
-        const tx = 1.0 - t;
-        const pA = maths.mulItems(ctrlPoly[0], tx * tx * tx);
-        const pB = maths.mulItems(ctrlPoly[1], 3 * tx * tx * t);
-        const pC = maths.mulItems(ctrlPoly[2], 3 * tx * t * t);
-        const pD = maths.mulItems(ctrlPoly[3], t * t * t);
-        return maths.addArrays(maths.addArrays(pA, pB), maths.addArrays(pC, pD));
-    }
+  //Evaluates cubic bezier at t, return point
+  static q(ctrlPoly: number[][], t: number) {
+    const tx = 1.0 - t;
+    const pA = maths.mulItems(ctrlPoly[0], tx * tx * tx);
+    const pB = maths.mulItems(ctrlPoly[1], 3 * tx * tx * t);
+    const pC = maths.mulItems(ctrlPoly[2], 3 * tx * t * t);
+    const pD = maths.mulItems(ctrlPoly[3], t * t * t);
+    return maths.addArrays(maths.addArrays(pA, pB), maths.addArrays(pC, pD));
+  }
 
-    //Evaluates cubic bezier first derivative at t, return point
-    static qprime(ctrlPoly: number[][], t: number) {
-        const tx = 1.0 - t;
-        const pA = maths.mulItems(maths.subtract(ctrlPoly[1], ctrlPoly[0]), 3 * tx * tx);
-        const pB = maths.mulItems(maths.subtract(ctrlPoly[2], ctrlPoly[1]), 6 * tx * t);
-        const pC = maths.mulItems(maths.subtract(ctrlPoly[3], ctrlPoly[2]), 3 * t * t);
-        return maths.addArrays(maths.addArrays(pA, pB), pC);
-    }
+  //Evaluates cubic bezier first derivative at t, return point
+  static qprime(ctrlPoly: number[][], t: number) {
+    const tx = 1.0 - t;
+    const pA = maths.mulItems(maths.subtract(ctrlPoly[1], ctrlPoly[0]), 3 * tx * tx);
+    const pB = maths.mulItems(maths.subtract(ctrlPoly[2], ctrlPoly[1]), 6 * tx * t);
+    const pC = maths.mulItems(maths.subtract(ctrlPoly[3], ctrlPoly[2]), 3 * t * t);
+    return maths.addArrays(maths.addArrays(pA, pB), pC);
+  }
 
-    //Evaluates cubic bezier second derivative at t, return point
-    static qprimeprime(ctrlPoly: number[][], t: number) {
-        return maths.addArrays(
-            maths.mulItems(maths.addArrays(maths.subtract(ctrlPoly[2], maths.mulItems(ctrlPoly[1], 2)), ctrlPoly[0]), 6 * (1.0 - t)),
-            maths.mulItems(maths.addArrays(maths.subtract(ctrlPoly[3], maths.mulItems(ctrlPoly[2], 2)), ctrlPoly[1]), 6 * t)
-        );
-    }
+  //Evaluates cubic bezier second derivative at t, return point
+  static qprimeprime(ctrlPoly: number[][], t: number) {
+    return maths.addArrays(
+      maths.mulItems(maths.addArrays(maths.subtract(ctrlPoly[2], maths.mulItems(ctrlPoly[1], 2)), ctrlPoly[0]), 6 * (1.0 - t)),
+      maths.mulItems(maths.addArrays(maths.subtract(ctrlPoly[3], maths.mulItems(ctrlPoly[2], 2)), ctrlPoly[1]), 6 * t)
+    );
+  }
 }
