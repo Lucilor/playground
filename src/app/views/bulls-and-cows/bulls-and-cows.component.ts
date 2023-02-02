@@ -8,12 +8,10 @@ import {
 } from "@components/dialogs/bulls-and-cows-difficulty/bulls-and-cows-difficulty.component";
 import {timeout} from "@lucilor/utils";
 import {AppStorage} from "@mixins/app-storage.mixin";
-import {InputInfo} from "@modules/input/components/types";
 import {MessageService} from "@modules/message/services/message.service";
-import {cloneDeep} from "lodash";
 import md5 from "md5";
 import {NgScrollbar} from "ngx-scrollbar";
-import {BullsAndCows, BullsAndCowsConfig, difficulties} from "./bulls-and-cows";
+import {BullsAndCows, difficulties} from "./bulls-and-cows";
 
 export interface BullsAndCowsForm {
   guess: string;

@@ -39,6 +39,7 @@
     "highlight.js": "^11.7.0",
     "lodash": "^4.17.21",
     "luxon": "^3.2.1",
+    "material-icons": "^1.13.1",
     "md5": "^2.3.0",
     "ngx-color": "^8.0.3",
     "ngx-infinite-scroll": "^15.0.0",
