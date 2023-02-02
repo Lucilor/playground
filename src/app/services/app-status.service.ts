@@ -29,6 +29,7 @@ export class AppStatusService {
     url: null as string | null,
     fixedUrl: null as string | null
   };
+  bgClass$ = new BehaviorSubject<string[]>([]);
   bgStyle$ = new BehaviorSubject<Partial<Properties>>({});
   bgColor$ = new BehaviorSubject<Color>(new Color(0xffffff));
 
@@ -81,10 +82,12 @@ export class AppStatusService {
     if (url) {
       const backgroundImage = `url(${url})`;
       if (backgroundImage !== style.backgroundImage) {
-        this.bgStyle$.next({...style, animation: `bg-out ${outDuration}ms`});
+        this.bgClass$.next(["bg-out"]);
+        this.bgStyle$.next({...style, animationDuration: `${outDuration}ms`});
         await timeout(outDuration);
+        this.bgClass$.next(["bg-in"]);
         style.backgroundImage = `url(${url})`;
-        style.animation = `bg-in ${inDuration}ms`;
+        style.animationDuration = `${inDuration}ms`;
         this.bgStyle$.next(style);
 
         let image: HTMLImageElement | undefined;

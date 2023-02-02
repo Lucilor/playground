@@ -14,7 +14,9 @@ interface Thuum {
 
 interface ThuumChar {
   content: string;
+  charClass: string[];
   charStyle: CSS.Properties;
+  layerClass: string[];
   layerStyle: CSS.Properties;
 }
 
@@ -29,6 +31,7 @@ export class ThuumComponent implements OnInit, OnDestroy {
   thuumChars: ThuumChar[] = [];
   layerStyle: CSS.Properties = {};
   animationDuration = {main: 2000, char: 360};
+  thuumClass: string[] = [];
   thuumStyle: CSS.Properties = {};
   isProd = environment.production;
 
@@ -48,29 +51,37 @@ export class ThuumComponent implements OnInit, OnDestroy {
     this.thuum = this.thuumRandom.next();
     this.thuumChars = this.thuum.name.split("").map((v, i) => ({
       content: v,
-      charStyle: {opacity: "0", animation: `fade-in ${charDuration}ms ${charDuration * i}ms forwards`},
+      charClass: ["fade-in"],
+      charStyle: {
+        "--anim-duration": `${charDuration}ms`,
+        "--anim-delay": `${charDuration * i}ms`
+      } as CSS.Properties,
+      layerClass: ["slide-out"],
       layerStyle: {
-        left: "unset",
-        right: "0",
-        width: "100%",
-        animation: `slide-out ${charDuration}ms ${charDuration * i}ms forwards`
-      }
+        "--anim-duration": `${charDuration}ms`,
+        "--anim-delay": `${charDuration * i}ms`
+      } as CSS.Properties
     }));
     const charsDuration = this.thuumChars.length * charDuration;
     await timeout(charsDuration);
-    if (!this.isProd) {
-      this.thuumStyle = {animation: `show-thuum ${mainDuration}ms`};
-    }
+    this.thuumClass = ["show-thuum"];
+    this.thuumStyle = {
+      "--anim-duration": `${mainDuration}ms`,
+      "--anim-delay": "0"
+    } as CSS.Properties;
     await timeout(mainDuration);
-    this.thuumStyle = {};
+    this.thuumClass = [];
     this.thuumChars.forEach((v, i) => {
-      v.charStyle = {opacity: "1", animation: `fade-out ${charDuration}ms ${charDuration * i}ms forwards`};
+      v.charClass = ["fade-out"];
+      v.charStyle = {
+        "--anim-duration": `${charDuration}ms`,
+        "--anim-delay": `${charDuration * i}ms`
+      } as CSS.Properties;
+      v.layerClass = ["slide-out"];
       v.layerStyle = {
-        left: "0",
-        right: "unset",
-        width: "0",
-        animation: `slide-in ${charDuration}ms ${charDuration * i}ms forwards`
-      };
+        "--anim-duration": `${charDuration}ms`,
+        "--anim-delay": `${charDuration * i}ms`
+      } as CSS.Properties;
     });
     await timeout(charsDuration);
     this.loop();

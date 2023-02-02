@@ -13,14 +13,21 @@
 }
 
 .footer {
-  text-align: center;
-  font-size: 0.75em;
-  line-height: 1em;
-  padding: 0.5em 1em;
-  background-color: rgba(white, 0.4);
-  color: black;
-  backdrop-filter: blur(5px);
-  border-radius: 1em;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 5px;
+
+  .content {
+    text-align: center;
+    font-size: 0.75em;
+    line-height: 1em;
+    padding: 0.5em 1em;
+    background-color: rgba(white, 0.4);
+    color: black;
+    backdrop-filter: blur(5px);
+    border-radius: 1em;
+  }
 }
 
 .bg {
@@ -34,6 +41,9 @@
   z-index: -1;
 }
 
+.bg-in {
+  animation-name: bg-in;
+}
 @keyframes bg-in {
   0% {
     filter: blur(80px);
@@ -41,6 +51,9 @@
   100% {
     filter: none;
   }
+}
+.bg-out {
+  animation-name: bg-out;
 }
 @keyframes bg-out {
   0% {

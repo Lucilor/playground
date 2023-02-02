@@ -14,7 +14,9 @@ export class AppComponent extends Subscribed() {
   title = "playground";
   loaderText = "";
   showHomeBtn = false;
+  showFooter = true;
   lastUpdateStr = "";
+  bgClass$ = this.status.bgClass$;
   bgStyle$ = this.status.bgStyle$;
 
   constructor(private router: Router, private status: AppStatusService) {
@@ -23,8 +25,10 @@ export class AppComponent extends Subscribed() {
       if (event instanceof NavigationEnd) {
         const url = event.urlAfterRedirects;
         const routesInfo = this.router.config as RouteInfo[];
-        const routeInfo = routesInfo.find((v) => url.startsWith("/" + v.path));
-        this.showHomeBtn = routeInfo?.path !== "index";
+        const routeInfo = routesInfo.find((v) => v.path && url.startsWith("/" + v.path));
+        const isIndex = routeInfo?.path === "index";
+        this.showHomeBtn = !isIndex;
+        this.showFooter = isIndex;
       }
     });
     this.status.loaderText$.subscribe((text) => (this.loaderText = text));

@@ -20,7 +20,7 @@ export class RubiksCubeDrawer extends Drawer {
   private _cubeFaces = [new Vector3(), new Vector3()];
   private _intersection: Intersection | null = null;
 
-  constructor(cube: RubiksCube, config: Partial<RubiksCubeDrawerConfig>) {
+  constructor(cube: RubiksCube, config: Partial<RubiksCubeDrawerConfig> = {}) {
     super(config);
     this.config = {...this.config, ...config};
 

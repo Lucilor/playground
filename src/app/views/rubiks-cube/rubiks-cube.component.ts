@@ -1,4 +1,4 @@
-import {Component, AfterViewInit, ViewChild, ElementRef} from "@angular/core";
+import {Component, AfterViewInit, ViewChild, ElementRef, OnDestroy} from "@angular/core";
 import {ErrorStateMatcher} from "@angular/material/core";
 import {getFormControl} from "@app/app.common";
 import {ColorEvent} from "ngx-color";
@@ -18,7 +18,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   templateUrl: "./rubiks-cube.component.html",
   styleUrls: ["./rubiks-cube.component.scss"]
 })
-export class RubiksCubeComponent implements AfterViewInit {
+export class RubiksCubeComponent implements AfterViewInit, OnDestroy {
   @ViewChild("container", {read: ElementRef}) container?: ElementRef<HTMLElement>;
   drawer: RubiksCubeDrawer;
   cube: RubiksCube;
@@ -34,9 +34,16 @@ export class RubiksCubeComponent implements AfterViewInit {
   matcher = new MyErrorStateMatcher();
   colorIdx = -1;
 
+  private _resizeDrawer = (() => {
+    if (this.container) {
+      const {width, height} = this.container.nativeElement.getBoundingClientRect();
+      this.drawer.resize(width, height);
+    }
+  }).bind(this);
+
   constructor() {
     const cube = new RubiksCube(5, 3);
-    const drawer = new RubiksCubeDrawer(cube, {width: innerWidth, height: innerHeight});
+    const drawer = new RubiksCubeDrawer(cube, {});
     Object.assign(window, {drawer, cube});
     this.drawer = drawer;
     this.cube = cube;
@@ -46,9 +53,12 @@ export class RubiksCubeComponent implements AfterViewInit {
     if (this.container) {
       this.container.nativeElement.appendChild(this.drawer.dom);
     }
-    window.addEventListener("resize", () => {
-      this.drawer.resize(innerWidth, innerHeight);
-    });
+    this._resizeDrawer();
+    window.addEventListener("resize", this._resizeDrawer);
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener("resize", this._resizeDrawer);
   }
 
   changeSize(event: Event) {

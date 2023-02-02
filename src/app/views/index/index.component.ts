@@ -25,7 +25,6 @@ export class IndexComponent extends Subscribed() {
       }
       this.routesInfo.push(cloneDeep(v));
     }
-    console.log(this.routesInfo);
   }
 
   onLinkClick(routeInfo: RouteInfo) {

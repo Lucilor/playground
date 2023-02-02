@@ -46,6 +46,10 @@
   }
 }
 
+.fade-in {
+  opacity: 0;
+  animation: fade-in var(--anim-duration) var(--anim-delay) forwards;
+}
 @keyframes fade-in {
   0% {
     opacity: 0;
@@ -56,6 +60,10 @@
   }
 }
 
+.fade-out {
+  opacity: 1;
+  animation: fade-out var(--anim-duration) var(--anim-delay) forwards;
+}
 @keyframes fade-out {
   0% {
     opacity: 1;
@@ -66,6 +74,12 @@
   }
 }
 
+.slide-out {
+  left: unset;
+  right: 0;
+  width: 100%;
+  animation: slide-out var(--anim-duration) var(--anim-delay) forwards;
+}
 @keyframes slide-out {
   0% {
     width: 100%;
@@ -76,6 +90,12 @@
   }
 }
 
+.slide-in {
+  left: 0;
+  right: unset;
+  width: 0;
+  animation: slide-in var(--anim-duration) var(--anim-delay) forwards;
+}
 @keyframes slide-in {
   0% {
     width: 0%;
@@ -86,6 +106,9 @@
   }
 }
 
+.show-thuum {
+  animation: show-thuum var(--anim-duration) var(--anim-delay) forwards;
+}
 @keyframes show-thuum {
   0% {
     color: black;

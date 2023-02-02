@@ -1,5 +1,6 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {FormsModule} from "@angular/forms";
+import {MatIconModule} from "@angular/material/icon";
 import {HttpModule} from "@modules/http/http.module";
 import {ImageModule} from "@modules/image/image.module";
 import {NgScrollbarModule} from "ngx-scrollbar";
@@ -12,7 +13,7 @@ describe("ChatComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ChatComponent],
-      imports: [FormsModule, HttpModule, ImageModule, NgScrollbarModule]
+      imports: [FormsModule, HttpModule, ImageModule, MatIconModule, NgScrollbarModule]
     }).compileComponents();
   });
 

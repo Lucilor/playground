@@ -1,10 +1,10 @@
 <div class="container">
-  <div class="thuum" [ngStyle]="thuumStyle" [attr.thuum]="thuum.name">
+  <div class="thuum" [ngClass]="thuumClass" [ngStyle]="thuumStyle" [attr.thuum]="thuum.name">
     <div class="thuum-chars">
       <ng-container *ngFor="let char of thuumChars">
-        <span class="thuum-char" [ngStyle]="char.charStyle">
+        <span class="thuum-char" [ngClass]="char.charClass" [ngStyle]="char.charStyle">
           <span>{{ char.content }}</span>
-          <div class="thuum-layer" [ngStyle]="char.layerStyle"></div>
+          <div class="thuum-layer" [ngClass]="char.layerClass" [ngStyle]="char.layerStyle"></div>
         </span>
       </ng-container>
     </div>
