@@ -9156,13 +9156,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.sortby@npm:^4.7.0":
-  version: 4.7.0
-  resolution: "lodash.sortby@npm:4.7.0"
-  checksum: db170c9396d29d11fe9a9f25668c4993e0c1331bcb941ddbd48fb76f492e732add7f2a47cfdf8e9d740fa59ac41bbfaf931d268bc72aab3ab49e9f89354d718c
-  languageName: node
-  linkType: hard
-
 "lodash@npm:^4.17.21":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
@@ -11994,15 +11987,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map@npm:~0.8.0-beta.0":
-  version: 0.8.0-beta.0
-  resolution: "source-map@npm:0.8.0-beta.0"
-  dependencies:
-    whatwg-url: ^7.0.0
-  checksum: e94169be6461ab0ac0913313ad1719a14c60d402bd22b0ad96f4a6cffd79130d91ab5df0a5336a326b04d2df131c1409f563c9dc0d21a6ca6239a44b6c8dbd92
-  languageName: node
-  linkType: hard
-
 "spdx-correct@npm:^3.0.0":
   version: 3.1.1
   resolution: "spdx-correct@npm:3.1.1"
@@ -12323,7 +12307,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"terser@npm:5.16.3":
+"terser@npm:5.16.3, terser@npm:^5.7.2":
   version: 5.16.3
   resolution: "terser@npm:5.16.3"
   dependencies:
@@ -12334,20 +12318,6 @@ __metadata:
   bin:
     terser: bin/terser
   checksum: d3c2ac1c2723c37b698b25b68d76fd315a1277fddde113983d5783d1f2a01dd7b8ed83ba3f54e5e65f0b59dd971ed7be2fdf8d4be94ec694b2d27832d2e7561f
-  languageName: node
-  linkType: hard
-
-"terser@npm:^5.7.2":
-  version: 5.13.0
-  resolution: "terser@npm:5.13.0"
-  dependencies:
-    acorn: ^8.5.0
-    commander: ^2.20.0
-    source-map: ~0.8.0-beta.0
-    source-map-support: ~0.5.20
-  bin:
-    terser: bin/terser
-  checksum: fb3cfc11c16269f7563de48644b7d5adc4791bbb916eb59cda14db9497a494f287990d0451542294d836ea545d71649ca2c39ce9be35e90b456e9533a1e41259
   languageName: node
   linkType: hard
 
@@ -12454,15 +12424,6 @@ __metadata:
     psl: ^1.1.28
     punycode: ^2.1.1
   checksum: 16a8cd090224dd176eee23837cbe7573ca0fa297d7e468ab5e1c02d49a4e9a97bb05fef11320605eac516f91d54c57838a25864e8680e27b069a5231d8264977
-  languageName: node
-  linkType: hard
-
-"tr46@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "tr46@npm:1.0.1"
-  dependencies:
-    punycode: ^2.1.0
-  checksum: 96d4ed46bc161db75dbf9247a236ea0bfcaf5758baae6749e92afab0bc5a09cb59af21788ede7e55080f2bf02dce3e4a8f2a484cc45164e29f4b5e68f7cbcc1a
   languageName: node
   linkType: hard
 
@@ -12925,13 +12886,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webidl-conversions@npm:^4.0.2":
-  version: 4.0.2
-  resolution: "webidl-conversions@npm:4.0.2"
-  checksum: c93d8dfe908a0140a4ae9c0ebc87a33805b416a33ee638a605b551523eec94a9632165e54632f6d57a39c5f948c4bab10e0e066525e9a4b87a79f0d04fbca374
-  languageName: node
-  linkType: hard
-
 "webpack-dev-middleware@npm:6.0.1":
   version: 6.0.1
   resolution: "webpack-dev-middleware@npm:6.0.1::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fwebpack-dev-middleware%2F-%2Fwebpack-dev-middleware-6.0.1.tgz"
@@ -13090,17 +13044,6 @@ __metadata:
   version: 0.1.4
   resolution: "websocket-extensions@npm:0.1.4"
   checksum: 5976835e68a86afcd64c7a9762ed85f2f27d48c488c707e67ba85e717b90fa066b98ab33c744d64255c9622d349eedecf728e65a5f921da71b58d0e9591b9038
-  languageName: node
-  linkType: hard
-
-"whatwg-url@npm:^7.0.0":
-  version: 7.1.0
-  resolution: "whatwg-url@npm:7.1.0"
-  dependencies:
-    lodash.sortby: ^4.7.0
-    tr46: ^1.0.1
-    webidl-conversions: ^4.0.2
-  checksum: fecb07c87290b47d2ec2fb6d6ca26daad3c9e211e0e531dd7566e7ff95b5b3525a57d4f32640ad4adf057717e0c215731db842ad761e61d947e81010e05cf5fd
   languageName: node
   linkType: hard
 
