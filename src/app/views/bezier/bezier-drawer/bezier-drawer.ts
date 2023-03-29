@@ -197,7 +197,8 @@ export class BezierDrawer extends Drawer {
 
   protected _getIntersection(point: Vector2) {
     const {_raycaster, camera, objects} = this;
-    _raycaster.setFromCamera(this._getNDC(point), camera);
+    const ndc = this._getNDC(point);
+    _raycaster.setFromCamera(new Vector2(ndc.x, ndc.y), camera);
     const intersects = _raycaster.intersectObjects([objects.ctrl], true);
     if (intersects.length) {
       this._object = intersects[0].object;
@@ -257,7 +258,8 @@ export class BezierDrawer extends Drawer {
       const result = this._getPoint(new Vector2(point.x, point.y));
       return new Point(result);
     } else {
-      _raycaster.setFromCamera(this._getNDC(point), camera);
+      const ndc = this._getNDC(point);
+      _raycaster.setFromCamera(new Vector2(ndc.x, ndc.y), camera);
       const plane = new Plane(new Vector3(0, 0, 1));
       const result = new Vector3();
       _raycaster.ray.intersectPlane(plane, result);

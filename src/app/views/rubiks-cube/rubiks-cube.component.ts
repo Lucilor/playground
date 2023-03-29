@@ -86,7 +86,7 @@ export class RubiksCubeComponent implements AfterViewInit, OnDestroy {
       return;
     }
     const key = this.cubeColors[this.colorIdx].key;
-    this.cube.colors[key] = new Color(event.color.hex);
+    this.cube.colors[key] = new Color(Number(event.color.hex));
     this.cube.reset();
   }
 

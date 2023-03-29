@@ -1,4 +1,5 @@
 import {ObjectOf} from "@lucilor/utils";
+import {JsonEditorOptions} from "@maaxgr/ang-jsoneditor";
 import {InputInfo} from "@modules/input/components/types";
 
 export interface BaseMessageData {
@@ -9,25 +10,35 @@ export interface BaseMessageData {
   contentClass?: string;
 }
 
-export interface AlertMessageData extends BaseMessageData {
-  type: "alert";
-  btnTexts?: {ok?: string};
+export interface AlertBaseMessageData {
+  btnTexts?: {submit?: string};
 }
 
-export interface ConfirmMessageData extends BaseMessageData {
+export interface ConfirmBaseMessageData {
+  btnTexts?: {submit?: string; cancel?: string};
+}
+
+export interface FormBaseMessageData {
+  btnTexts?: {submit?: string; cancel?: string; reset?: string};
+}
+
+export interface AlertMessageData extends BaseMessageData, AlertBaseMessageData {
+  type: "alert";
+}
+
+export interface ConfirmMessageData extends BaseMessageData, ConfirmBaseMessageData {
   type: "confirm";
-  btnTexts?: {yes?: string; no?: string};
 }
 
 export interface ButtonMessageData extends BaseMessageData {
   type: "button";
   buttons: (string | {label: string; value: string})[];
+  btnTexts?: {cancel?: string};
 }
 
-export interface FormMessageData extends BaseMessageData {
+export interface FormMessageData extends BaseMessageData, ConfirmBaseMessageData {
   type: "form";
   inputs: InputInfo[];
-  btnTexts?: {submit?: string; cancel?: string};
 }
 
 export interface BookPageData {
@@ -43,15 +54,21 @@ export interface BookMessageData extends BaseMessageData {
   btnTexts?: {prev?: string; next?: string; exit?: string};
 }
 
-export interface EditorMessageData extends BaseMessageData {
+export interface EditorMessageData extends BaseMessageData, ConfirmBaseMessageData {
   type: "editor";
   editable?: boolean;
-  btnTexts?: {submit?: string; cancel?: string};
 }
 
 export interface IFrameMessageData extends BaseMessageData {
   type: "iframe";
   content: string;
+}
+
+export interface JsonMessageData extends BaseMessageData, FormBaseMessageData {
+  type: "json";
+  json: any;
+  defaultJson?: any;
+  options?: Partial<JsonEditorOptions>;
 }
 
 export type MessageData =
@@ -61,7 +78,8 @@ export type MessageData =
   | BookMessageData
   | EditorMessageData
   | ButtonMessageData
-  | IFrameMessageData;
+  | IFrameMessageData
+  | JsonMessageData;
 
 export interface MessageDataMap {
   alert: AlertMessageData;
@@ -71,6 +89,29 @@ export interface MessageDataMap {
   editor: EditorMessageData;
   button: ButtonMessageData;
   iframe: IFrameMessageData;
+  json: JsonMessageData;
 }
 
 export type MessageOutput = boolean | string | ObjectOf<any> | null | undefined;
+
+export const getListEl = (content: string[], title = "") => {
+  const ulEl = document.createElement("ul");
+  content.forEach((v) => {
+    const liEl = document.createElement("li");
+    liEl.innerHTML = v;
+    ulEl.appendChild(liEl);
+  });
+  const titleEl = document.createElement("div");
+  titleEl.classList.add("title");
+  titleEl.innerHTML = title;
+  const divEl = document.createElement("div");
+  divEl.classList.add("message-list");
+  divEl.appendChild(titleEl);
+  divEl.appendChild(ulEl);
+  return divEl;
+};
+
+export const getListStr = (content: string[], title = "") => {
+  const el = getListEl(content, title);
+  return el.outerHTML;
+};

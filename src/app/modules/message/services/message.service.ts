@@ -1,8 +1,8 @@
 import {Injectable} from "@angular/core";
-import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
+import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material/dialog";
 import {MatSnackBar, MatSnackBarConfig} from "@angular/material/snack-bar";
 import {InputInfo} from "@modules/input/components/types";
-import {lastValueFrom} from "rxjs";
+import {BehaviorSubject, lastValueFrom} from "rxjs";
 import {
   AlertMessageData,
   BookMessageData,
@@ -10,7 +10,9 @@ import {
   ConfirmMessageData,
   EditorMessageData,
   FormMessageData,
+  getListEl,
   IFrameMessageData,
+  JsonMessageData,
   MessageData,
   MessageDataMap,
   MessageOutput
@@ -24,6 +26,9 @@ export type MessageDataParams2<T> = Omit<MatDialogConfig<T>, "data">;
   providedIn: "root"
 })
 export class MessageService {
+  openedDialogs: MatDialogRef<MessageComponent, MessageOutput>[] = [];
+  open$ = new BehaviorSubject<MatDialogConfig<MessageData>>({});
+  close$ = new BehaviorSubject<MessageOutput>(null);
   constructor(private dialog: MatDialog, private snackBar: MatSnackBar) {}
 
   async open(config: MatDialogConfig<MessageData>) {
@@ -33,7 +38,12 @@ export class MessageService {
       config.disableClose = true;
     }
     const ref = this.dialog.open<MessageComponent, MessageData, MessageOutput>(MessageComponent, config);
-    return await lastValueFrom(ref.afterClosed());
+    this.openedDialogs.push(ref);
+    this.open$.next(config);
+    const result = await lastValueFrom(ref.afterClosed());
+    this.openedDialogs = this.openedDialogs.filter((dialog) => dialog.id !== ref.id);
+    this.close$.next(result);
+    return result;
   }
 
   private _getData<T extends MessageData, K extends MessageData["type"]>(data: string | MessageDataParams<T>, type: K): MessageDataMap[K] {
@@ -47,8 +57,22 @@ export class MessageService {
     await this.open({data: this._getData(data, "alert"), ...others});
   }
 
-  async error(message: string, others: MessageDataParams2<AlertMessageData> = {}) {
-    await this.alert({content: new Error(message)}, others);
+  async error(
+    message: string | MessageDataParams<AlertMessageData>,
+    details: string[] | string = [],
+    others: MessageDataParams2<AlertMessageData> = {}
+  ) {
+    const data = this._getData(message, "alert");
+    if (Array.isArray(details)) {
+      const el = getListEl(details, data.content);
+      data.content = el;
+    } else {
+      data.content = `${data.content}<br>${details}`;
+    }
+    if (!data.title) {
+      data.title = `<span style="color:red">错误</span>`;
+    }
+    await this.open({data, width: "80vw", ...others});
   }
 
   async confirm(data: string | MessageDataParams<ConfirmMessageData>, others: MessageDataParams2<ConfirmMessageData> = {}) {
@@ -65,10 +89,6 @@ export class MessageService {
     }
     return null;
   }
-
-  // async prompt(...args:any[]) {
-  //   return "";
-  // }
 
   async prompt(
     info: InputInfo,
@@ -96,6 +116,11 @@ export class MessageService {
 
   async iframe(data: string | MessageDataParams<IFrameMessageData>, others: MessageDataParams2<IFrameMessageData> = {}) {
     return String(await this.open({data: this._getData(data, "iframe"), width: "100vw", height: "100vh", ...others}));
+  }
+
+  async json(json: any, data: Omit<MessageDataParams<JsonMessageData>, "json"> = {}, others: MessageDataParams2<JsonMessageData> = {}) {
+    const data2 = {...data, content: "", json};
+    return (await this.open({data: this._getData(data2, "json"), width: "80vw", height: "80vh", ...others})) as any;
   }
 
   async snack(message: string, action?: string, config?: MatSnackBarConfig) {

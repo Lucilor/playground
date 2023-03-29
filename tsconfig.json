@@ -19,14 +19,15 @@
     "lib": ["esnext", "dom"],
     "paths": {
       "@components/*": ["src/app/components/*"],
-      "@directives/*": ["src/app/directives/*"],
+      "@decorators/*": ["src/app/decorators/*"],
       "@guards/*": ["src/app/guards/*"],
       "@mixins/*": ["src/app/mixins/*"],
       "@modules/*": ["src/app/modules/*"],
       "@services/*": ["src/app/services/*"],
       "@views/*": ["src/app/views/*"],
+      "@env": ["src/environments/environment.ts"],
       "@app/*": ["src/app/*"],
-      "@env": ["src/environments/environment.ts"]
+      "@assets/*": ["src/assets/*"]
     },
     "allowJs": true,
     "allowSyntheticDefaultImports": true,

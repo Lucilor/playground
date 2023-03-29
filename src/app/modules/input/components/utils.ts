@@ -1,5 +1,5 @@
+import {ObjectOf} from "@lucilor/utils";
 import {MessageService} from "@modules/message/services/message.service";
-import {ObjectOf} from "@utils";
 import {InputComponent} from "./input.component";
 
 export const getInputValues = (inputs: InputComponent[], message: MessageService) => {

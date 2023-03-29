@@ -20,6 +20,7 @@ $app-theme: mat.define-light-theme(
   )
 );
 @include mat.all-component-themes($app-theme);
+@include mat.typography-hierarchy($app-typography);
 
 .mat-mdc-form-field {
   width: 100%;
@@ -100,13 +101,34 @@ $app-theme: mat.define-light-theme(
   }
 }
 
-mat-divider.mat-divider {
-  --divider-margin: 5px;
-  border-color: rgb(0, 0, 0, 0.7);
+mat-divider {
+  &.mat-divider {
+    border-color: rgb(0, 0, 0, 0.7);
+  }
+  &.mat-divider-horizontal {
+    margin: var(--mat-divider-margin) 0;
+  }
+  &.mat-divider-vertical {
+    margin: 0 var(--mat-divider-margin);
+  }
+  &.placeholder {
+    border-color: transparent;
+  }
 }
-mat-divider.mat-divider-horizontal {
-  margin: var(--divider-margin) 0;
+
+.mat-icon {
+  width: var(--mat-icon-size) !important;
+  height: var(--mat-icon-size) !important;
+  font-size: var(--mat-icon-size) !important;
 }
-mat-divider.mat-divider-vertical {
-  margin: 0 var(--divider-margin);
+
+.cdk-overlay-container {
+  z-index: var(--top-z-index);
+}
+
+:root {
+  --mat-divider-margin: 5px;
+  --mat-icon-size: 24px;
+  --top-z-index: 99999;
+  --top-top-z-index: calc(var(--top-z-index) + 1);
 }

@@ -55,7 +55,7 @@ export class Drawer {
     camera.lookAt(0, 0, 0);
 
     if (this.config.showStats) {
-      this.stats = Stats();
+      this.stats = new Stats();
       dom.appendChild(this.stats.dom);
     }
     this.controls = new OrbitControls(camera, dom);

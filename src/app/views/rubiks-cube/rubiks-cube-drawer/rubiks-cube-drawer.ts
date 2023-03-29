@@ -45,7 +45,8 @@ export class RubiksCubeDrawer extends Drawer {
 
   protected _getIntersection(point: Vector2) {
     const {_raycaster, camera} = this;
-    _raycaster.setFromCamera(this._getNDC(point), camera);
+    const ndc = this._getNDC(point);
+    _raycaster.setFromCamera(new Vector2(ndc.x, ndc.y), camera);
     const intersections = _raycaster.intersectObjects([this.cube], true);
     if (intersections.length) {
       this._object = intersections[0].object;

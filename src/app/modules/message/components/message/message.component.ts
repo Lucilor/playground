@@ -1,10 +1,12 @@
-import {HttpErrorResponse} from "@angular/common/http";
-import {Component, OnInit, Inject, ViewChild, OnDestroy, ElementRef, AfterViewInit, ViewChildren, QueryList} from "@angular/core";
+import {Component, OnInit, Inject, ViewChild, ElementRef, AfterViewInit, ViewChildren, QueryList, HostListener} from "@angular/core";
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {DomSanitizer, SafeHtml, SafeResourceUrl} from "@angular/platform-browser";
+import {Debounce} from "@decorators/debounce";
 import {ObjectOf, timeout} from "@lucilor/utils";
+import {JsonEditorComponent, JsonEditorOptions} from "@maaxgr/ang-jsoneditor";
 import {InputComponent} from "@modules/input/components/input.component";
-import {clamp, cloneDeep, debounce} from "lodash";
+import {InputInfo} from "@modules/input/components/types";
+import {clamp, cloneDeep} from "lodash";
 import {QuillEditorComponent, QuillViewComponent} from "ngx-quill";
 import {ButtonMessageData, MessageData, MessageDataMap, MessageOutput} from "./message-types";
 
@@ -13,16 +15,19 @@ import {ButtonMessageData, MessageData, MessageDataMap, MessageOutput} from "./m
   templateUrl: "./message.component.html",
   styleUrls: ["./message.component.scss"]
 })
-export class MessageComponent implements OnInit, AfterViewInit, OnDestroy {
+export class MessageComponent implements OnInit, AfterViewInit {
   titleHTML: SafeHtml = "";
   subTitleHTML: SafeHtml = "";
   contentHTML: SafeHtml = "";
   iframeSrc: SafeResourceUrl = "";
   page = 0;
+  jsonEditorOptions = new JsonEditorOptions();
+  inputsBackup: InputInfo[] = [];
   @ViewChild(QuillEditorComponent) editor?: QuillViewComponent;
   @ViewChild("contentInput") contentInput?: ElementRef<HTMLInputElement | HTMLTextAreaElement>;
   @ViewChild("iframe") iframe?: ElementRef<HTMLIFrameElement>;
   @ViewChildren("formInput") formInputs?: QueryList<InputComponent>;
+  @ViewChild(JsonEditorComponent, {static: false}) jsonEditor?: JsonEditorComponent;
 
   private get _editorToolbarHeight() {
     if (this.editor) {
@@ -34,17 +39,6 @@ export class MessageComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     return 0;
   }
-  private _resizeEditor = debounce(() => {
-    if (this.editor) {
-      const el = this.editor.editorElem;
-      const height = this._editorToolbarHeight;
-      if (height) {
-        el.style.height = `calc(100% - ${height}px)`;
-        return true;
-      }
-    }
-    return false;
-  }, 500);
 
   get inputs() {
     if (this.data.type === "form") {
@@ -70,13 +64,6 @@ export class MessageComponent implements OnInit, AfterViewInit, OnDestroy {
     return 0;
   }
 
-  get editable() {
-    if (this.data.type === "editor") {
-      return this.data.editable ?? true;
-    }
-    return false;
-  }
-
   get titleClass() {
     return this.data.titleClass || "";
   }
@@ -100,21 +87,8 @@ export class MessageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.titleHTML = this.sanitizer.bypassSecurityTrustHtml(this.data.title || "");
     if (data.content === null || data.content === undefined) {
       data.content = "";
-    } else if (data.content instanceof Error) {
-      data.title = "Oops!";
-      data.content = data.content.message;
-      // console.warn(data.content);
-    } else if (data.content instanceof HttpErrorResponse) {
-      data.title = "网络错误";
-      const {error, status, statusText} = data.content;
-      if (typeof error === "string") {
-        data.content = data.content.error;
-      } else if (typeof data.content.error?.text === "string") {
-        data.content = data.content.error.text;
-      } else {
-        data.content = "未知网络错误";
-      }
-      data.content = `<span>${status} (${statusText})</span><br>` + data.content;
+    } else if (data.content instanceof HTMLElement) {
+      data.content = data.content.outerHTML;
     } else if (typeof data.content !== "string") {
       try {
         data.content = JSON.stringify(data.content);
@@ -133,14 +107,20 @@ export class MessageComponent implements OnInit, AfterViewInit, OnDestroy {
       this.setPage(0);
     } else if (data.type === "iframe") {
       this.iframeSrc = this.sanitizer.bypassSecurityTrustResourceUrl(data.content);
+    } else if (data.type === "json") {
+      this.jsonEditorOptions = new JsonEditorOptions();
+      this.jsonEditorOptions.modes = ["code", "text", "tree", "view"];
+      this.jsonEditorOptions.mode = "code";
+      Object.assign(this.jsonEditorOptions, data.options);
     }
 
     const id = window.setInterval(() => {
-      if (this._resizeEditor()) {
+      if (this.resizeEditor()) {
         window.clearInterval(id);
       }
     }, 600);
-    window.addEventListener("resize", this._resizeEditor);
+
+    this.inputsBackup = cloneDeep(this.inputs);
   }
 
   async ngAfterViewInit() {
@@ -156,14 +136,25 @@ export class MessageComponent implements OnInit, AfterViewInit, OnDestroy {
     // }
   }
 
-  ngOnDestroy() {
-    window.removeEventListener("resize", this._resizeEditor);
+  @HostListener("window:resize")
+  @Debounce(500)
+  resizeEditor() {
+    if (this.editor) {
+      const el = this.editor.editorElem;
+      const height = this._editorToolbarHeight;
+      if (height) {
+        el.style.height = `calc(100% - ${height}px)`;
+        return true;
+      }
+    }
+    return false;
   }
 
-  submit(button?: ButtonMessageData["buttons"][0]) {
-    if (this.data.type === "confirm") {
+  submit(button?: ButtonMessageData["buttons"][number]) {
+    const type = this.data.type;
+    if (type === "confirm") {
       this.dialogRef.close(true);
-    } else if (this.data.type === "form") {
+    } else if (type === "form") {
       const values: ObjectOf<string> = {};
       const inputs = this.formInputs?.toArray() || [];
       for (const input of inputs) {
@@ -175,10 +166,18 @@ export class MessageComponent implements OnInit, AfterViewInit, OnDestroy {
         values[key] = input.value;
       }
       this.dialogRef.close(values);
-    } else if (this.data.type === "editor") {
+    } else if (type === "editor") {
       this.dialogRef.close(this.data.content);
-    } else if (this.data.type === "button" && button) {
+    } else if (type === "button" && button) {
       this.dialogRef.close(typeof button === "string" ? button : button.label);
+    } else if (type === "json" && this.jsonEditor) {
+      const editor = this.jsonEditor;
+      const valid = editor.isValidJson();
+      if (valid) {
+        this.dialogRef.close(editor.get());
+      } else {
+        this.dialogRef.close();
+      }
     } else {
       this.cancel();
     }
@@ -186,6 +185,19 @@ export class MessageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   cancel() {
     this.dialogRef.close(false);
+  }
+
+  reset() {
+    switch (this.data.type) {
+      case "form":
+        this.data.inputs = cloneDeep(this.inputsBackup);
+        break;
+      case "json":
+        this.jsonEditor?.set(this.data.defaultJson || null);
+        break;
+      default:
+        break;
+    }
   }
 
   setPage(page: number) {
