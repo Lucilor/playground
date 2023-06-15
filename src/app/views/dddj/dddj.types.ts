@@ -2,9 +2,7 @@ export const daidaiUrls = {
   config: "https://conf.58youxi.com/config/api/base/dicts?source=1&hostName=daidaiyuyin.com",
   getMagicList: "https://play.daidaiyuyin.com/web/api/gift/getMagicList?magicType=0",
   getGiftList: "https://play.daidaiyuyin.com/web/api/gift/getGiftList?source=1",
-  getBottleGift: "https://play.daidaiyuyin.com/web/api/gift/getBottleGift?source=1",
-  getUserBag: "https://play.daidaiyuyin.com/web/api/box/getUserBag?source=1&uid=12878857",
-  queryBottleGift: "https://play.daidaiyuyin.com/web/api/bottle/queryBottleGift"
+  getUserBag: "https://play.daidaiyuyin.com/web/api/box/getUserBag?source=1&uid=12878857"
 };
 
 export interface DaidaiConfig {
