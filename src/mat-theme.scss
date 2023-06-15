@@ -116,10 +116,38 @@ mat-divider {
   }
 }
 
+.mat-tree {
+  --node-padding: 0 0 0 20px;
+
+  ul,
+  li {
+    margin-top: 0;
+    margin-bottom: 0;
+    list-style-type: none;
+  }
+
+  .mat-nested-tree-node div[role="group"] {
+    padding: var(--node-padding);
+  }
+
+  div[role="group"] > .mat-tree-node {
+    padding: var(--node-padding);
+  }
+}
+
 .mat-icon {
   width: var(--mat-icon-size) !important;
   height: var(--mat-icon-size) !important;
   font-size: var(--mat-icon-size) !important;
+}
+.mat-mdc-icon-button.mat-mdc-button-base {
+  width: var(--mat-icon-size) !important;
+  height: var(--mat-icon-size) !important;
+  padding: var(--mat-icon-padding) !important;
+}
+.mat-mdc-icon-button .mat-mdc-button-touch-target {
+  width: var(--mat-icon-size) !important;
+  height: var(--mat-icon-size) !important;
 }
 
 .cdk-overlay-container {
