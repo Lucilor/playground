@@ -1,7 +1,7 @@
 /**
  * @author pailhead / http://dusanbosnjak.com
  */
-import {BufferGeometry, BufferAttribute, Vector3} from "three";
+import {BufferAttribute, BufferGeometry, Vector3} from "three";
 
 export class RoundedBoxGeometry extends BufferGeometry {
   constructor(width: number, height: number, depth: number, radius: number, radiusSegments: number) {

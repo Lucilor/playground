@@ -2,7 +2,7 @@ import {AbstractControlOptions, FormControl, FormControlOptions, FormControlStat
 import {Router} from "@angular/router";
 import {environment} from "@env";
 import {LocalStorage, log, ObjectOf, SessionStorage, Timer} from "@lucilor/utils";
-import {RouteInfo} from "./app-routing.module";
+import {RouteInfo} from "./routing/app-routing.module";
 
 export interface Response<T> {
   code: number;

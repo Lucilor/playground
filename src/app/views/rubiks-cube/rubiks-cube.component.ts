@@ -1,4 +1,4 @@
-import {Component, AfterViewInit, ViewChild, ElementRef, OnDestroy} from "@angular/core";
+import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from "@angular/core";
 import {ErrorStateMatcher} from "@angular/material/core";
 import {getFormControl} from "@app/app.common";
 import {ColorEvent} from "ngx-color";

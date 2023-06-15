@@ -1,5 +1,5 @@
-import {Object3D, BoxGeometry, Color, MeshLambertMaterial, Mesh, Vector3, Clock, Matrix4, MathUtils, TextureLoader, Texture} from "three";
 import TWEEN from "@tweenjs/tween.js";
+import {BoxGeometry, Clock, Color, MathUtils, Matrix4, Mesh, MeshLambertMaterial, Object3D, Texture, TextureLoader, Vector3} from "three";
 
 export interface RubiksCubeColors {
   F: Color; // front

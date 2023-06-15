@@ -3,7 +3,7 @@ import {NavigationEnd, Router} from "@angular/router";
 import {Subscribed} from "@mixins/subscribed.mixin";
 import {AppStatusService} from "@services/app-status.service";
 import {DateTime} from "luxon";
-import {RouteInfo} from "./app-routing.module";
+import {RouteInfo} from "./routing/app-routing.module";
 
 @Component({
   selector: "app-root",

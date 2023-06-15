@@ -1,5 +1,4 @@
 /// <reference lib="webworker" />
-
 import {ChineseChessBoard, ChineseChessBoardInfo, ChineseChessPieceMovePlain, getMoves} from "./chinese-chess";
 import {ChineseChessAI} from "./chinese-chess-ai";
 

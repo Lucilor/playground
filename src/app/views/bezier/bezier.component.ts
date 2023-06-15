@@ -1,4 +1,4 @@
-import {Component, AfterViewInit, ViewChild, ElementRef} from "@angular/core";
+import {AfterViewInit, Component, ElementRef, ViewChild} from "@angular/core";
 import {MatSelectChange} from "@angular/material/select";
 import {MatSlideToggleChange} from "@angular/material/slide-toggle";
 import {local} from "@app/app.common";

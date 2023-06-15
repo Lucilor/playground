@@ -1,6 +1,6 @@
 import {Drawer, DrawerConfig} from "@components/drawer/drawer";
-import {AmbientLight, Vector2, Vector3, Intersection, DirectionalLight} from "three";
-import {RubiksCube, Axis} from "./rubiks-cube";
+import {AmbientLight, DirectionalLight, Intersection, Vector2, Vector3} from "three";
+import {Axis, RubiksCube} from "./rubiks-cube";
 
 export interface RubiksCubeDrawerConfig extends DrawerConfig {
   axesHelper: boolean;

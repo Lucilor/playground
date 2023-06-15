@@ -1,7 +1,6 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {MatIconModule} from "@angular/material/icon";
 import {NgScrollbarModule} from "ngx-scrollbar";
-
 import {MenuComponent} from "./menu.component";
 
 describe("MenuComponent", () => {

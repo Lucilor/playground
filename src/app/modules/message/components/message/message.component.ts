@@ -1,11 +1,12 @@
-import {Component, OnInit, Inject, ViewChild, ElementRef, AfterViewInit, ViewChildren, QueryList, HostListener} from "@angular/core";
-import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {Component, ElementRef, HostListener, Inject, OnInit, QueryList, ViewChild, ViewChildren} from "@angular/core";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {DomSanitizer, SafeHtml, SafeResourceUrl} from "@angular/platform-browser";
 import {Debounce} from "@decorators/debounce";
 import {ObjectOf, timeout} from "@lucilor/utils";
 import {JsonEditorComponent, JsonEditorOptions} from "@maaxgr/ang-jsoneditor";
 import {InputComponent} from "@modules/input/components/input.component";
-import {InputInfo} from "@modules/input/components/types";
+import {InputInfo} from "@modules/input/components/input.types";
+import {MessageService} from "@modules/message/services/message.service";
 import {clamp, cloneDeep} from "lodash";
 import {QuillEditorComponent, QuillViewComponent} from "ngx-quill";
 import {ButtonMessageData, MessageData, MessageDataMap, MessageOutput} from "./message-types";
@@ -15,7 +16,7 @@ import {ButtonMessageData, MessageData, MessageDataMap, MessageOutput} from "./m
   templateUrl: "./message.component.html",
   styleUrls: ["./message.component.scss"]
 })
-export class MessageComponent implements OnInit, AfterViewInit {
+export class MessageComponent implements OnInit {
   titleHTML: SafeHtml = "";
   subTitleHTML: SafeHtml = "";
   contentHTML: SafeHtml = "";
@@ -24,7 +25,6 @@ export class MessageComponent implements OnInit, AfterViewInit {
   jsonEditorOptions = new JsonEditorOptions();
   inputsBackup: InputInfo[] = [];
   @ViewChild(QuillEditorComponent) editor?: QuillViewComponent;
-  @ViewChild("contentInput") contentInput?: ElementRef<HTMLInputElement | HTMLTextAreaElement>;
   @ViewChild("iframe") iframe?: ElementRef<HTMLIFrameElement>;
   @ViewChildren("formInput") formInputs?: QueryList<InputComponent>;
   @ViewChild(JsonEditorComponent, {static: false}) jsonEditor?: JsonEditorComponent;
@@ -74,6 +74,7 @@ export class MessageComponent implements OnInit, AfterViewInit {
   constructor(
     public dialogRef: MatDialogRef<MessageComponent, MessageOutput>,
     private sanitizer: DomSanitizer,
+    private message: MessageService,
     @Inject(MAT_DIALOG_DATA) public data: MessageData
   ) {
     this.data = cloneDeep(this.data);
@@ -81,10 +82,11 @@ export class MessageComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     const data = this.data;
-    if (data.title === null || data.title === undefined) {
-      data.title = "";
+    if (data.title) {
+      this.titleHTML = this.sanitizer.bypassSecurityTrustHtml(data.title);
+    } else {
+      this.titleHTML = "";
     }
-    this.titleHTML = this.sanitizer.bypassSecurityTrustHtml(this.data.title || "");
     if (data.content === null || data.content === undefined) {
       data.content = "";
     } else if (data.content instanceof HTMLElement) {
@@ -96,7 +98,6 @@ export class MessageComponent implements OnInit, AfterViewInit {
         console.warn(error);
       }
     }
-    this.titleHTML = this.sanitizer.bypassSecurityTrustHtml(data.title);
     this.contentHTML = this.sanitizer.bypassSecurityTrustHtml(data.content);
 
     if (data.type === "form") {
@@ -123,19 +124,6 @@ export class MessageComponent implements OnInit, AfterViewInit {
     this.inputsBackup = cloneDeep(this.inputs);
   }
 
-  async ngAfterViewInit() {
-    if (this.contentInput) {
-      await timeout(500);
-      this.contentInput.nativeElement.focus();
-    }
-    // if (this.iframe) {
-    //     const iframeEl = this.iframe.nativeElement;
-    //     iframeEl.addEventListener("load", () => {
-    //         console.log(iframeEl.contentWindow?.document.title);
-    //     });
-    // }
-  }
-
   @HostListener("window:resize")
   @Debounce(500)
   resizeEditor() {
@@ -150,41 +138,53 @@ export class MessageComponent implements OnInit, AfterViewInit {
     return false;
   }
 
-  submit(button?: ButtonMessageData["buttons"][number]) {
+  async submit(button?: ButtonMessageData["buttons"][number]) {
     const type = this.data.type;
     if (type === "confirm") {
       this.dialogRef.close(true);
     } else if (type === "form") {
       const values: ObjectOf<string> = {};
       const inputs = this.formInputs?.toArray() || [];
+      let hasError = false;
       for (const input of inputs) {
-        const errorMsg = input.errorMsg;
-        if (errorMsg) {
-          return;
+        if (input.onChangeDelay) {
+          await timeout(input.onChangeDelayTime);
+        }
+        const error = input.validateValue();
+        if (error) {
+          hasError = true;
         }
         const key = input.info.name || input.info.label;
         values[key] = input.value;
       }
-      this.dialogRef.close(values);
+      if (!hasError) {
+        this.dialogRef.close(values);
+      }
     } else if (type === "editor") {
       this.dialogRef.close(this.data.content);
     } else if (type === "button" && button) {
       this.dialogRef.close(typeof button === "string" ? button : button.label);
     } else if (type === "json" && this.jsonEditor) {
       const editor = this.jsonEditor;
-      const valid = editor.isValidJson();
-      if (valid) {
+      try {
         this.dialogRef.close(editor.get());
-      } else {
-        this.dialogRef.close();
+      } catch (error) {
+        this.message.error("数据格式错误，请改正后再确定");
       }
     } else {
-      this.cancel();
+      this.dialogRef.close(null);
     }
   }
 
   cancel() {
-    this.dialogRef.close(false);
+    const type = this.data.type;
+    if (type === "confirm") {
+      this.dialogRef.close(false);
+    } else if (type === "button") {
+      this.dialogRef.close(this.data.btnTexts?.cancel);
+    } else {
+      this.dialogRef.close();
+    }
   }
 
   reset() {
@@ -210,13 +210,15 @@ export class MessageComponent implements OnInit, AfterViewInit {
       this.contentHTML = this.sanitizer.bypassSecurityTrustHtml(data.content);
       if (data.title) {
         this.subTitleHTML = this.sanitizer.bypassSecurityTrustHtml(data.title);
+      } else {
+        this.subTitleHTML = "";
       }
     } else {
       this.page = 0;
     }
   }
 
-  cast<T extends MessageData["type"]>(data: MessageData, _type: T) {
+  cast<T extends MessageData["type"]>(type: T, data: MessageData) {
     return data as MessageDataMap[T];
   }
 

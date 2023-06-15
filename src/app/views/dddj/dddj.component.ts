@@ -5,7 +5,7 @@ import {HttpService} from "@modules/http/services/http.service";
 import {MessageService} from "@modules/message/services/message.service";
 import {cloneDeep} from "lodash";
 import SVGA from "svgaplayerweb";
-import {DaidaiConfig, DaidaiGiftGroup, DaidaiBottle, DaidaiGift, daidaiUrls, DaidaiBottleInfo} from "./dddj.types";
+import {DaidaiBottle, DaidaiBottleInfo, DaidaiConfig, DaidaiGift, DaidaiGiftGroup, daidaiUrls} from "./dddj.types";
 
 @Component({
   selector: "app-dddj",
@@ -158,9 +158,15 @@ export class DddjComponent implements OnInit {
     }
     const {player, parser, config} = this;
     const loadSvga = new Promise<SVGA.VideoEntity>((resolve, reject) => {
-      parser.load(config.path.imgPath + svgUrl, (videoItem) => {
-        resolve(videoItem);
-      });
+      parser.load(
+        config.path.imgPath + svgUrl,
+        (videoItem) => {
+          resolve(videoItem);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
     });
     const playAudio = new Promise<HTMLAudioElement | null>((resolve) => {
       if (musicUrl) {

@@ -4,7 +4,7 @@
       <mat-label>{{ info.label }}</mat-label>
       <mat-hint>{{ hint }}</mat-hint>
       <input
-        *ngIf="!cast(info, 'string').textarea"
+        *ngIf="!cast('string', info).textarea && displayValue === null"
         matInput
         [errorStateMatcher]="errorStateMatcher"
         [readonly]="info.readonly"
@@ -19,12 +19,12 @@
         [placeholder]="info.placeholder || ''"
       />
       <textarea
-        *ngIf="cast(info, 'string').textarea"
+        *ngIf="cast('string', info).textarea && displayValue === null"
         matInput
         [errorStateMatcher]="errorStateMatcher"
-        [cdkTextareaAutosize]="!!cast(info, 'string').textarea?.autosize"
-        [cdkAutosizeMinRows]="cast(info, 'string').textarea?.autosize?.minRows"
-        [cdkAutosizeMaxRows]="cast(info, 'string').textarea?.autosize?.maxRows"
+        [cdkTextareaAutosize]="!!cast('string', info).textarea?.autosize"
+        [cdkAutosizeMinRows]="cast('string', info).textarea?.autosize?.minRows"
+        [cdkAutosizeMaxRows]="cast('string', info).textarea?.autosize?.maxRows"
         [readonly]="info.readonly"
         [disabled]="info.disabled || false"
         [autocomplete]="info.autocomplete || ''"
@@ -36,8 +36,16 @@
         [matAutocomplete]="auto"
         [placeholder]="info.placeholder || ''"
       ></textarea>
-      <button mat-icon-button matSuffix *ngIf="optionKey" color="primary" (click)="selectOptions(info.model?.key, optionKey)">
-        <mat-icon>list</mat-icon>
+      <textarea
+        matInput
+        readonly
+        *ngIf="displayValue !== null"
+        [value]="displayValue"
+        cdkTextareaAutosize
+        [cdkAutosizeMinRows]="1"
+      ></textarea>
+      <button mat-icon-button matSuffix *ngIf="info.clearable" color="primary" (click)="clear()">
+        <mat-icon>close</mat-icon>
       </button>
       <button mat-icon-button matSuffix *ngIf="info.copyable" color="primary" (click)="copy()">
         <mat-icon>content_copy</mat-icon>
@@ -47,7 +55,7 @@
       </button>
       <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onAutocompleteChange($event)">
         <mat-option
-          *ngFor="let option of filteredOptions"
+          *ngFor="let option of filteredOptions$ | async"
           [value]="option.value"
           [matTooltip]="option.label === option.value ? option.label : option.label + '=' + option.value"
           [matTooltipShowDelay]="500"
@@ -71,9 +79,9 @@
         [autocomplete]="info.autocomplete || ''"
         [(ngModel)]="value"
         type="number"
-        [step]="cast(info, 'number').step"
-        [min]="cast(info, 'number').max ?? null"
-        [max]="cast(info, 'number').max ?? null"
+        [step]="cast('number', info).step"
+        [min]="cast('number', info).max ?? null"
+        [max]="cast('number', info).max ?? null"
         (change)="onChange()"
         (input)="onInput()"
         (blur)="onBlur()"
@@ -88,7 +96,7 @@
       </button>
       <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onAutocompleteChange($event)">
         <mat-option
-          *ngFor="let option of filteredOptions"
+          *ngFor="let option of filteredOptions$ | async"
           [value]="option.value"
           [matTooltip]="option.label === option.value ? option.label : option.label + '=' + option.value"
           [matTooltipShowDelay]="500"
@@ -104,42 +112,39 @@
     <div class="sub-form-field">
       <div class="label">
         <span>{{ info.label }}</span>
-        <span>({{ hint }})</span>
+        <span *ngIf="info.hint">({{ hint }})</span>
       </div>
       <div *ngIf="keysOf(value).length === 0">
         <button mat-icon-button color="primary" (click)="objectAdd(value, '')">
           <mat-icon>add_circle</mat-icon>
         </button>
       </div>
-      <div *ngFor="let key of keysOf(asObject(value))">
-        <mat-form-field style="width: 30%" [ngClass]="{empty: isEmpty(key)}">
+      <div *ngFor="let item of asObject(value) | keyvalue : returnZero">
+        <mat-form-field style="width: 30%" [ngClass]="{empty: isEmpty(item.key)}">
           <input
             type="text"
             matInput
             [readonly]="info.readonly"
             [disabled]="info.disabled || false"
             [autocomplete]="info.autocomplete"
-            [value]="key"
-            (change)="changeObjectKey(value, key, $event)"
+            [value]="item.key"
+            (change)="changeObjectKey(value, item.key, $event)"
           />
         </mat-form-field>
-        <mat-form-field style="width: 70%" [ngClass]="{empty: isEmpty(value[key])}">
+        <mat-form-field style="width: 70%" [ngClass]="{empty: isEmpty(item.value)}">
           <input
             type="text"
             matInput
             [readonly]="info.readonly"
             [disabled]="info.disabled || false"
             [autocomplete]="info.autocomplete"
-            [(ngModel)]="value[key]"
-            [ngModelOptions]="{standalone: true}"
+            [(ngModel)]="item.value"
+            (change)="value[item.key] = item.value"
           />
-          <button mat-icon-button matSuffix color="primary" (click)="selectOptions(info.model?.key, key)">
-            <mat-icon>list</mat-icon>
-          </button>
           <button mat-icon-button matSuffix color="primary" (click)="objectAdd(value, '', '')">
             <mat-icon>add_circle</mat-icon>
           </button>
-          <button mat-icon-button matSuffix color="primary" (click)="objectRemove(value, key)">
+          <button mat-icon-button matSuffix color="primary" (click)="objectRemove(value, item.key)">
             <mat-icon>remove_circle</mat-icon>
           </button>
           <button mat-icon-button matSuffix color="primary" *ngFor="let icon of suffixIcons" (click)="icon.onClick()">
@@ -192,8 +197,8 @@
         (selectionChange)="onChange()"
         [placeholder]="info.placeholder || ''"
       >
-        <mat-option [value]="true">是</mat-option>
-        <mat-option [value]="false">否</mat-option>
+        <mat-option [value]="true" [disabled]="info.readonly">是</mat-option>
+        <mat-option [value]="false" [disabled]="info.readonly">否</mat-option>
       </mat-select>
     </mat-form-field>
   </ng-container>
@@ -203,12 +208,12 @@
       <mat-hint>{{ hint }}</mat-hint>
       <mat-select [disabled]="info.disabled || false" [(ngModel)]="value" (selectionChange)="onChange()">
         <mat-select-trigger *ngIf="optionText" [innerHtml]="optionText"></mat-select-trigger>
-        <mat-option *ngFor="let option of options" [value]="option.value">
+        <mat-option *ngFor="let option of options" [value]="option.value" [disabled]="info.readonly">
           {{ option.label || option.value }}
         </mat-option>
       </mat-select>
-      <button *ngIf="cast(info, 'select').clearable" appClickStop mat-icon-button matSuffix color="primary" (click)="clearOption()">
-        <mat-icon>cancel</mat-icon>
+      <button *ngIf="info.clearable" appClickStop mat-icon-button matSuffix color="primary" (click)="clear()">
+        <mat-icon>close</mat-icon>
       </button>
       <button mat-icon-button matSuffix color="primary" appClickStop *ngFor="let icon of suffixIcons" (click)="icon.onClick()">
         <mat-icon>{{ icon.name }}</mat-icon>
@@ -225,8 +230,8 @@
           {{ option.label || option.value }}
         </mat-option>
       </mat-select>
-      <button *ngIf="cast(info, 'select').clearable" appClickStop mat-icon-button matSuffix color="primary" (click)="clearOption()">
-        <mat-icon>cancel</mat-icon>
+      <button *ngIf="info.clearable" appClickStop mat-icon-button matSuffix color="primary" (click)="clear()">
+        <mat-icon>close</mat-icon>
       </button>
       <button mat-icon-button matSuffix color="primary" appClickStop *ngFor="let icon of suffixIcons" (click)="icon.onClick()">
         <mat-icon>{{ icon.name }}</mat-icon>
@@ -234,14 +239,14 @@
     </mat-form-field>
   </ng-container>
   <ng-container *ngSwitchCase="'coordinate'">
-    <div class="sub-form-field" *ngIf="cast(info, 'coordinate').compact; else coordinate">
+    <div class="sub-form-field" *ngIf="cast('coordinate', info).compact; else coordinate">
       <div class="label">
         <span>{{ info.label }}</span>
         <span *ngIf="info.hint">({{ hint }})</span>
       </div>
       <div>
         <mat-form-field style="width: 50%" [ngClass]="{empty: isEmpty(value[0])}">
-          <mat-label>{{ cast(info, "coordinate").labelX || "x" }}</mat-label>
+          <mat-label>{{ cast("coordinate", info).labelX || "x" }}</mat-label>
           <ng-container>
             <mat-select [(ngModel)]="value[0]" (change)="onChange()">
               <mat-option [value]="0">左</mat-option>
@@ -254,7 +259,7 @@
           </ng-template>
         </mat-form-field>
         <mat-form-field style="width: 50%" [ngClass]="{empty: isEmpty(value[1])}">
-          <mat-label>{{ cast(info, "coordinate").labelY || "y" }}</mat-label>
+          <mat-label>{{ cast("coordinate", info).labelY || "y" }}</mat-label>
           <ng-container>
             <mat-select [(ngModel)]="value[1]" (change)="onChange()">
               <mat-option [value]="1">上</mat-option>
@@ -288,15 +293,35 @@
       <mat-hint>{{ hint }}</mat-hint>
       <input
         matInput
-        [value]="colorText"
-        [style]="{color: colorValue, backgroundColor: colorBg, transition: '0.3s'}"
+        [value]="colorStr"
+        [style]="{color: colorStr, backgroundColor: colorBg}"
         [matMenuTriggerFor]="editable ? colorPicker : null"
         readonly
         [disabled]="info.disabled || false"
       />
       <mat-menu #colorPicker="matMenu">
-        <color-chrome #colorChrome [color]="value" (onChangeComplete)="onChange($event.color)" appClickStop> </color-chrome>
+        <color-circle
+          *ngIf="cast('color', info).options"
+          [width]="202"
+          [circleSpacing]="10"
+          [color]="colorStr"
+          [colors]="colorOptions"
+          (onChangeComplete)="onColorChange($event.color)"
+          appClickStop
+        ></color-circle>
+        <color-chrome
+          *ngIf="!cast('color', info).optionsOnly"
+          #colorChrome
+          [color]="colorStr"
+          (onChangeComplete)="onColorChange($event.color)"
+          appClickStop
+        >
+        </color-chrome>
       </mat-menu>
+      <ng-template></ng-template>
+      <button mat-icon-button matSuffix *ngIf="info.clearable" color="primary" (click)="clear()">
+        <mat-icon>close</mat-icon>
+      </button>
       <button mat-icon-button matSuffix color="primary" *ngFor="let icon of suffixIcons" (click)="icon.onClick()">
         <mat-icon>{{ icon.name }}</mat-icon>
       </button>
@@ -310,13 +335,13 @@
           <span *ngIf="hint">({{ hint }})</span>
         </div>
         <div class="group">
-          <app-input *ngFor="let info2 of cast(info, 'group').infos" [info]="info2"></app-input>
+          <app-input *ngFor="let info2 of cast('group', info).infos" [info]="info2"></app-input>
         </div>
       </div>
     </ng-container>
     <ng-container *ngIf="!info.label">
       <div class="group">
-        <app-input *ngFor="let info2 of cast(info, 'group').infos" [info]="info2"></app-input>
+        <app-input *ngFor="let info2 of cast('group', info).infos" [info]="info2"></app-input>
       </div>
     </ng-container>
   </ng-container>

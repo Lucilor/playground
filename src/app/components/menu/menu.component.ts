@@ -8,6 +8,4 @@ import {Component, Input} from "@angular/core";
 export class MenuComponent {
   miniMenu = false;
   @Input() shadowColor: "white" | "black" = "black";
-
-  constructor() {}
 }

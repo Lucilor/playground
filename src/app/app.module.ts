@@ -40,8 +40,8 @@ import {RubiksCubeComponent} from "@views/rubiks-cube/rubiks-cube.component";
 import {ThuumComponent} from "@views/thuum/thuum.component";
 import {ColorChromeModule} from "ngx-color/chrome";
 import {NgScrollbarModule} from "ngx-scrollbar";
-import {AppRoutingModule} from "./app-routing.module";
 import {AppComponent} from "./app.component";
+import {AppRoutingModule} from "./routing/app-routing.module";
 
 @Injectable()
 export class MyMatPaginatorIntl extends MatPaginatorIntl {

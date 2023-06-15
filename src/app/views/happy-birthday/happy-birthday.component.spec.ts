@@ -1,7 +1,6 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {RouterModule} from "@angular/router";
 import {HttpModule} from "@modules/http/http.module";
-
 import {HappyBirthdayComponent} from "./happy-birthday.component";
 
 describe("HappyBirthdayComponent", () => {

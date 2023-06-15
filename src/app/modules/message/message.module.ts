@@ -1,13 +1,14 @@
+import {A11yModule} from "@angular/cdk/a11y";
 import {CommonModule} from "@angular/common";
 import {NgModule} from "@angular/core";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MatButtonModule} from "@angular/material/button";
-import {MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS} from "@angular/material/dialog";
+import {MAT_DIALOG_DEFAULT_OPTIONS, MatDialogModule} from "@angular/material/dialog";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatIconModule} from "@angular/material/icon";
 import {MatInputModule} from "@angular/material/input";
-import {MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from "@angular/material/snack-bar";
+import {MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule} from "@angular/material/snack-bar";
 import {AngJsoneditorModule} from "@maaxgr/ang-jsoneditor";
 import {InputModule} from "@modules/input/input.module";
 import hljs from "highlight.js";
@@ -20,6 +21,7 @@ import {MessageComponent} from "./components/message/message.component";
   declarations: [MessageComponent, MessageTestComponent],
   exports: [MessageComponent, MessageTestComponent],
   imports: [
+    A11yModule,
     AngJsoneditorModule,
     CommonModule,
     FormsModule,

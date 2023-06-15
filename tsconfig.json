@@ -34,6 +34,8 @@
     "resolveJsonModule": true,
     "useDefineForClassFields": false
   },
+  "include": ["src"],
+  "exclude": ["node_modules"],
   "angularCompilerOptions": {
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,

@@ -1,6 +1,6 @@
-import {Scene, PerspectiveCamera, WebGLRenderer, PointLight, AmbientLight, Vector2, Vector3, Object3D, Raycaster} from "three";
-import Stats from "three/examples/jsm/libs/stats.module";
+import {AmbientLight, Object3D, PerspectiveCamera, PointLight, Raycaster, Scene, Vector2, Vector3, WebGLRenderer} from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+import Stats from "three/examples/jsm/libs/stats.module";
 
 export interface DrawerConfig {
   width: number;
@@ -74,6 +74,7 @@ export class Drawer {
     dom.addEventListener("pointerup", this._pointerUp.bind(this));
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   update() {}
 
   resize(width?: number, height?: number) {
@@ -123,7 +124,8 @@ export class Drawer {
     return this._getNDCReverse(point.project(this.camera));
   }
 
-  protected _getIntersection(_point: Vector2) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected _getIntersection(point: Vector2) {
     return this._object;
   }
 
@@ -136,7 +138,8 @@ export class Drawer {
     }
   }
 
-  protected _click(_point: Vector2) {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+  protected _click(point: Vector2) {}
 
   protected _pointerDown({clientX, clientY, button}: PointerEvent) {
     this._pointer.set(clientX, clientY);

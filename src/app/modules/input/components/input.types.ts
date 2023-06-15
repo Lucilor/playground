@@ -1,6 +1,7 @@
 import {AbstractControlOptions} from "@angular/forms";
 import {FloatLabelType} from "@angular/material/form-field";
 import {ObjectOf} from "@lucilor/utils";
+import csstype from "csstype";
 import {Color, ColorWrap} from "ngx-color";
 
 type Value<T> = T | ((...args: any[]) => T);
@@ -11,6 +12,7 @@ export interface InputInfoBase<T = any> {
   model?: {data: T | (() => T); key: keyof T};
   value?: Value<any>;
   readonly?: boolean;
+  clearable?: boolean;
   copyable?: boolean;
   disabled?: boolean;
   suffixIcons?: {name: string; onClick: () => void}[];
@@ -23,22 +25,20 @@ export interface InputInfoBase<T = any> {
   validators?: AbstractControlOptions["validators"];
   initialValidate?: boolean;
   name?: string;
+  styles?: csstype.Properties;
 }
 
-export interface InputInfoString<T = any> extends InputInfoBase<T> {
+export interface InputInfoString<T = any> extends InputInfoWithOptions<T, string> {
   type: "string";
   value?: Value<string>;
+  displayValue?: Value<string>;
   optionKey?: string;
   textarea?: {autosize?: {minRows?: number; maxRows?: number}};
   onInput?: (val: string) => void;
   onChange?: (val: string) => void;
-  options?: InputInfoOptions;
-  fixedOptions?: string[];
-  noFilterOptions?: boolean;
-  optionInputOnly?: boolean;
 }
 
-export interface InputInfoNumber<T = any> extends InputInfoBase<T> {
+export interface InputInfoNumber<T = any> extends InputInfoWithOptions<T, number> {
   type: "number";
   value?: Value<number>;
   step?: number;
@@ -46,17 +46,11 @@ export interface InputInfoNumber<T = any> extends InputInfoBase<T> {
   max?: number;
   onInput?: (val: number) => void;
   onChange?: (val: number) => void;
-  options?: InputInfoOptions<number>;
-  fixedOptions?: string[];
-  noFilterOptions?: boolean;
-  optionInputOnly?: boolean;
 }
 
 export interface InputInfoObject<T = any> extends InputInfoBase<T> {
   type: "object";
   value?: Value<ObjectOf<any>>;
-  isCadOptions?: boolean;
-  isOneItem?: boolean;
 }
 
 export interface InputInfoArray<T = any> extends InputInfoBase<T> {
@@ -72,7 +66,6 @@ export interface InputInfoBoolean<T = any> extends InputInfoBase<T> {
 export interface InputInfoSelect<T = any> extends InputInfoBase<T> {
   type: "select";
   value?: Value<string>;
-  clearable?: boolean;
   options: InputInfoOptions;
   optionText?: string | ((val: string) => string);
   onChange?: (val: string) => void;
@@ -81,7 +74,6 @@ export interface InputInfoSelect<T = any> extends InputInfoBase<T> {
 export interface InputInfoSelectMulti<T = any> extends InputInfoBase<T> {
   type: "selectMulti";
   value?: Value<string[]>;
-  clearable?: boolean;
   options: InputInfoOptions;
   optionText?: string | ((val: string[]) => string);
   onChange?: (val: string[]) => void;
@@ -93,12 +85,14 @@ export interface InputInfoCoordinate<T = any> extends InputInfoBase<T> {
   compact?: boolean;
   labelX?: string;
   labelY?: string;
-  onChange?: (val: [number, number]) => void;
+  onChange?: (val: {anchor: [number, number]}) => void;
 }
 
 export interface InputInfoColor<T = any> extends InputInfoBase<T> {
   type: "color";
   value?: Value<ColorWrap["color"]>;
+  options?: ColorWrap["color"][];
+  optionsOnly?: boolean;
   onChange?: (val: Color) => void;
 }
 
@@ -135,4 +129,17 @@ export interface InputInfoTypeMap {
   group: InputInfoGroup;
 }
 
-export type InputInfoOptions<T = string> = ({value: T; label?: string} | T)[];
+export interface InputInfoWithOptions<T = any, K = any> extends InputInfoBase<T> {
+  options?: InputInfoOptions<K>;
+  filterValuesGetter?: (option: InputInfoOption<K>) => string[];
+  fixedOptions?: string[];
+  optionInputOnly?: boolean;
+  optionsDisplayLimit?: number;
+  isSingleOption?: boolean;
+  optionsUseId?: boolean;
+  optionField?: string;
+}
+
+export type InputInfoOption<T = string> = {value: T; label?: string} | T;
+
+export type InputInfoOptions<T = string> = InputInfoOption<T>[];

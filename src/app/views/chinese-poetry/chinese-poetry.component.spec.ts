@@ -5,7 +5,6 @@ import {HttpModule} from "@modules/http/http.module";
 import {MessageModule} from "@modules/message/message.module";
 import {SpinnerModule} from "@modules/spinner/spinner.module";
 import {NgScrollbarModule} from "ngx-scrollbar";
-
 import {ChinesePoetryComponent} from "./chinese-poetry.component";
 
 describe("ChinesePoetryComponent", () => {

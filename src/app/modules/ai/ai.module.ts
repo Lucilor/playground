@@ -1,11 +1,11 @@
-import {NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
-import {ChatComponent} from "./components/chat/chat.component";
-import {MatButtonModule} from "@angular/material/button";
+import {NgModule} from "@angular/core";
 import {FormsModule} from "@angular/forms";
-import {ImageModule} from "../image/image.module";
-import {NgScrollbarModule} from "ngx-scrollbar";
+import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
+import {NgScrollbarModule} from "ngx-scrollbar";
+import {ImageModule} from "../image/image.module";
+import {ChatComponent} from "./components/chat/chat.component";
 
 @NgModule({
   declarations: [ChatComponent],

@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {MatDialog} from "@angular/material/dialog";
 import {PageEvent} from "@angular/material/paginator";
 import {openChinesePoetrySearchDialog} from "@components/dialogs/chinese-poetry-search/chinese-poetry-search.component";
-import {Poem, ChinesePoetryService} from "@modules/http/services/chinese-poetry.service";
+import {ChinesePoetryService, Poem} from "@modules/http/services/chinese-poetry.service";
 import {SpinnerService} from "@modules/spinner/services/spinner.service";
 
 @Component({

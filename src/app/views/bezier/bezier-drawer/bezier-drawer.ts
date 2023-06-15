@@ -1,21 +1,21 @@
 import {Drawer, DrawerConfig} from "@components/drawer/drawer";
 import {Point} from "@lucilor/utils";
 import {
-  BufferGeometry,
-  LineBasicMaterial,
-  Float32BufferAttribute,
-  Vector2,
-  Vector3,
-  LineSegments,
-  Line,
-  ShapeGeometry,
   ArcCurve,
-  Shape,
+  BufferAttribute,
+  BufferGeometry,
+  Clock,
+  Float32BufferAttribute,
+  Line,
+  LineBasicMaterial,
+  LineSegments,
   Mesh,
   MeshBasicMaterial,
   Plane,
-  Clock,
-  BufferAttribute
+  Shape,
+  ShapeGeometry,
+  Vector2,
+  Vector3
 } from "three";
 import {BezierCurve} from "./bezier-curve";
 import {fitCurve} from "./fit-curve";
@@ -353,7 +353,7 @@ export class BezierDrawer extends Drawer {
       this.config.maxErrors
     ).map((pts) => new BezierCurve(pts.map((vv) => this._getPoint(new Point(vv)))));
     this.points.length = 0;
-    this.curves.forEach((curve, i) => {
+    this.curves.forEach((curve) => {
       curve.ctrlPoints.forEach((v) => this.points.push(v.clone()));
     });
     return this;

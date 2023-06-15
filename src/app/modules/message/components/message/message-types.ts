@@ -1,6 +1,6 @@
 import {ObjectOf} from "@lucilor/utils";
 import {JsonEditorOptions} from "@maaxgr/ang-jsoneditor";
-import {InputInfo} from "@modules/input/components/types";
+import {InputInfo} from "@modules/input/components/input.types";
 
 export interface BaseMessageData {
   title?: string;

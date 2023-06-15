@@ -5,10 +5,10 @@
       <mat-icon>close</mat-icon>
     </button>
   </div>
-  <div class="title-container" *ngSwitchDefault>
-    <h2 mat-dialog-title class="title hidden-if-empty" [innerHTML]="titleHTML" [ngClass]="titleClass"></h2>
-    <h3 mat-dialog-title class="sub-title hidden-if-empty" [innerHTML]="subTitleHTML"></h3>
-  </div>
+  <ng-container *ngSwitchDefault>
+    <div mat-dialog-title *ngIf="titleHTML" [ngClass]="titleClass" [innerHTML]="titleHTML"></div>
+    <div mat-dialog-title *ngIf="subTitleHTML" class="sub-title" [innerHTML]="subTitleHTML"></div>
+  </ng-container>
 </ng-container>
 <div mat-dialog-content [ngSwitch]="data.type" [ngClass]="data.type">
   <ng-container *ngSwitchCase="'editor'">
@@ -18,7 +18,7 @@
     <iframe #iframe [src]="iframeSrc" frameborder="0"></iframe>
   </ng-container>
   <ng-container *ngSwitchCase="'json'">
-    <json-editor [options]="jsonEditorOptions" [data]="cast(data, 'json').json"></json-editor>
+    <json-editor [options]="jsonEditorOptions" [data]="cast('json', data).json"></json-editor>
   </ng-container>
   <ng-container *ngSwitchDefault="">
     <div [innerHTML]="contentHTML"></div>
@@ -27,7 +27,14 @@
     </div>
   </ng-container>
 </div>
-<div matDialogActions class="hidden-if-empty" style="justify-content: center" [ngSwitch]="data.type">
+<div
+  class="hidden-if-empty"
+  cdkTrapFocus
+  [cdkTrapFocusAutoCapture]="true"
+  mat-dialog-actions
+  style="justify-content: center"
+  [ngSwitch]="data.type"
+>
   <ng-container *ngSwitchCase="'alert'">
     <ng-container *ngTemplateOutlet="submitBtn"></ng-container>
   </ng-container>
@@ -39,13 +46,13 @@
   </ng-container>
   <ng-container *ngSwitchCase="'book'">
     <button mat-raised-button (click)="setPage(page - 1)" [disabled]="page <= minPage">
-      {{ cast(data, "book").btnTexts?.prev || "上一页" }}
+      {{ cast("book", data).btnTexts?.prev || "上一页" }}
     </button>
     <button mat-raised-button (click)="setPage(page + 1)" [disabled]="page >= maxPage">
-      {{ cast(data, "book").btnTexts?.prev || "下一页" }}
+      {{ cast("book", data).btnTexts?.prev || "下一页" }}
     </button>
     <button mat-raised-button (click)="cancel()">
-      {{ cast(data, "book").btnTexts?.exit || "退出" }}
+      {{ cast("book", data).btnTexts?.exit || "退出" }}
     </button>
   </ng-container>
   <ng-container *ngSwitchCase="'editor'">
@@ -55,7 +62,7 @@
     <ng-container *ngTemplateOutlet="formBtns"></ng-container>
   </ng-container>
   <ng-container *ngSwitchCase="'button'">
-    <button mat-raised-button color="primary" *ngFor="let button of cast(data, 'button').buttons" (click)="submit(button)">
+    <button mat-raised-button color="primary" *ngFor="let button of cast('button', data).buttons" (click)="submit(button)">
       {{ getButtonLabel(button) }}
     </button>
     <ng-container *ngTemplateOutlet="cancelBtn"></ng-container>
@@ -63,20 +70,20 @@
 </div>
 
 <ng-template #submitBtn>
-  <button mat-raised-button color="primary" (click)="submit()" cdkFocusInitial>
-    {{ cast(data, "confirm").btnTexts?.submit || "确定" }}
+  <button mat-raised-button color="primary" (click)="submit()">
+    {{ cast("confirm", data).btnTexts?.submit || "确定" }}
   </button>
 </ng-template>
 
 <ng-template #cancelBtn>
   <button mat-raised-button (click)="cancel()" *ngIf="!data.disableCancel">
-    {{ cast(data, "confirm").btnTexts?.cancel || "取消" }}
+    {{ cast("confirm", data).btnTexts?.cancel || "取消" }}
   </button>
 </ng-template>
 
 <ng-template #resetBtn>
-  <button mat-raised-button color="primary" (click)="reset()">
-    {{ cast(data, "json").btnTexts?.reset || "重置" }}
+  <button mat-raised-button color="accent" (click)="reset()">
+    {{ cast("json", data).btnTexts?.reset || "重置" }}
   </button>
 </ng-template>
 
@@ -86,6 +93,6 @@
 </ng-template>
 
 <ng-template #formBtns>
-  <ng-container *ngTemplateOutlet="resetBtn"></ng-container>
   <ng-container *ngTemplateOutlet="confirmBtns"></ng-container>
+  <ng-container *ngTemplateOutlet="resetBtn"></ng-container>
 </ng-template>

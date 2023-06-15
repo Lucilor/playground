@@ -11,18 +11,18 @@
         "project": "tsconfig.json",
         "createDefaultProgram": true
       },
+      "plugins": ["deprecation", "prettier"],
       "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:@angular-eslint/recommended",
-        "plugin:@angular-eslint/ng-cli-compat",
-        "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
         "plugin:@angular-eslint/template/process-inline-templates",
-        "plugin:@angular-eslint/recommended--extra",
-        "prettier"
+        "plugin:prettier/recommended"
       ],
       "rules": {
+        "@angular-eslint/component-selector": ["error", {"type": "element", "prefix": "app", "style": "kebab-case"}],
+        "@angular-eslint/directive-selector": ["error", {"type": "attribute", "prefix": "app", "style": "camelCase"}],
         "@typescript-eslint/naming-convention": [
           "error",
           {
@@ -31,14 +31,10 @@
             "leadingUnderscore": "allowSingleOrDouble"
           }
         ],
-        "@typescript-eslint/no-unused-vars": [
-          "warn",
-          {
-            "argsIgnorePattern": "."
-          }
-        ],
-        "guard-for-in": "off",
-        "no-underscore-dangle": "off"
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-shadow": "error",
+        "deprecation/deprecation": "warn",
+        "no-empty": ["error", {"allowEmptyCatch": true}]
       }
     },
     {

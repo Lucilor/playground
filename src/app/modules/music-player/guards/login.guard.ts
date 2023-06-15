@@ -1,11 +1,11 @@
 import {Injectable} from "@angular/core";
-import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlSegment} from "@angular/router";
+import {ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlSegment} from "@angular/router";
 import {MusicService} from "../services/music.service";
 
 @Injectable({
   providedIn: "root"
 })
-export class LoginGuard implements CanActivate {
+export class LoginGuard {
   constructor(private music: MusicService, private router: Router) {}
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {

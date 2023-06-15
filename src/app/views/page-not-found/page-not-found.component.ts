@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
-import {RouteInfo} from "@app/app-routing.module";
 import {navigate} from "@app/app.common";
+import {RouteInfo} from "@app/routing/app-routing.module";
 import {AppStatusService} from "@services/app-status.service";
 
 @Component({
