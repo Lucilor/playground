@@ -1,16 +1,16 @@
 import {Component, OnInit} from "@angular/core";
 import {setGlobal} from "@app/app.common";
-import {HttpService} from "@modules/http/services/http.service";
+import {DaidaiConfig, DaidaiGift, DaidaiGiftGroup} from "@modules/dddj/dddj.types";
+import {DddjService} from "@modules/dddj/services/dddj.service";
 import {MessageService} from "@modules/message/services/message.service";
 import SVGA from "svgaplayerweb";
-import {DaidaiConfig, DaidaiGift, DaidaiGiftGroup, daidaiUrls} from "./dddj.types";
 
 @Component({
-  selector: "app-dddj",
-  templateUrl: "./dddj.component.html",
-  styleUrls: ["./dddj.component.scss"]
+  selector: "app-dddj-gifts",
+  templateUrl: "./dddj-gifts.component.html",
+  styleUrls: ["./dddj-gifts.component.scss"]
 })
-export class DddjComponent implements OnInit {
+export class DddjGiftsComponent implements OnInit {
   config: DaidaiConfig = {
     blackList: [],
     path: {
@@ -25,15 +25,15 @@ export class DddjComponent implements OnInit {
   parser?: SVGA.Parser;
   isSvgaPlaying = false;
 
-  constructor(private http: HttpService, private message: MessageService) {}
+  constructor(private dddjService: DddjService, private message: MessageService) {}
 
   async ngOnInit() {
     setGlobal("dddj", this);
-    const configResponse = await this.http.get<DaidaiConfig>(daidaiUrls.config, {}, {noStrict: true});
-    const giftResponse = await this.http.get<DaidaiGiftGroup[]>(daidaiUrls.getGiftList, {}, {noStrict: true});
-    if (configResponse?.data && giftResponse?.data) {
-      this.config = configResponse.data;
-      this.giftGroups = giftResponse.data;
+    const config = await this.dddjService.getConfig();
+    const giftGroups = await this.dddjService.getGiftGroups();
+    if (config && giftGroups) {
+      this.config = config;
+      this.giftGroups = giftGroups;
     } else {
       this.message.error("获取数据失败");
     }

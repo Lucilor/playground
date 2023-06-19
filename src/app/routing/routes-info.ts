@@ -1,9 +1,9 @@
 import {ChatComponent} from "@modules/ai/components/chat/chat.component";
+import {DddjGiftsComponent} from "@modules/dddj/components/dddj-gifts/dddj-gifts.component";
 import {BezierComponent} from "@views/bezier/bezier.component";
 import {BullsAndCowsComponent} from "@views/bulls-and-cows/bulls-and-cows.component";
 import {ChineseChessComponent} from "@views/chinese-chess/chinese-chess.component";
 import {ChinesePoetryComponent} from "@views/chinese-poetry/chinese-poetry.component";
-import {DddjComponent} from "@views/dddj/dddj.component";
 import {HappyBirthdayComponent} from "@views/happy-birthday/happy-birthday.component";
 import {IndexComponent} from "@views/index/index.component";
 import {RubiksCubeComponent} from "@views/rubiks-cube/rubiks-cube.component";
@@ -20,6 +20,6 @@ export const routesInfo: RouteInfo[] = [
   {path: "chinese-chess", title: "中国象棋", data: {beta: true}, component: ChineseChessComponent},
   {path: "thuum", title: "Thuum", component: ThuumComponent},
   {path: "kod", pathMatch: "full", redirectTo: "https://candypurity.com/kod", title: "网盘", data: {isOuter: true}},
-  {path: "dddj", title: "带带电竞", component: DddjComponent},
+  {path: "dddj", title: "带带电竞", children: [{path: "gifts", title: "带带礼物预览", component: DddjGiftsComponent}]},
   {path: "happy-birthday", title: "生日快乐", component: HappyBirthdayComponent, data: {hiddinInIndex: true}}
 ];

@@ -14,6 +14,7 @@ import {cloneDeep} from "lodash";
 export class IndexComponent extends Subscribed() {
   routesInfo: RouteInfo[];
   bgConfig = this.status.bgConfig;
+  routeLinkDataType!: {routeInfo: RouteInfo; parents?: RouteInfo[]};
 
   constructor(private status: AppStatusService, private router: Router) {
     super();
@@ -27,7 +28,7 @@ export class IndexComponent extends Subscribed() {
     }
   }
 
-  onLinkClick(routeInfo: RouteInfo) {
-    navigate(this.router, routeInfo);
+  onLinkClick(routeInfo: RouteInfo, parents?: RouteInfo[]) {
+    navigate(this.router, routeInfo, parents);
   }
 }

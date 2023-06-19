@@ -83,9 +83,7 @@ export class MusicService extends HttpService {
   }
 
   async refreshLoginStatus() {
-    const silent = this.silent;
-    this.silent = true;
-    const response = await this.get<User>("login/status", this._addTimestamp({}));
+    const response = await this.get<User>("login/status", this._addTimestamp({}), {silent: true});
     const uid = response?.data?.profile?.userId;
     let user: User | null = null;
     if (uid) {
@@ -95,7 +93,6 @@ export class MusicService extends HttpService {
       }
     }
     this.user$.next(user);
-    this.silent = silent;
   }
 
   async logout() {

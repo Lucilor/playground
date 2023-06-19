@@ -1,8 +1,51 @@
 <div class="btn-group">
-  <button mat-raised-button color="primary" *ngFor="let routeInfo of routesInfo" (click)="onLinkClick(routeInfo)">
-    <div>
-      <span>{{ routeInfo.title }}</span>
-      <sup *ngIf="routeInfo.data?.beta" style="color: lightpink">beta</sup>
-    </div>
-  </button>
+  <ng-container *ngFor="let routeInfo of routesInfo">
+    <ng-template *ngTemplateOutlet="routeLink; context: {$implicit: {routeInfo}}"></ng-template>
+    <!-- <ng-template #withChildren>
+        <button mat-raised-button color="primary" [matMenuTriggerFor]="routeChildren">
+          <div>
+            <span>{{ routeInfo.title }}</span>
+            <sup *ngIf="routeInfo.data?.beta" style="color: lightpink">beta</sup>
+          </div>
+        </button>
+        <mat-menu #routeChildren="matMenu">
+
+        </mat-menu>
+      </ng-template> -->
+  </ng-container>
+
+  <ng-template #routeLink let-data [appTypedTemplate]="{$implicit: routeLinkDataType}">
+    <ng-container *ngIf="!data.routeInfo.children">
+      <button *ngIf="!data.parents || data.parents.length < 1" mat-raised-button color="primary">
+        <ng-template *ngTemplateOutlet="buttonContent"></ng-template>
+      </button>
+      <button *ngIf="data.parents && data.parents.length > 0" mat-menu-item>
+        <ng-template *ngTemplateOutlet="buttonContent"></ng-template>
+      </button>
+      <ng-template #buttonContent>
+        <div (click)="onLinkClick(data.routeInfo, data.parents)">
+          <span>{{ data.routeInfo.title }}</span>
+          <sup *ngIf="data.routeInfo.data?.beta" style="color: lightpink">beta</sup>
+        </div>
+      </ng-template>
+    </ng-container>
+    <ng-container *ngIf="data.routeInfo.children">
+      <button mat-raised-button color="primary" [matMenuTriggerFor]="routeChildren">
+        <div>
+          <span>{{ data.routeInfo.title }}</span>
+          <sup *ngIf="data.routeInfo.data?.beta" style="color: lightpink">beta</sup>
+        </div>
+        <mat-menu #routeChildren="matMenu">
+          <ng-container *ngFor="let child of data.routeInfo.children">
+            <ng-template
+              *ngTemplateOutlet="
+                routeLink;
+                context: {$implicit: {routeInfo: child, parents: (data.parents || []).concat([data.routeInfo])}}
+              "
+            ></ng-template>
+          </ng-container>
+        </mat-menu>
+      </button>
+    </ng-container>
+  </ng-template>
 </div>

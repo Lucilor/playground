@@ -4,19 +4,11 @@ import {environment} from "@env";
 import {LocalStorage, log, ObjectOf, SessionStorage, Timer} from "@lucilor/utils";
 import {RouteInfo} from "./routing/app-routing.module";
 
-export interface Response<T> {
-  code: number;
-  msg?: string;
-  data?: T;
-  count?: number;
-  importance?: number;
-}
-
-export const navigate = (router: Router, routeInfo: RouteInfo) => {
+export const navigate = (router: Router, routeInfo: RouteInfo, parents?: RouteInfo[]) => {
   if (routeInfo.data?.isOuter) {
     window.open(routeInfo.redirectTo, "_blank");
   } else {
-    router.navigate([routeInfo.path], {queryParamsHandling: "merge"});
+    router.navigate([...(parents || []).map((v) => v.path), routeInfo.path], {queryParamsHandling: "merge"});
   }
 };
 

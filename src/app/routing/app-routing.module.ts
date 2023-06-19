@@ -4,7 +4,7 @@ import {PageNotFoundComponent} from "@views/page-not-found/page-not-found.compon
 import {pathResolver} from "./path-resolver";
 import {routesInfo} from "./routes-info";
 
-export type RouteInfo = Route & {path: string; data?: {hiddinInIndex?: boolean; beta?: boolean; isOuter?: boolean}};
+export type RouteInfo = Route & {path: string; children?: RouteInfo[]; data?: {hiddinInIndex?: boolean; beta?: boolean; isOuter?: boolean}};
 
 const routes: Routes = [
   {path: "", pathMatch: "full", redirectTo: routesInfo[0].path},

@@ -23,6 +23,8 @@ import {ChineseChessCollectionsComponent} from "@components/dialogs/chinese-ches
 import {ChinesePoetrySearchComponent} from "@components/dialogs/chinese-poetry-search/chinese-poetry-search.component";
 import {MenuComponent} from "@components/menu/menu.component";
 import {AIModule} from "@modules/ai/ai.module";
+import {DddjModule} from "@modules/dddj/dddj.module";
+import {DirectivesModule} from "@modules/directives/directives.module";
 import {HttpModule} from "@modules/http/http.module";
 import {ImageModule} from "@modules/image/image.module";
 import {MessageModule} from "@modules/message/message.module";
@@ -32,7 +34,6 @@ import {BezierComponent} from "@views/bezier/bezier.component";
 import {BullsAndCowsComponent} from "@views/bulls-and-cows/bulls-and-cows.component";
 import {ChineseChessComponent} from "@views/chinese-chess/chinese-chess.component";
 import {ChinesePoetryComponent} from "@views/chinese-poetry/chinese-poetry.component";
-import {DddjComponent} from "@views/dddj/dddj.component";
 import {HappyBirthdayComponent} from "@views/happy-birthday/happy-birthday.component";
 import {IndexComponent} from "@views/index/index.component";
 import {PageNotFoundComponent} from "@views/page-not-found/page-not-found.component";
@@ -67,7 +68,6 @@ export class MyMatPaginatorIntl extends MatPaginatorIntl {
     ChineseChessComponent,
     ChinesePoetryComponent,
     ChinesePoetrySearchComponent,
-    DddjComponent,
     HappyBirthdayComponent,
     IndexComponent,
     MenuComponent,
@@ -81,6 +81,8 @@ export class MyMatPaginatorIntl extends MatPaginatorIntl {
     BrowserAnimationsModule,
     BrowserModule,
     ColorChromeModule,
+    DddjModule,
+    DirectivesModule,
     DragDropModule,
     FormsModule,
     HttpModule,
